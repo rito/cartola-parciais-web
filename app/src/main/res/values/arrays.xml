@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="times">
+        <item>Arkenstone FC</item>
+        <item>Auto Peças Santos EC</item>
+        <item>CaiapôniaDuarte FC</item>
+        <item>DJ Soccer Club</item>
+        <item>Sport¨Club Azanki</item>
+    </string-array>
+    <string-array name="cartoleiro">
+        <item>Geovanne Duarte</item>
+        <item>PH</item>
+        <item>Genésio Duarte</item>
+        <item>Djonnathan Duarte</item>
+        <item>Neto Azanki</item>
+    </string-array>
+    <array name="time_escudo">
+        <item>@drawable/arkenstone_fc</item>
+        <item>@drawable/arkenstone_fc</item>
+        <item>@drawable/arkenstone_fc</item>
+        <item>@drawable/arkenstone_fc</item>
+        <item>@drawable/arkenstone_fc</item>
+    </array>
+
+</resources>

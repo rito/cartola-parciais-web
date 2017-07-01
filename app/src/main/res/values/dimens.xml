@@ -1,0 +1,15 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="escudo_size">40dp</dimen><!-- tamanho do escudo -->
+    <dimen name="nome_clube">16sp</dimen><!-- tamanho da fonte do nome do clube -->
+    <dimen name="nome_cartoleiro">14sp</dimen><!-- tamanho da fonte do nome do cartoleiro -->
+    <dimen name="cartoletas">12sp</dimen>
+    <dimen name="cartoletas_margin">4dp</dimen>
+    <dimen name="pontos">18sp</dimen>
+
+    <!-- RecyclerView -->
+    <dimen name="md_keylines">8dp</dimen>
+
+</resources>

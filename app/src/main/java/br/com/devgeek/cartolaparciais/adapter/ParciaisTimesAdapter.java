@@ -1,0 +1,174 @@
+package br.com.devgeek.cartolaparciais.adapter;
+
+import android.content.Context;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import br.com.devgeek.cartolaparciais.R;
+import br.com.devgeek.cartolaparciais.model.ParciaisTimes;
+import io.realm.Realm;
+
+/**
+ * Created by geovannefduarte
+ */
+
+public class ParciaisTimesAdapter extends Fragment {
+
+    private static Context applicationContext;
+    private static Typeface montserratBold = null;
+    private static Typeface montserratRegular = null;
+
+    private static final String TAG = "ParciaisTimesAdapter";
+    private static final Map<String, Integer> backgroundColor = new HashMap<String, Integer>();
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+
+        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        return recyclerView;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView posicao;
+        public ImageView escudo;
+        public TextView nomeTime;
+        public TextView pontuacao;
+        public TextView cartoletas;
+        public TextView nomeCartoleiro;
+        public RelativeLayout background;
+
+        public ViewHolder(LayoutInflater inflater, ViewGroup parent){
+
+            super(inflater.inflate(R.layout.fragment_parciaistimes, parent, false));
+
+            escudo = (ImageView) itemView.findViewById(R.id.escudo);
+            posicao = (TextView) itemView.findViewById(R.id.posicao);
+            nomeTime = (TextView) itemView.findViewById(R.id.nome_time);
+            pontuacao = (TextView) itemView.findViewById(R.id.pontuacao);
+            cartoletas = (TextView) itemView.findViewById(R.id.cartoletas);
+            nomeCartoleiro = (TextView) itemView.findViewById(R.id.nome_cartoleiro);
+            background = (RelativeLayout) itemView.findViewById(R.id.parciais_background);
+        }
+    }
+
+    /**
+     * Adapter to display recycler view.
+     */
+    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+
+        // Set numbers of List in RecyclerView.
+//        private static final int LENGTH = 18;
+//        private final String[] mPlaces;
+//        private final String[] mPlaceDesc;
+//        private final Drawable[] mPlaceAvators;
+
+        List<ParciaisTimes> listaTimes = new ArrayList<ParciaisTimes>();
+
+        public ContentAdapter(Context context){
+
+            applicationContext = context.getApplicationContext();
+            montserratBold = Typeface.createFromAsset(applicationContext.getAssets(), "fonts/Montserrat-Medium.ttf");
+            montserratRegular = Typeface.createFromAsset(applicationContext.getAssets(), "fonts/Montserrat-Regular.ttf");
+
+            backgroundColor.put("even", ContextCompat.getColor(context, R.color.bgColorEven));
+            backgroundColor.put("odd", ContextCompat.getColor(context, R.color.bgColorOdd));
+
+
+            Realm realm = null;
+
+            try {
+
+                realm = Realm.getDefaultInstance();
+                listaTimes = realm.where(ParciaisTimes.class).findAllSorted("posicao");
+
+            } catch (Exception e){
+                e.printStackTrace();
+            } finally {
+                realm.close();
+            }
+
+
+
+
+//            listaTimes.add(new ParciaisTimes("auto-pecas-santos-ec",   "auto-pecas-santos-ec",  1, "Auto Pecas Santos EC",  "P.H",              0.0, 0.0));
+//            listaTimes.add(new ParciaisTimes("caiaponiaduartefc", 	    "caiaponiaduartefc", 	2, "CaiapôniaDuarteFC", 	"Genésio Duarte", 	0.0, 0.0));
+//            listaTimes.add(new ParciaisTimes("sport-club-azanki", 	    "sport-club-azanki", 	3, "Sport¨Club Azanki", 	"Neto Azanki", 		0.0, 0.0));
+//            listaTimes.add(new ParciaisTimes("dj-sportclub", 		    "dj-sportclub", 		4, "DJ SportClub", 			"Djonnathan Duarte",0.0, 0.0));
+//            listaTimes.add(new ParciaisTimes("arkenstone-fc", 		    "arkenstone-fc", 		5, "Arkenstone-fc", 		"Geovanne Duarte", 	0.0, 0.0));
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position){
+
+            holder.nomeTime.setTypeface(montserratBold);
+            holder.pontuacao.setTypeface(montserratBold);
+            holder.cartoletas.setTypeface(montserratRegular);
+            holder.nomeCartoleiro.setTypeface(montserratRegular);
+
+            if ((position % 2) == 0){
+                holder.background.setBackgroundColor(backgroundColor.get("even"));
+            }  else {
+                holder.background.setBackgroundColor(backgroundColor.get("odd"));
+            }
+
+
+            holder.posicao.setText(String.valueOf(position+1));
+            holder.escudo.setImageResource(R.drawable.arkenstone_fc);
+//            holder.escudo.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
+//            holder.nomeTime.setText(mPlaces[position % mPlaces.length]);
+            holder.nomeTime.setText(listaTimes.get(position).getNomeTime());
+//            holder.nomeCartoleiro.setText(mPlaceDesc[position % mPlaceDesc.length]);
+            holder.nomeCartoleiro.setText(listaTimes.get(position).getNomeCartoleiro());
+        }
+
+        @Override
+        public int getItemCount(){
+            return listaTimes.size();
+        }
+
+//        public void update(){
+//
+//            Realm realm = null;
+//
+//            try {
+//
+//                realm = Realm.getDefaultInstance();
+//                listaTimes = realm.where(ParciaisTimes.class).findAllSorted("posicao");
+//
+//            } catch (Exception e){
+//                e.printStackTrace();
+//            } finally {
+//                realm.close();
+//            }
+//
+//            notifyDataSetChanged();
+//        }
+    }
+}
