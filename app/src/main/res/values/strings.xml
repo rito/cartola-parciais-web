@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Cartola Parciais</string>
     <string name="action_settings">Settings</string>
+
+    <string name="buscar_times">Buscar times...</string>
+
 </resources>

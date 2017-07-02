@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +86,8 @@ public class ParciaisTimesAdapter extends Fragment {
 //        private final Drawable[] mPlaceAvators;
 
         List<ParciaisTimes> listaTimes = new ArrayList<ParciaisTimes>();
+        DecimalFormat formatoPontuacao = new DecimalFormat(ParciaisTimes.FORMATO_PONTUACAO);
+        DecimalFormat formatoCartoletas = new DecimalFormat(ParciaisTimes.FORMATO_CARTOLETAS);
 
         public ContentAdapter(Context context){
 
@@ -140,12 +143,22 @@ public class ParciaisTimesAdapter extends Fragment {
 
 
             holder.posicao.setText(String.valueOf(position+1));
-            holder.escudo.setImageResource(R.drawable.arkenstone_fc);
-//            holder.escudo.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
-//            holder.nomeTime.setText(mPlaces[position % mPlaces.length]);
             holder.nomeTime.setText(listaTimes.get(position).getNomeTime());
-//            holder.nomeCartoleiro.setText(mPlaceDesc[position % mPlaceDesc.length]);
             holder.nomeCartoleiro.setText(listaTimes.get(position).getNomeCartoleiro());
+            holder.pontuacao.setText(formatoPontuacao.format(listaTimes.get(position).getPontuacao()));
+            holder.cartoletas.setText(formatoCartoletas.format(listaTimes.get(position).getVariacaoCartoletas()));
+
+            if (listaTimes.get(position).getSlug().equals("arkenstone-fc")){
+                holder.escudo.setImageResource(R.drawable.arkenstone_fc);
+            } else if (listaTimes.get(position).getSlug().equals("dj-sportclub")){
+                holder.escudo.setImageResource(R.drawable.dj_soccer_club);
+            } else if (listaTimes.get(position).getSlug().equals("sport-club-azanki")){
+                holder.escudo.setImageResource(R.drawable.sport_club_azanki);
+            } else if (listaTimes.get(position).getSlug().equals("caiaponiaduartefc")){
+                holder.escudo.setImageResource(R.drawable.caiaponiaduarte_fc);
+            } else if (listaTimes.get(position).getSlug().equals("auto-pecas-santos-ec")){
+                holder.escudo.setImageResource(R.drawable.auto_pecas_santos_ec);
+            }
         }
 
         @Override
