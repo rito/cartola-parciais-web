@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -40,14 +40,15 @@ public class ParciaisTimesAdapter extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
-
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        return recyclerView;
+//        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+//
+//        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//
+//        return recyclerView;
+        return null;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -107,9 +108,11 @@ public class ParciaisTimesAdapter extends Fragment {
                 listaTimes = realm.where(ParciaisTimes.class).findAllSorted("posicao");
 
             } catch (Exception e){
+
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } finally {
-                realm.close();
+                if (realm != null) realm.close();
             }
 
 

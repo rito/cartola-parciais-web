@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -27,25 +28,14 @@
             tools:src="@drawable/arkenstone_fc" />
 
         <TextView
-            android:id="@+id/posicao"
-            android:layout_width="12dp"
-            android:layout_height="@dimen/escudo_size"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_toEndOf="@+id/escudo"
-            android:layout_toRightOf="@+id/escudo"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="01"
-            android:textSize="10sp" />
-
-        <TextView
             android:id="@+id/nome_time"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="22dp"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/posicao"
-            android:layout_toRightOf="@+id/posicao"
+            android:layout_marginLeft="16dp"
+            android:layout_toEndOf="@+id/escudo"
+            android:layout_toLeftOf="@+id/favorito"
+            android:layout_toRightOf="@+id/escudo"
             android:gravity="bottom|left"
             android:paddingBottom="0dp"
             android:text="Arkenstone FC"
@@ -59,32 +49,21 @@
             android:layout_alignLeft="@+id/nome_time"
             android:layout_alignStart="@+id/nome_time"
             android:layout_below="@+id/nome_time"
-            android:layout_marginTop="-6dp"
+            android:layout_marginTop="-2dp"
             android:gravity="top|left"
             android:text="Geovanne Duarte" />
 
-        <TextView
-            android:id="@+id/pontuacao"
+        <com.like.LikeButton
+            android:id="@+id/favorito"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:gravity="bottom|right"
-            android:text="9999.00"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/cartoletas"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/pontuacao"
-            android:layout_marginTop="-6dp"
-            android:gravity="top|right"
-            android:text="C$ 999.99" />
+            app:anim_scale_factor="1.5"
+            app:icon_size="26dp"
+            app:icon_type="star"
+            app:liked="false"/>
 
     </RelativeLayout>
 

@@ -1,7 +1,6 @@
 package br.com.devgeek.cartolaparciais.tasks;
 
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -14,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import br.com.devgeek.cartolaparciais.activity.MainActivity;
 import br.com.devgeek.cartolaparciais.api.ApiAtletasPontuados;
 import br.com.devgeek.cartolaparciais.api.ApiTimeSlug;
 import br.com.devgeek.cartolaparciais.api.ApiTimeSlug_Atleta;
@@ -96,8 +94,6 @@ public class BuscarAtletasPontuados extends AsyncTask<String, String, String> {
 
             for (int i=0; i<listaTimes.size(); i++){ listaTimes.get(i).setPosicao(i+1); }
 
-            realm = Realm.getDefaultInstance();
-
             realm.beginTransaction();
             realm.insertOrUpdate(listaTimes);
             realm.commitTransaction();
@@ -126,7 +122,7 @@ public class BuscarAtletasPontuados extends AsyncTask<String, String, String> {
             result = e.getMessage();
 
         } finally {
-            realm.close();
+            if (realm != null) realm.close();
         }
 
         return result+"|"+params[0];
@@ -141,7 +137,7 @@ public class BuscarAtletasPontuados extends AsyncTask<String, String, String> {
 
             if (resultado[1].equals("MainActivity")){
 
-                MainActivity.createViewPager();
+//                MainActivity.createViewPager();
 
             } else {
                 Log.w(TAG, "Dados atualizados");
@@ -150,7 +146,7 @@ public class BuscarAtletasPontuados extends AsyncTask<String, String, String> {
         } else {
 
             if (resultado[1].equals("MainActivity")){
-                Snackbar.make(MainActivity.fab, resultado[0], Snackbar.LENGTH_LONG).setAction("Action", null).show();
+//                Snackbar.make(MainActivity.fab, resultado[0], Snackbar.LENGTH_LONG).setAction("Action", null).show();
             } else {
                 Log.e(TAG, resultado[0]);
             }
