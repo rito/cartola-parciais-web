@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by geovannefduarte
  */
-
 public class ApiTime {
 
     @Expose

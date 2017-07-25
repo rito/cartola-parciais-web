@@ -1,6 +1,7 @@
 package br.com.devgeek.cartolaparciais.model;
 
 import br.com.devgeek.cartolaparciais.api.ApiTime;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -29,6 +30,7 @@ public class TimeFavorito extends RealmObject {
     private Double pontuacao;
     private Double variacaoCartoletas;
 
+    private RealmList<AtletasPontuados> atletas;
 
     public TimeFavorito(){
     }
@@ -131,5 +133,11 @@ public class TimeFavorito extends RealmObject {
     }
     public void setVariacaoCartoletas(Double variacaoCartoletas){
         this.variacaoCartoletas = variacaoCartoletas;
+    }
+    public RealmList<AtletasPontuados> getAtletas(){
+        return atletas;
+    }
+    public void setAtletas(RealmList<AtletasPontuados> atletas){
+        this.atletas = atletas;
     }
 }

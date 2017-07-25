@@ -21,7 +21,7 @@ public class ApiAtletasPontuados implements Serializable {
     private static final long serialVersionUID = 1L;
     private static String URL = "https://api.cartolafc.globo.com/atletas/pontuados"; // http://programmers.stackexchange.com/a/203493
 
-    private Integer rodada;
+    private int rodada;
 
     private Map<String, ApiAtletasPontuados_PontuacaoAtleta> atletas;
 
@@ -39,10 +39,10 @@ public class ApiAtletasPontuados implements Serializable {
     }
 
 
-    public Integer getRodada(){
+    public int getRodada(){
         return rodada;
     }
-    public void setRodada(Integer rodada){
+    public void setRodada(int rodada){
         this.rodada = rodada;
     }
     public Map<String, ApiAtletasPontuados_PontuacaoAtleta> getAtletas(){

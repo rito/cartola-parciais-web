@@ -47,7 +47,7 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
         public ViewHolder(View itemView){
             super(itemView);
 
-            escudo = (ImageView) itemView.findViewById(R.id.escudo);
+            escudo = (ImageView) itemView.findViewById(R.id.atleta);
             nomeTime = (TextView) itemView.findViewById(R.id.nome_time);
             nomeCartoleiro = (TextView) itemView.findViewById(R.id.nome_cartoleiro);
 

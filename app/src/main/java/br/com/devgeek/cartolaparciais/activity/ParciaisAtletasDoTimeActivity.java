@@ -7,7 +7,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,16 +20,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.devgeek.cartolaparciais.R;
+import br.com.devgeek.cartolaparciais.adapter.ParciaisAtletasDoTimeFavoritoAdapter;
+import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
+import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
+import io.realm.Realm;
 
 public class ParciaisAtletasDoTimeActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
+    private static String TAG = "ParciaisAtletasDoTime";
     private ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = null;
 
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.5f;
@@ -45,6 +58,9 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity implements 
     private SimpleDraweeView avatar;
     private TextView nomeDoTimeTopBar;
     private TextView nomeDoCartoleiro;
+
+    private ParciaisAtletasDoTimeFavoritoAdapter adapter;
+    private List<AtletasPontuados> atletasPontuados = new ArrayList<AtletasPontuados>();
 
     /**
      * Find the Views in the layout<br />
@@ -117,6 +133,20 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity implements 
 //
 //            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_arrow_left_white));
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            buscarAtletas(dadosParciaisAtletasDoTime.getTimeId());
+
+            // Configurar recyclerView
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listaAtletasTimesFavoritos);
+            recyclerView.setHasFixedSize(true);
+
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager( this );
+            recyclerView.setLayoutManager(mLayoutManager);
+
+            DividerItemDecoration divider = new DividerItemDecoration( this, mLayoutManager.getOrientation() );
+            recyclerView.addItemDecoration( divider );
+
+            adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados );
+            recyclerView.setAdapter( adapter );
         }
     }
 
@@ -191,5 +221,34 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity implements 
         alphaAnimation.setDuration(duration);
         alphaAnimation.setFillAfter(true);
         v.startAnimation(alphaAnimation);
+    }
+
+    private void buscarAtletas(Long timeId){
+
+        Realm realm = null;
+
+        try {
+
+            realm = Realm.getDefaultInstance();
+
+            TimeFavorito timeFavorito = realm.copyFromRealm(realm.where(TimeFavorito.class).equalTo("timeId", timeId).findFirst());
+
+            if (timeFavorito != null){
+
+                atletasPontuados = timeFavorito.getAtletas();
+
+                Log.i(TAG, "buscarAtletas("+timeFavorito.getSlug()+")");
+                for (AtletasPontuados atleta : timeFavorito.getAtletas()){
+                    Log.i(TAG, "buscarAtletas("+timeFavorito.getSlug()+") -> "+atleta.getApelido()+" ["+atleta.getPontuacao()+"]");
+                }
+            }
+        } catch (Exception e){
+
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+
+        } finally {
+            if (realm != null) realm.close();
+        }
     }
 }

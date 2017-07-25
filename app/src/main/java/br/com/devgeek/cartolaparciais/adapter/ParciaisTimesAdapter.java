@@ -65,10 +65,10 @@ public class ParciaisTimesAdapter extends Fragment {
 
             super(inflater.inflate(R.layout.fragment_parciaistimes, parent, false));
 
-            escudo = (ImageView) itemView.findViewById(R.id.escudo);
+            escudo = (ImageView) itemView.findViewById(R.id.atleta);
             posicao = (TextView) itemView.findViewById(R.id.posicao);
             nomeTime = (TextView) itemView.findViewById(R.id.nome_time);
-            pontuacao = (TextView) itemView.findViewById(R.id.pontuacao);
+            pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
             cartoletas = (TextView) itemView.findViewById(R.id.cartoletas);
             nomeCartoleiro = (TextView) itemView.findViewById(R.id.nome_cartoleiro);
             background = (RelativeLayout) itemView.findViewById(R.id.parciais_background);

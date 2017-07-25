@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#2d2b2d</color>
     <color name="colorAccent">#ED1B40</color>
 
+    <color name="cartoletaPositiva">#049372</color>
+    <color name="cartoletaNegativa">#ED1B40</color>
+
     <color name="bgColorOdd">#ebf5f7</color>
     <color name="bgColorEven">#FFFFFF</color>
 

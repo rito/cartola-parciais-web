@@ -14,7 +14,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/bgColorOdd"
         android:paddingBottom="10dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
@@ -22,48 +21,57 @@
 
         <ImageView
             android:id="@+id/atleta"
-            android:layout_width="32dp"
+            android:layout_width="@dimen/escudo_size"
             android:layout_height="@dimen/escudo_size"
             android:scaleType="centerCrop"
-            tools:src="@drawable/arkenstone_fc" />
+            tools:src="@drawable/atleta" />
+
+        <ImageView
+            android:id="@+id/escudoAtleta"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@+id/atleta"
+            android:layout_toRightOf="@+id/atleta"
+            app:srcCompat="@drawable/sao_paulo" />
 
         <TextView
-            android:id="@+id/nome_time"
+            android:id="@+id/nome_atleta"
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
+            android:layout_height="24dp"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="16dp"
-            android:layout_toEndOf="@+id/atleta"
-            android:layout_toLeftOf="@+id/favorito"
-            android:layout_toRightOf="@+id/atleta"
+            android:layout_marginLeft="8dp"
+            android:layout_toEndOf="@+id/escudoAtleta"
+            android:layout_toRightOf="@+id/escudoAtleta"
             android:gravity="bottom|left"
-            android:paddingBottom="0dp"
-            android:text="Arkenstone FC"
+            android:text="Fred"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/nome_cartoleiro"
+            android:id="@+id/atleta_pontuacao"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_alignLeft="@+id/nome_time"
-            android:layout_alignStart="@+id/nome_time"
-            android:layout_below="@+id/nome_time"
-            android:layout_marginTop="-2dp"
-            android:gravity="top|left"
-            android:text="Geovanne Duarte" />
-
-        <com.like.LikeButton
-            android:id="@+id/favorito"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            app:anim_scale_factor="1.5"
-            app:icon_size="26dp"
-            app:icon_type="star"
-            app:liked="false"/>
+            android:gravity="bottom|right"
+            android:text="23.50"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/atleta_posicao"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_below="@+id/nome_atleta"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="-6dp"
+            android:layout_toEndOf="@+id/escudoAtleta"
+            android:layout_toRightOf="@+id/escudoAtleta"
+            android:text="Atacante" />
 
     </RelativeLayout>
 

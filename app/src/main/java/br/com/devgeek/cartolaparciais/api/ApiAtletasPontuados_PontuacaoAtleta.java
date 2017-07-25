@@ -49,7 +49,7 @@ public class ApiAtletasPontuados_PontuacaoAtleta implements Serializable {
     public void setPontuacao(double pontuacao) {
         this.pontuacao = pontuacao;
     }
-    public Map<String, Integer> getScout() {
+    public Map<String, Integer> getScout(){
         return scout;
     }
     public void setScout(Map<String, Integer> scout) {
