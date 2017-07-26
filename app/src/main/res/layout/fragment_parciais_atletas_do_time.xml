@@ -27,15 +27,15 @@
             tools:src="@drawable/atleta" />
 
         <ImageView
-            android:id="@+id/escudoAtleta"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:id="@+id/escudo_atleta"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="-8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             android:layout_toEndOf="@+id/atleta"
             android:layout_toRightOf="@+id/atleta"
-            app:srcCompat="@drawable/sao_paulo" />
+            app:srcCompat="@drawable/clube" />
 
         <TextView
             android:id="@+id/nome_atleta"
@@ -43,11 +43,11 @@
             android:layout_height="24dp"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="8dp"
-            android:layout_toEndOf="@+id/escudoAtleta"
-            android:layout_toRightOf="@+id/escudoAtleta"
+            android:layout_toEndOf="@+id/escudo_atleta"
+            android:layout_toRightOf="@+id/escudo_atleta"
             android:gravity="bottom|left"
-            android:text="Fred"
-            android:textSize="16sp"
+            android:text="Rogério Ceni"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <TextView
@@ -59,7 +59,7 @@
             android:layout_alignParentTop="true"
             android:gravity="bottom|right"
             android:text="23.50"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <TextView
@@ -68,10 +68,10 @@
             android:layout_height="20dp"
             android:layout_below="@+id/nome_atleta"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="-6dp"
-            android:layout_toEndOf="@+id/escudoAtleta"
-            android:layout_toRightOf="@+id/escudoAtleta"
-            android:text="Atacante" />
+            android:layout_marginTop="-4dp"
+            android:layout_toEndOf="@+id/escudo_atleta"
+            android:layout_toRightOf="@+id/escudo_atleta"
+            android:text="Goleiro" />
 
     </RelativeLayout>
 

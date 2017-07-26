@@ -14,6 +14,7 @@ public class ApiTimeSlug_Atleta implements Serializable {
     private String apelido;
     private String foto;
 
+    private Integer clube_id;
     private Integer atleta_id;
     private Integer posicao_id;
 
@@ -27,13 +28,14 @@ public class ApiTimeSlug_Atleta implements Serializable {
     }
 
 
-    public ApiTimeSlug_Atleta(String nome, String apelido, String foto,
+    public ApiTimeSlug_Atleta(String nome, String apelido, String foto, Integer clube_id,
                               Integer atleta_id, Integer posicao_id, double pontos_num,
                               double preco_num, double variacao_num){
         super();
         this.nome = nome;
         this.apelido = apelido;
         this.foto = foto;
+        this.clube_id = clube_id;
         this.atleta_id = atleta_id;
         this.posicao_id = posicao_id;
         this.pontos_num = pontos_num;
@@ -59,6 +61,12 @@ public class ApiTimeSlug_Atleta implements Serializable {
     }
     public void setFoto(String foto){
         this.foto = foto;
+    }
+    public Integer getClube_id(){
+        return clube_id;
+    }
+    public void setClube_id(Integer clube_id){
+        this.clube_id = clube_id;
     }
     public Integer getAtleta_id(){
         return atleta_id;

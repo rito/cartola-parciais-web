@@ -85,10 +85,15 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
                 pontuacao.setText(formatoPontuacao.format(timeFavorito.getPontuacao()));
             }
 
-            if (timeFavorito.getVariacaoCartoletas() == null){
+            if (timeFavorito.getVariacaoCartoletas() == null || timeFavorito.getVariacaoCartoletas() == 0){
                 cartoletas.setText("");
             } else {
                 cartoletas.setText("C$ "+formatoCartoletas.format(timeFavorito.getVariacaoCartoletas()));
+                if (timeFavorito.getVariacaoCartoletas() > 0){
+                    cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
+                } else {
+                    cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
+                }
             }
         }
     }
@@ -127,7 +132,11 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
 
-            ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(listaTimesFavoritos.get( position ).getTimeId(), listaTimesFavoritos.get( position ).getNomeDoTime(), listaTimesFavoritos.get( position ).getUrlEscudoPng(), listaTimesFavoritos.get( position ).getNomeDoCartoleiro());
+            String pontuacaoFormatada = "";
+            if (listaTimesFavoritos.get( position ).getPontuacao() != null){
+                pontuacaoFormatada = formatoPontuacao.format(listaTimesFavoritos.get( position ).getPontuacao());
+            }
+            ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(listaTimesFavoritos.get( position ).getTimeId(), listaTimesFavoritos.get( position ).getNomeDoTime(), listaTimesFavoritos.get( position ).getUrlEscudoPng(), listaTimesFavoritos.get( position ).getNomeDoCartoleiro(), pontuacaoFormatada);
 
             bundle.putParcelable("dadosParciaisAtletasDoTime", dadosParciaisAtletasDoTime);
             intent.putExtras(bundle);

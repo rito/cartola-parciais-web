@@ -13,17 +13,19 @@ public class ParciaisAtletasDoTimeParcelable implements Parcelable {
     private String nomeDoTime;
     private String urlEscudoPng;
     private String nomeDoCartoleiro;
+    private String parciaisDoTime;
 
 
     public ParciaisAtletasDoTimeParcelable(){
     }
 
 
-    public ParciaisAtletasDoTimeParcelable(Long timeId, String nomeDoTime, String urlEscudoPng, String nomeDoCartoleiro){
+    public ParciaisAtletasDoTimeParcelable(Long timeId, String nomeDoTime, String urlEscudoPng, String nomeDoCartoleiro, String parciaisDoTime){
         this.timeId = timeId;
         this.nomeDoTime = nomeDoTime;
         this.urlEscudoPng = urlEscudoPng;
         this.nomeDoCartoleiro = nomeDoCartoleiro;
+        this.parciaisDoTime = parciaisDoTime;
     }
 
 
@@ -32,6 +34,7 @@ public class ParciaisAtletasDoTimeParcelable implements Parcelable {
         this.nomeDoTime = in.readString();
         this.urlEscudoPng = in.readString();
         this.nomeDoCartoleiro = in.readString();
+        this.parciaisDoTime = in.readString();
     }
 
 
@@ -41,6 +44,7 @@ public class ParciaisAtletasDoTimeParcelable implements Parcelable {
         parcel.writeString(nomeDoTime);
         parcel.writeString(urlEscudoPng);
         parcel.writeString(nomeDoCartoleiro);
+        parcel.writeString(parciaisDoTime);
     }
 
 
@@ -85,5 +89,11 @@ public class ParciaisAtletasDoTimeParcelable implements Parcelable {
     }
     public void setNomeDoCartoleiro(String nomeDoCartoleiro){
         this.nomeDoCartoleiro = nomeDoCartoleiro;
+    }
+    public String getParciaisDoTime(){
+        return parciaisDoTime;
+    }
+    public void setParciaisDoTime(String parciaisDoTime){
+        this.parciaisDoTime = parciaisDoTime;
     }
 }

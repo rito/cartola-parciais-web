@@ -30,7 +30,4 @@ public interface ApiService {
 
     @GET("atletas/pontuados")
     Observable<ApiAtletasPontuados> buscarAtletasPontuados();
-
-//    @GET("atletas/pontuados")
-//    Call<ApiAtletasPontuados> buscarAtletasPontuados();
 }

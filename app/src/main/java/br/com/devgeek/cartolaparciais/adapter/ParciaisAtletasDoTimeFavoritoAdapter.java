@@ -1,6 +1,7 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import java.util.List;
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
+import br.com.devgeek.cartolaparciais.util.ClubesUtil;
+import br.com.devgeek.cartolaparciais.util.PosicoesJogadoresUtil;
 
 /**
  * Created by geovannefduarte
@@ -31,18 +34,20 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView fotoDoAtleta;
+        TextView pontuacao;
         TextView nomeDoAtleta;
         TextView atletaPosicao;
-        TextView pontuacao;
+        ImageView fotoDoAtleta;
+        ImageView escudoDoAtleta;
 
         public ViewHolder(View itemView){
             super(itemView);
 
             fotoDoAtleta = (ImageView) itemView.findViewById(R.id.atleta);
-            nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
+            escudoDoAtleta = (ImageView) itemView.findViewById(R.id.escudo_atleta);
             atletaPosicao = (TextView) itemView.findViewById(R.id.atleta_posicao);
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
+            nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
         }
 
         private void setData(AtletasPontuados atleta){
@@ -53,11 +58,21 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                     .into( fotoDoAtleta );
 
             nomeDoAtleta.setText(atleta.getApelido());
+            atletaPosicao.setText(PosicoesJogadoresUtil.getPosicaoNome(atleta.getPosicaoId()));
+            escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId(),"30x30"));
 
             if (atleta.getPontuacao() == null){
                 pontuacao.setText("");
             } else {
                 pontuacao.setText(formatoPontuacao.format(atleta.getPontuacao()));
+            }
+
+            if (atleta.getPontuacao() > 0){
+                pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
+            } else if (atleta.getPontuacao() < 0){
+                pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
+            } else {
+                pontuacao.setTextColor(ContextCompat.getColor(context, android.R.color.tab_indicator_text));
             }
         }
     }

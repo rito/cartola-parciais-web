@@ -55,7 +55,7 @@ public class AtletasPontuados extends RealmObject {
     }
 
 
-    public AtletasPontuados(int rodada, String atletaId, String apelido, Double pontuacao, /*List<Scouts> scouts,*/ String foto, Integer posicaoId, Integer clubeId){
+    public AtletasPontuados(String atletaId, String apelido, Double pontuacao, /*List<Scouts> scouts,*/ String foto, Integer posicaoId, Integer clubeId){
         this.atletaId = atletaId;
         this.apelido = apelido;
         this.pontuacao = pontuacao;

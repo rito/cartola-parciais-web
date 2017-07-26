@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,6 +38,8 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmMigration;
+import retrofit2.HttpException;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -199,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
     private void verificarMercadoStatus(){
 
         try {
-
             Observable<ApiMercadoStatus> verificarMercadoStatus = apiService.verificarMercadoStatus();
 
             verificarMercadoStatus.subscribeOn(Schedulers.newThread())
@@ -212,18 +214,15 @@ public class MainActivity extends AppCompatActivity {
 
                                               realm = Realm.getDefaultInstance();
 
-                                              realm.executeTransaction(new Realm.Transaction(){
-                                                  @Override
-                                                  public void execute(Realm realm){
+                                              realm.executeTransaction(realm -> {
 
-                                                      MercadoStatus mercadoStatus = new MercadoStatus(apiMercadoStatus);
-                                                      MercadoStatus mercadoStatusOnRealm = realm.where(MercadoStatus.class).findFirst();
+                                                  MercadoStatus mercadoStatus = new MercadoStatus(apiMercadoStatus);
+                                                  MercadoStatus mercadoStatusOnRealm = realm.where(MercadoStatus.class).findFirst();
 
-                                                      if (mercadoStatusOnRealm == null || !mercadoStatusOnRealm.equals(mercadoStatus)){
+                                                  if (mercadoStatusOnRealm == null || !mercadoStatusOnRealm.equals(mercadoStatus)){
 
-                                                          if (mercadoStatusOnRealm != null) mercadoStatusOnRealm.deleteFromRealm();
-                                                          realm.copyToRealm(mercadoStatus);
-                                                      }
+                                                      if (mercadoStatusOnRealm != null) mercadoStatusOnRealm.deleteFromRealm();
+                                                      realm.copyToRealm(mercadoStatus);
                                                   }
                                               });
 
@@ -238,6 +237,22 @@ public class MainActivity extends AppCompatActivity {
                                       }
 
                                       buscarAtletasPontuados();
+                                  }, error -> {
+                                      try {
+                                          if (error instanceof HttpException){ // We had non-200 http error
+                                              HttpException httpException = (HttpException) error;
+                                              Response response = httpException.response();
+                                              Log.i("ApiMercadoStatus", "HttpException -> " + error.getMessage() + " / " + error.getClass());
+                                          } else if (error instanceof IOException){ // A network error happened
+                                              Log.i("ApiMercadoStatus", "IOException -> " + error.getMessage() + " / " + error.getClass());
+                                          } else {
+                                              Log.i("ApiMercadoStatus", error.getMessage() + " / " + error.getClass());
+                                          }
+                                      } catch (Exception e){
+                                          Log.i("ApiMercadoStatus", e.getMessage());
+                                      }
+
+                                      buscarAtletasPontuados();
                                   });
         } catch (Exception e){
             Log.e("VerificarMercadoStatus", e.getMessage());
@@ -246,28 +261,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void buscarAtletasPontuados(){
-
-//        final Call<ApiAtletasPontuados> buscarAtletasPontuados = apiService.buscarAtletasPontuados();
-//        buscarAtletasPontuados.enqueue(new Callback<ApiAtletasPontuados>(){
-//            @Override
-//            public void onResponse(Call<ApiAtletasPontuados> call, Response<ApiAtletasPontuados> response){
-//
-//                ApiAtletasPontuados atletasPontuadosEncontrados = response.body();
-//
-//                if( atletasPontuadosEncontrados != null ){
-//                    atletasPontuadosEncontrados.getRodada();
-//                }
-//
-//                atualizarParciaisTimesFavoritos(atletasPontuadosEncontrados);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ApiAtletasPontuados> call, Throwable t){
-//                atualizarParciaisTimesFavoritos(null);
-//            }
-//        });
 
         try {
 
@@ -275,150 +269,29 @@ public class MainActivity extends AppCompatActivity {
 
             buscarAtletasPontuados.subscribeOn(Schedulers.newThread())
                                   .observeOn(AndroidSchedulers.mainThread())
-                                  .subscribe(apiAtletasPontuados -> {
-
-                                      if( apiAtletasPontuados != null ){
-
-//                                          try {
-//
-//                                              realm = Realm.getDefaultInstance();
-//
-//                                              realm.executeTransaction(new Realm.Transaction(){
-//                                                  @Override
-//                                                  public void execute(Realm realm){
-//
-//                                                      int rodada = apiAtletasPontuados.getRodada();
-//                                                      List<AtletasPontuados> atletasPontuadosNaRodada = null;
-//                                                      if (apiAtletasPontuados.getAtletas() != null && apiAtletasPontuados.getAtletas().size() > 0){
-//
-//                                                          atletasPontuadosNaRodada = new ArrayList<AtletasPontuados>();
-//                                                          for (Map.Entry<String, ApiAtletasPontuados_PontuacaoAtleta> entry : apiAtletasPontuados.getAtletas().entrySet()){
-//
-//                                                              if (entry.getKey() != null && !entry.getKey().toString().equals("") && entry.getValue() != null){
-//
-//                                                                  atletasPontuadosNaRodada.add(new AtletasPontuados(rodada, entry.getKey(), entry.getValue()));
-//                                                              }
-//                                                          }
-//                                                      }
-//
-////                                                      RealmResults<AtletasPontuados> atletasPontuadosNaRodada01 = realm.where(AtletasPontuados.class).equalTo("rodada", rodada).findAll();
-////                                                      if (atletasPontuadosNaRodada01 != null && atletasPontuadosNaRodada01.size() > 0){
-////                                                          atletasPontuadosNaRodada01.deleteAllFromRealm();
-////                                                      }
-//
-//
-//                                                      List<AtletasPontuados> listaDeAtletasPontuadosNaRodada = new ArrayList<AtletasPontuados>();
-//                                                      AtletasPontuadosPorRodada atletasPontuadosPorRodada  = realm.where(AtletasPontuadosPorRodada.class).findFirst();
-//                                                      if (atletasPontuadosPorRodada != null){
-//                                                          switch (rodada){
-//                                                              case  1: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada01(); break;
-//                                                              case  2: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada02(); break;
-//                                                              case  3: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada03(); break;
-//                                                              case  4: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada04(); break;
-//                                                              case  5: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada05(); break;
-//                                                              case  6: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada06(); break;
-//                                                              case  7: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada07(); break;
-//                                                              case  8: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada08(); break;
-//                                                              case  9: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada09(); break;
-//                                                              case 10: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada10(); break;
-//                                                              case 11: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada11(); break;
-//                                                              case 12: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada12(); break;
-//                                                              case 13: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada13(); break;
-//                                                              case 14: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada14(); break;
-//                                                              case 15: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada15(); break;
-//                                                              case 16: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada16(); break;
-//                                                              case 17: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada17(); break;
-//                                                              case 18: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada18(); break;
-//                                                              case 19: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada19(); break;
-//                                                              case 20: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada20(); break;
-//                                                              case 21: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada21(); break;
-//                                                              case 22: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada22(); break;
-//                                                              case 23: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada23(); break;
-//                                                              case 24: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada24(); break;
-//                                                              case 25: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada25(); break;
-//                                                              case 26: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada26(); break;
-//                                                              case 27: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada27(); break;
-//                                                              case 28: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada28(); break;
-//                                                              case 29: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada29(); break;
-//                                                              case 30: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada30(); break;
-//                                                              case 31: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada31(); break;
-//                                                              case 32: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada32(); break;
-//                                                              case 33: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada33(); break;
-//                                                              case 34: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada34(); break;
-//                                                              case 35: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada35(); break;
-//                                                              case 36: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada36(); break;
-//                                                              case 37: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada37(); break;
-//                                                              case 38: listaDeAtletasPontuadosNaRodada = atletasPontuadosPorRodada.getRodada38(); break;
-//                                                              default: break;
-//                                                          }
-//                                                      }
-//
-//                                                      for (AtletasPontuados atletasPontuados : listaDeAtletasPontuadosNaRodada){
-//                                                          atletasPontuados.deleteFromRealm();
-//                                                      }
-//
-//                                                      if (atletasPontuadosNaRodada != null && atletasPontuadosNaRodada.size() > 0){
-//                                                          switch (rodada){
-//                                                              case  1: atletasPontuadosPorRodada.setRodada01(atletasPontuadosNaRodada); break;
-//                                                              case  2: atletasPontuadosPorRodada.setRodada02(atletasPontuadosNaRodada); break;
-//                                                              case  3: atletasPontuadosPorRodada.setRodada03(atletasPontuadosNaRodada); break;
-//                                                              case  4: atletasPontuadosPorRodada.setRodada04(atletasPontuadosNaRodada); break;
-//                                                              case  5: atletasPontuadosPorRodada.setRodada05(atletasPontuadosNaRodada); break;
-//                                                              case  6: atletasPontuadosPorRodada.setRodada06(atletasPontuadosNaRodada); break;
-//                                                              case  7: atletasPontuadosPorRodada.setRodada07(atletasPontuadosNaRodada); break;
-//                                                              case  8: atletasPontuadosPorRodada.setRodada08(atletasPontuadosNaRodada); break;
-//                                                              case  9: atletasPontuadosPorRodada.setRodada09(atletasPontuadosNaRodada); break;
-//                                                              case 10: atletasPontuadosPorRodada.setRodada10(atletasPontuadosNaRodada); break;
-//                                                              case 11: atletasPontuadosPorRodada.setRodada11(atletasPontuadosNaRodada); break;
-//                                                              case 12: atletasPontuadosPorRodada.setRodada12(atletasPontuadosNaRodada); break;
-//                                                              case 13: atletasPontuadosPorRodada.setRodada13(atletasPontuadosNaRodada); break;
-//                                                              case 14: atletasPontuadosPorRodada.setRodada14(atletasPontuadosNaRodada); break;
-//                                                              case 15: atletasPontuadosPorRodada.setRodada15(atletasPontuadosNaRodada); break;
-//                                                              case 16: atletasPontuadosPorRodada.setRodada16(atletasPontuadosNaRodada); break;
-//                                                              case 17: atletasPontuadosPorRodada.setRodada17(atletasPontuadosNaRodada); break;
-//                                                              case 18: atletasPontuadosPorRodada.setRodada18(atletasPontuadosNaRodada); break;
-//                                                              case 19: atletasPontuadosPorRodada.setRodada19(atletasPontuadosNaRodada); break;
-//                                                              case 20: atletasPontuadosPorRodada.setRodada20(atletasPontuadosNaRodada); break;
-//                                                              case 21: atletasPontuadosPorRodada.setRodada21(atletasPontuadosNaRodada); break;
-//                                                              case 22: atletasPontuadosPorRodada.setRodada22(atletasPontuadosNaRodada); break;
-//                                                              case 23: atletasPontuadosPorRodada.setRodada23(atletasPontuadosNaRodada); break;
-//                                                              case 24: atletasPontuadosPorRodada.setRodada24(atletasPontuadosNaRodada); break;
-//                                                              case 25: atletasPontuadosPorRodada.setRodada25(atletasPontuadosNaRodada); break;
-//                                                              case 26: atletasPontuadosPorRodada.setRodada26(atletasPontuadosNaRodada); break;
-//                                                              case 27: atletasPontuadosPorRodada.setRodada27(atletasPontuadosNaRodada); break;
-//                                                              case 28: atletasPontuadosPorRodada.setRodada28(atletasPontuadosNaRodada); break;
-//                                                              case 29: atletasPontuadosPorRodada.setRodada29(atletasPontuadosNaRodada); break;
-//                                                              case 30: atletasPontuadosPorRodada.setRodada30(atletasPontuadosNaRodada); break;
-//                                                              case 31: atletasPontuadosPorRodada.setRodada31(atletasPontuadosNaRodada); break;
-//                                                              case 32: atletasPontuadosPorRodada.setRodada32(atletasPontuadosNaRodada); break;
-//                                                              case 33: atletasPontuadosPorRodada.setRodada33(atletasPontuadosNaRodada); break;
-//                                                              case 34: atletasPontuadosPorRodada.setRodada34(atletasPontuadosNaRodada); break;
-//                                                              case 35: atletasPontuadosPorRodada.setRodada35(atletasPontuadosNaRodada); break;
-//                                                              case 36: atletasPontuadosPorRodada.setRodada36(atletasPontuadosNaRodada); break;
-//                                                              case 37: atletasPontuadosPorRodada.setRodada37(atletasPontuadosNaRodada); break;
-//                                                              case 38: atletasPontuadosPorRodada.setRodada38(atletasPontuadosNaRodada); break;
-//                                                              default: break;
-//                                                          }
-//                                                      }
-//
-//                                                      realm.copyToRealmOrUpdate(atletasPontuadosPorRodada);
-//                                                  }
-//                                              });
-//
-//                                          } catch (Exception e){
-//
-//                                              Log.e("BuscarAtletasPontuados", e.getMessage());
-//                                              e.printStackTrace();
-//
-//                                          } finally {
-//                                              if (realm != null) realm.close();
-//                                          }
-                                      }
-
-
-                                      atualizarParciaisTimesFavoritos(apiAtletasPontuados);
-
-                                  });
+                                  .onErrorReturn((Throwable throwable) -> {
+                                      Log.i("ApiAtletasPontuados", throwable.getMessage());
+                                      return null; //empty object of the datatype
+                                  })
+                                  .subscribe(
+                                          apiAtletasPontuados -> atualizarParciaisTimesFavoritos(apiAtletasPontuados),
+                                          error -> {
+                                              try {
+                                                  if (error instanceof NullPointerException){
+                                                      atualizarParciaisTimesFavoritos(null);
+                                                  } else if (error instanceof HttpException){ // We had non-200 http error
+                                                      HttpException httpException = (HttpException) error;
+                                                      Response response = httpException.response();
+                                                      Log.i("ApiAtletasPontuados", "HttpException -> " + error.getMessage() + " / " + error.getClass());
+                                                  } else if (error instanceof IOException){ // A network error happened
+                                                      Log.i("ApiAtletasPontuados", "IOException -> " + error.getMessage() + " / " + error.getClass());
+                                                  } else {
+                                                      Log.i("ApiAtletasPontuados", error.getMessage() + " / " + error.getClass());
+                                                  }
+                                              } catch (Exception e) {
+                                                  Log.i("ApiAtletasPontuados", e.getMessage());
+                                              }
+                                          });
         } catch (Exception e){
             Log.e("BuscarAtletasPontuados", e.getMessage());
             e.printStackTrace();
@@ -438,10 +311,6 @@ public class MainActivity extends AppCompatActivity {
 
                 for (TimeFavorito timeFavorito : timesFavoritos){
 
-//                    if (timeFavorito.getAtletas() == null || timeFavorito.getAtletas().size() == 0){
-//
-//
-//                    }
                     Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
 
                     buscarTimeId.subscribeOn(Schedulers.newThread())
@@ -463,12 +332,12 @@ public class MainActivity extends AppCompatActivity {
 
                                             pontuacao += atleta.getPontos_num();
                                             variacaoCartoletas += atleta.getVariacao_num();
+                                            timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), atleta.getPontos_num(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                         }
                                     }
 
                                     timeFavorito.setPontuacao(pontuacao);
                                     timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
-//                                      Log.i(TAG, timeFavorito.getSlug()+" -> pontuacao ["+pontuacao+"] variacaoCartoletas ["+variacaoCartoletas+"]");
 
                                     if (timesFavoritos.get(timesFavoritos.size()-1).equals(timeFavorito)){
 
