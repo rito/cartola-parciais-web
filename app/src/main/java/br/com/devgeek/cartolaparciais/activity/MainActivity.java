@@ -240,8 +240,6 @@ public class MainActivity extends AppCompatActivity {
                                   }, error -> {
                                       try {
                                           if (error instanceof HttpException){ // We had non-200 http error
-                                              HttpException httpException = (HttpException) error;
-                                              Response response = httpException.response();
                                               Log.i("ApiMercadoStatus", "HttpException -> " + error.getMessage() + " / " + error.getClass());
                                           } else if (error instanceof IOException){ // A network error happened
                                               Log.i("ApiMercadoStatus", "IOException -> " + error.getMessage() + " / " + error.getClass());
@@ -318,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                                 .subscribe(timeSlug -> {
 
                                     double pontuacao = 0.0, variacaoCartoletas = 0.0;
-                                    timeFavorito.setAtletas(new RealmList<AtletasPontuados>());
+                                    timeFavorito.setAtletas(new RealmList<>());
 
                                     for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
 
@@ -326,8 +324,10 @@ public class MainActivity extends AppCompatActivity {
 
                                             if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
                                                 pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
-                                                timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
                                             }
+
+                                            timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+
                                         } else {
 
                                             pontuacao += atleta.getPontos_num();
@@ -344,16 +344,19 @@ public class MainActivity extends AppCompatActivity {
                                         try {
 
                                             realm = Realm.getDefaultInstance();
-                                            Collections.sort(timesFavoritos, new Comparator<TimeFavorito>(){ // ordem inversa
-                                                public int compare(TimeFavorito t1, TimeFavorito t2){
+                                            Collections.sort(timesFavoritos, (TimeFavorito t1, TimeFavorito t2) -> { // ordem inversa
 
-                                                    if (t1.getPontuacao() != null && t2.getPontuacao() != null){
-                                                        if (t1.getPontuacao() < t2.getPontuacao()) return 1;
-                                                        if (t1.getPontuacao() > t2.getPontuacao()) return -1;
-                                                    }
-
-                                                    return 0;
+                                                if (t1.getPontuacao() != null && t2.getPontuacao() != null){
+                                                    if (t1.getPontuacao() < t2.getPontuacao()) return 1;
+                                                    if (t1.getPontuacao() > t2.getPontuacao()) return -1;
                                                 }
+
+                                                if (t1.getVariacaoCartoletas() != null && t2.getVariacaoCartoletas() != null){
+                                                    if (t1.getVariacaoCartoletas() < t2.getVariacaoCartoletas()) return 1;
+                                                    if (t1.getVariacaoCartoletas() > t2.getVariacaoCartoletas()) return -1;
+                                                }
+
+                                                return t1.getNomeDoTime().compareTo(t2.getNomeDoTime());
                                             });
 
                                             for (int i=0; i<timesFavoritos.size(); i++){ timesFavoritos.get(i).setPosicao(i+1); }

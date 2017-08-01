@@ -144,11 +144,9 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
                     if (t1.getPosicaoId() != null && t2.getPosicaoId() != null){
                         if (t1.getPosicaoId() < t2.getPosicaoId()) return -1;
                         if (t1.getPosicaoId() > t2.getPosicaoId()) return 1;
-
-                        return t1.getApelido().compareTo(t2.getApelido());
                     }
 
-                    return 0;
+                    return t1.getApelido().compareTo(t2.getApelido());
                 });
             }
         } catch (Exception e){
