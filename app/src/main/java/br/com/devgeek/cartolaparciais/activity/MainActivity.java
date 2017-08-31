@@ -206,6 +206,10 @@ public class MainActivity extends AppCompatActivity {
 
             verificarMercadoStatus.subscribeOn(Schedulers.newThread())
                                   .observeOn(AndroidSchedulers.mainThread())
+                                  .onErrorReturn((Throwable throwable) -> {
+                                        Log.e("ApiMercadoStatus", throwable.getMessage());
+                                        return null; //empty object of the datatype
+                                  })
                                   .subscribe(apiMercadoStatus -> {
 
                                       if( apiMercadoStatus != null ){
@@ -240,14 +244,14 @@ public class MainActivity extends AppCompatActivity {
                                   }, error -> {
                                       try {
                                           if (error instanceof HttpException){ // We had non-200 http error
-                                              Log.i("ApiMercadoStatus", "HttpException -> " + error.getMessage() + " / " + error.getClass());
+                                              Log.e("ApiMercadoStatus", "HttpException -> " + error.getMessage() + " / " + error.getClass());
                                           } else if (error instanceof IOException){ // A network error happened
-                                              Log.i("ApiMercadoStatus", "IOException -> " + error.getMessage() + " / " + error.getClass());
+                                              Log.e("ApiMercadoStatus", "IOException -> " + error.getMessage() + " / " + error.getClass());
                                           } else {
-                                              Log.i("ApiMercadoStatus", error.getMessage() + " / " + error.getClass());
+                                              Log.e("ApiMercadoStatus", error.getMessage() + " / " + error.getClass());
                                           }
                                       } catch (Exception e){
-                                          Log.i("ApiMercadoStatus", e.getMessage());
+                                          Log.e("ApiMercadoStatus", e.getMessage());
                                       }
 
                                       buscarAtletasPontuados();
@@ -268,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             buscarAtletasPontuados.subscribeOn(Schedulers.newThread())
                                   .observeOn(AndroidSchedulers.mainThread())
                                   .onErrorReturn((Throwable throwable) -> {
-                                      Log.i("ApiAtletasPontuados", throwable.getMessage());
+                                      Log.e("ApiAtletasPontuados", throwable.getMessage());
                                       return null; //empty object of the datatype
                                   })
                                   .subscribe(
@@ -280,14 +284,14 @@ public class MainActivity extends AppCompatActivity {
                                                   } else if (error instanceof HttpException){ // We had non-200 http error
                                                       HttpException httpException = (HttpException) error;
                                                       Response response = httpException.response();
-                                                      Log.i("ApiAtletasPontuados", "HttpException -> " + error.getMessage() + " / " + error.getClass());
+                                                      Log.e("ApiAtletasPontuados", "HttpException -> " + error.getMessage() + " / " + error.getClass());
                                                   } else if (error instanceof IOException){ // A network error happened
-                                                      Log.i("ApiAtletasPontuados", "IOException -> " + error.getMessage() + " / " + error.getClass());
+                                                      Log.e("ApiAtletasPontuados", "IOException -> " + error.getMessage() + " / " + error.getClass());
                                                   } else {
-                                                      Log.i("ApiAtletasPontuados", error.getMessage() + " / " + error.getClass());
+                                                      Log.e("ApiAtletasPontuados", error.getMessage() + " / " + error.getClass());
                                                   }
                                               } catch (Exception e) {
-                                                  Log.i("ApiAtletasPontuados", e.getMessage());
+                                                  Log.e("ApiAtletasPontuados", e.getMessage());
                                               }
                                           });
         } catch (Exception e){
@@ -313,77 +317,100 @@ public class MainActivity extends AppCompatActivity {
 
                     buscarTimeId.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(timeSlug -> {
+                                .onErrorReturn((Throwable throwable) -> {
+                                    Log.e("ApiTimeSlug", throwable.getMessage());
+                                    return null; //empty object of the datatype
+                                })
+                                .subscribe(
+                                        timeSlug -> {
 
-                                    double pontuacao = 0.0, variacaoCartoletas = 0.0;
-                                    timeFavorito.setAtletas(new RealmList<>());
+                                            double pontuacao = 0.0, variacaoCartoletas = 0.0;
+                                            timeFavorito.setAtletas(new RealmList<>());
 
-                                    for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
+                                            for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
 
-                                        if (atletasPontuadosEncontrados != null){
+                                                if (atletasPontuadosEncontrados != null){
 
-                                            if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
-                                                pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
+                                                    if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
+
+                                                        pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
+                                                        timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+
+                                                    } else {
+
+                                                        timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), 0.0, atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                    }
+
+                                                } else {
+
+                                                    pontuacao += atleta.getPontos_num();
+                                                    variacaoCartoletas += atleta.getVariacao_num();
+                                                    timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), atleta.getPontos_num(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                }
                                             }
 
-                                            timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+                                            timeFavorito.setPontuacao(pontuacao);
+                                            timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
 
-                                        } else {
+                                            if (timesFavoritos.get(timesFavoritos.size()-1).equals(timeFavorito)){
 
-                                            pontuacao += atleta.getPontos_num();
-                                            variacaoCartoletas += atleta.getVariacao_num();
-                                            timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), atleta.getPontos_num(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                try {
+
+                                                    realm = Realm.getDefaultInstance();
+                                                    Collections.sort(timesFavoritos, (TimeFavorito t1, TimeFavorito t2) -> { // ordem inversa
+
+                                                        if (t1.getPontuacao() != null && t2.getPontuacao() != null){
+                                                            if (t1.getPontuacao() < t2.getPontuacao()) return 1;
+                                                            if (t1.getPontuacao() > t2.getPontuacao()) return -1;
+                                                        }
+
+                                                        if (t1.getVariacaoCartoletas() != null && t2.getVariacaoCartoletas() != null){
+                                                            if (t1.getVariacaoCartoletas() < t2.getVariacaoCartoletas()) return 1;
+                                                            if (t1.getVariacaoCartoletas() > t2.getVariacaoCartoletas()) return -1;
+                                                        }
+
+                                                        return t1.getNomeDoTime().compareTo(t2.getNomeDoTime());
+                                                    });
+
+                                                    for (int i=0; i<timesFavoritos.size(); i++){ timesFavoritos.get(i).setPosicao(i+1); }
+
+                                                    realm.executeTransaction(new Realm.Transaction(){
+                                                        @Override
+                                                        public void execute(Realm realm){
+
+                                                            realm.copyToRealmOrUpdate(timesFavoritos);
+                                                        }
+                                                    });
+
+                                                    listaTimesFavoritos.clear();
+                                                    listaTimesFavoritos.addAll( timesFavoritos );
+                                                    adapter.notifyDataSetChanged();
+                                                } catch (Exception e){
+
+                                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    e.printStackTrace();
+                                                    refreshListaTimesFavoritos.setRefreshing(false);
+
+                                                } finally {
+                                                    if (realm != null) realm.close();
+                                                    refreshListaTimesFavoritos.setRefreshing(false);
+                                                }
+                                            }
+                                        },
+                                        error -> {
+                                            try {
+                                                if (error instanceof HttpException){ // We had non-200 http error
+                                                    Log.e("ApiTimeSlug", "HttpException -> " + error.getMessage() + " / " + error.getClass());
+                                                } else if (error instanceof IOException){ // A network error happened
+                                                    Log.e("ApiTimeSlug", "IOException -> " + error.getMessage() + " / " + error.getClass());
+                                                } else {
+                                                    Log.e("ApiTimeSlug", error.getMessage() + " / " + error.getClass());
+                                                }
+                                            } catch (Exception e) {
+                                                Log.e("ApiTimeSlug", e.getMessage());
+                                            }
                                         }
-                                    }
-
-                                    timeFavorito.setPontuacao(pontuacao);
-                                    timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
-
-                                    if (timesFavoritos.get(timesFavoritos.size()-1).equals(timeFavorito)){
-
-                                        try {
-
-                                            realm = Realm.getDefaultInstance();
-                                            Collections.sort(timesFavoritos, (TimeFavorito t1, TimeFavorito t2) -> { // ordem inversa
-
-                                                if (t1.getPontuacao() != null && t2.getPontuacao() != null){
-                                                    if (t1.getPontuacao() < t2.getPontuacao()) return 1;
-                                                    if (t1.getPontuacao() > t2.getPontuacao()) return -1;
-                                                }
-
-                                                if (t1.getVariacaoCartoletas() != null && t2.getVariacaoCartoletas() != null){
-                                                    if (t1.getVariacaoCartoletas() < t2.getVariacaoCartoletas()) return 1;
-                                                    if (t1.getVariacaoCartoletas() > t2.getVariacaoCartoletas()) return -1;
-                                                }
-
-                                                return t1.getNomeDoTime().compareTo(t2.getNomeDoTime());
-                                            });
-
-                                            for (int i=0; i<timesFavoritos.size(); i++){ timesFavoritos.get(i).setPosicao(i+1); }
-
-                                            realm.executeTransaction(new Realm.Transaction(){
-                                                @Override
-                                                public void execute(Realm realm){
-
-                                                    realm.copyToRealmOrUpdate(timesFavoritos);
-                                                }
-                                            });
-
-                                            listaTimesFavoritos.clear();
-                                            listaTimesFavoritos.addAll( timesFavoritos );
-                                            adapter.notifyDataSetChanged();
-                                        } catch (Exception e){
-
-                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            e.printStackTrace();
-                                            refreshListaTimesFavoritos.setRefreshing(false);
-
-                                        } finally {
-                                            if (realm != null) realm.close();
-                                            refreshListaTimesFavoritos.setRefreshing(false);
-                                        }
-                                    }
-                                });
+                                );
                 }
             }
         } catch (Exception e){
