@@ -1,10 +1,7 @@
 package br.com.devgeek.cartolaparciais.activity;
 
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,10 +52,10 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
             toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
 
             // Add the following code to make the up arrow white:
-            final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.abc_ic_ab_back_material);
-            upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.abc_ic_ab_back_material);
+//            upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
+//            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 

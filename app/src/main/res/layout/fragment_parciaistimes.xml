@@ -75,11 +75,12 @@
             android:gravity="top|left"
             android:maxLines="1"
             android:paddingLeft="4dp"
-            android:paddingTop="2dp"
+            android:paddingTop="4dp"
             android:text="Geovanne Fernandes Duarte Fernandes Duarte" />
 
         <TextView
             android:id="@+id/atleta_pontuacao"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
             android:layout_width="72dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
@@ -87,11 +88,11 @@
             android:layout_alignParentTop="true"
             android:gravity="bottom|right"
             android:text="9999.00"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/cartoletas"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/nome_cartoleiro"
@@ -100,7 +101,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignStart="@+id/atleta_pontuacao"
             android:layout_below="@+id/atleta_pontuacao"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_marginTop="-7dp"
             android:gravity="top|right"
             android:paddingTop="2dp"
