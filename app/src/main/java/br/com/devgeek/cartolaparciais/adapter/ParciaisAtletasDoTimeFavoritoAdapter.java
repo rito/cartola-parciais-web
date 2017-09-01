@@ -53,8 +53,8 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
         private void setData(AtletasPontuados atleta){
 
             Picasso.with( context )
-                    .load( atleta.getFoto().replace("_FORMATO.png","_140x140.png") )
-                    .error( R.drawable.arkenstone_fc )
+                    .load( atleta.getFoto().replace("_FORMATO","_140x140") )
+                    .error( R.drawable.atleta )
                     .into( fotoDoAtleta );
 
             nomeDoAtleta.setText(atleta.getApelido());
