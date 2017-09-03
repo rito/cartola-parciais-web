@@ -2,10 +2,10 @@ package br.com.devgeek.cartolaparciais.api.service;
 
 import java.util.List;
 
-import br.com.devgeek.cartolaparciais.api.ApiAtletasPontuados;
-import br.com.devgeek.cartolaparciais.api.ApiMercadoStatus;
-import br.com.devgeek.cartolaparciais.api.ApiTime;
-import br.com.devgeek.cartolaparciais.api.ApiTimeSlug;
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
+import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
+import br.com.devgeek.cartolaparciais.api.model.ApiTime;
+import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

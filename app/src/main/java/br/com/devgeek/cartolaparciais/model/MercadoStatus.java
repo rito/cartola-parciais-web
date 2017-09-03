@@ -1,6 +1,6 @@
 package br.com.devgeek.cartolaparciais.model;
 
-import br.com.devgeek.cartolaparciais.api.ApiMercadoStatus;
+import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
 import io.realm.RealmObject;
 
 /**

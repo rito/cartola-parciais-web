@@ -1,11 +1,11 @@
-package br.com.devgeek.cartolaparciais.api;
+package br.com.devgeek.cartolaparciais.api.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by geovannefduarte
  */
-
 public class ApiTimeSlug_Atleta implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +22,8 @@ public class ApiTimeSlug_Atleta implements Serializable {
     private double preco_num;
     private double variacao_num;
 
+    private HashMap<String, Integer> scout;
+
 
     public ApiTimeSlug_Atleta(){
         super();
@@ -30,7 +32,7 @@ public class ApiTimeSlug_Atleta implements Serializable {
 
     public ApiTimeSlug_Atleta(String nome, String apelido, String foto, Integer clube_id,
                               Integer atleta_id, Integer posicao_id, double pontos_num,
-                              double preco_num, double variacao_num){
+                              double preco_num, double variacao_num, HashMap<String, Integer> scout){
         super();
         this.nome = nome;
         this.apelido = apelido;
@@ -41,6 +43,7 @@ public class ApiTimeSlug_Atleta implements Serializable {
         this.pontos_num = pontos_num;
         this.preco_num = preco_num;
         this.variacao_num = variacao_num;
+        this.scout = scout;
     }
 
 
@@ -97,5 +100,11 @@ public class ApiTimeSlug_Atleta implements Serializable {
     }
     public void setVariacao_num(double variacao_num){
         this.variacao_num = variacao_num;
+    }
+    public HashMap<String, Integer> getScout(){
+        return scout;
+    }
+    public void setScout(HashMap<String, Integer> scout){
+        this.scout = scout;
     }
 }

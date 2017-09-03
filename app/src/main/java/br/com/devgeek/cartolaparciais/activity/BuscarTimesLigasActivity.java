@@ -17,7 +17,7 @@ import java.util.Locale;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.BuscarTimesAdapter;
-import br.com.devgeek.cartolaparciais.api.ApiTime;
+import br.com.devgeek.cartolaparciais.api.model.ApiTime;
 import br.com.devgeek.cartolaparciais.api.service.ApiService;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

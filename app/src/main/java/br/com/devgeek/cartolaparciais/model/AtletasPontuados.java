@@ -1,6 +1,12 @@
 package br.com.devgeek.cartolaparciais.model;
 
-import br.com.devgeek.cartolaparciais.api.ApiAtletasPontuados_PontuacaoAtleta;
+import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtleta;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -14,7 +20,7 @@ public class AtletasPontuados extends RealmObject {
 
     private String apelido;
     private Double pontuacao;
-//    private List<Scouts> scouts;
+    private RealmList<Scouts> scouts;
 
     private String foto;
     private Integer posicaoId;
@@ -33,36 +39,55 @@ public class AtletasPontuados extends RealmObject {
         this.posicaoId = pontuacaoAtleta.getPosicao_id();
         this.clubeId = pontuacaoAtleta.getClube_id();
 
-//        if (pontuacaoAtleta.getScout() != null && pontuacaoAtleta.getScout().size() > 0){
-//
-//            this.scouts = new RealmList<Scouts>();
-//            for (Map.Entry<String, Integer> entry : pontuacaoAtleta.getScout().entrySet()){
-//
-//                if (entry.getKey() != null && !entry.getKey().toString().equals("") && entry.getValue() != null){
-//
-//                    try {
-//
-//                        int quantidade = Integer.valueOf(entry.getValue().toString());
-//                        this.scouts.add(new Scouts(entry.getKey().toString(), quantidade));
-//
-//                    } catch (Exception e){
-//                        Log.e("AtletasPontuados", e.getMessage());
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
+        this.scouts = new RealmList<>();
+        if (pontuacaoAtleta.getScout() != null && pontuacaoAtleta.getScout().size() > 0){
+
+            for (Map.Entry<String, Integer> entry : pontuacaoAtleta.getScout().entrySet()){
+
+                if (entry.getKey() != null && !entry.getKey().toString().equals("") && entry.getValue() != null){
+
+                    try {
+
+                        int quantidade = Integer.valueOf(entry.getValue().toString());
+                        this.scouts.add(new Scouts(entry.getKey().toString(), quantidade));
+
+                    } catch (Exception e){
+                        Log.e("AtletasPontuados", e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 
-    public AtletasPontuados(String atletaId, String apelido, Double pontuacao, /*List<Scouts> scouts,*/ String foto, Integer posicaoId, Integer clubeId){
+    public AtletasPontuados(String atletaId, String apelido, Double pontuacao, HashMap<String, Integer> scouts, String foto, Integer posicaoId, Integer clubeId){
         this.atletaId = atletaId;
         this.apelido = apelido;
         this.pontuacao = pontuacao;
-//        this.scouts = scouts;
         this.foto = foto;
         this.posicaoId = posicaoId;
         this.clubeId = clubeId;
+
+        this.scouts = new RealmList<>();
+        if (scouts != null && scouts.size() > 0){
+
+            for (Map.Entry<String, Integer> entry : scouts.entrySet()){
+
+                if (entry.getKey() != null && !entry.getKey().toString().equals("") && entry.getValue() != null){
+
+                    try {
+
+                        int quantidade = Integer.valueOf(entry.getValue().toString());
+                        this.scouts.add(new Scouts(entry.getKey().toString(), quantidade));
+
+                    } catch (Exception e){
+                        Log.e("AtletasPontuados", e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 
@@ -84,12 +109,12 @@ public class AtletasPontuados extends RealmObject {
     public void setPontuacao(Double pontuacao){
         this.pontuacao = pontuacao;
     }
-//    public List<Scouts> getScouts(){
-//        return scouts;
-//    }
-//    public void setScouts(List<Scouts> scouts){
-//        this.scouts = scouts;
-//    }
+    public RealmList<Scouts> getScouts(){
+        return scouts;
+    }
+    public void setScouts(RealmList<Scouts> scouts){
+        this.scouts = scouts;
+    }
     public String getFoto(){
         return foto;
     }

@@ -67,6 +67,8 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
             TextView pontuacao = (TextView) findViewById(R.id.atleta_pontuacao);
             TextView nomeCartoleiro = (TextView) findViewById(R.id.nome_cartoleiro);
 
+
+
             nomeTime.setText(dadosParciaisAtletasDoTime.getNomeDoTime());
             pontuacao.setText(dadosParciaisAtletasDoTime.getParciaisDoTime());
             nomeCartoleiro.setText(dadosParciaisAtletasDoTime.getNomeDoCartoleiro());

@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-import br.com.devgeek.cartolaparciais.api.ApiReturn;
+import br.com.devgeek.cartolaparciais.api.model.ApiReturn;
 
 /**
  * Created by geovannefduarte

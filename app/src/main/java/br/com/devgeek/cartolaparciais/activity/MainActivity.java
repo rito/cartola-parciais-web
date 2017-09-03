@@ -18,15 +18,14 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.ParciaisTimesFavoritosAdapter;
-import br.com.devgeek.cartolaparciais.api.ApiAtletasPontuados;
-import br.com.devgeek.cartolaparciais.api.ApiMercadoStatus;
-import br.com.devgeek.cartolaparciais.api.ApiTimeSlug;
-import br.com.devgeek.cartolaparciais.api.ApiTimeSlug_Atleta;
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
+import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
+import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
+import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug_Atleta;
 import br.com.devgeek.cartolaparciais.api.service.ApiService;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
@@ -173,16 +172,14 @@ public class MainActivity extends AppCompatActivity {
 
             if (timesFavoritos != null && timesFavoritos.size() > 0){
 
-                Collections.sort(timesFavoritos, new Comparator<TimeFavorito>(){ // ordem inversa
-                    public int compare(TimeFavorito t1, TimeFavorito t2){
+                Collections.sort(timesFavoritos, (t1, t2) -> {
 
-                        if (t1.getPontuacao() != null && t2.getPontuacao() != null){
-                            if (t1.getPontuacao() < t2.getPontuacao()) return 1;
-                            if (t1.getPontuacao() > t2.getPontuacao()) return -1;
-                        }
-
-                        return 0;
+                    if (t1.getPontuacao() != null && t2.getPontuacao() != null){
+                        if (t1.getPontuacao() < t2.getPontuacao()) return 1;
+                        if (t1.getPontuacao() > t2.getPontuacao()) return -1;
                     }
+
+                    return 0;
                 });
 
                 listaTimesFavoritos.clear();
@@ -210,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
     private void verificarMercadoStatus(){
 
         try {
+
             Observable<ApiMercadoStatus> verificarMercadoStatus = apiService.verificarMercadoStatus();
 
             verificarMercadoStatus.subscribeOn(Schedulers.newThread())
@@ -346,14 +344,14 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else {
 
-                                                        timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), 0.0, atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                        timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                                     }
 
                                                 } else {
 
                                                     pontuacao += atleta.getPontos_num();
                                                     variacaoCartoletas += atleta.getVariacao_num();
-                                                    timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), atleta.getPontos_num(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                    timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), atleta.getApelido(), atleta.getPontos_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                                 }
                                             }
 

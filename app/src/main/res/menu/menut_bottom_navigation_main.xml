@@ -5,25 +5,25 @@
     <item
         android:id="@+id/tab_parciais"
         android:enabled="true"
-        android:icon="@drawable/ic_tab_parciais"
+        android:icon="@drawable/parciais"
         android:title="Parciais"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/tab_ligas"
         android:enabled="true"
-        android:icon="@drawable/ic_tab_parciais"
+        android:icon="@drawable/ligas"
         android:title="Ligas"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/tab_jogadores"
         android:enabled="true"
-        android:icon="@drawable/ic_tab_parciais"
+        android:icon="@drawable/jogadores"
         android:title="Jogadores"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/tab_jogos"
         android:enabled="true"
-        android:icon="@drawable/ic_tab_parciais"
+        android:icon="@drawable/jogos"
         android:title="Jogos"
         app:showAsAction="ifRoom" />
 </menu>

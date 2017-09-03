@@ -1,4 +1,4 @@
-package br.com.devgeek.cartolaparciais.api;
+package br.com.devgeek.cartolaparciais.api.model;
 
 import java.io.Serializable;
 

@@ -5,8 +5,7 @@ import io.realm.RealmObject;
 /**
  * Created by geovannefduarte
  */
-
-public class Scouts {
+public class Scouts extends RealmObject {
 
     private String scout;
     private int quantidade;

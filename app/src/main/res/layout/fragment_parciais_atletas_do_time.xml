@@ -15,7 +15,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:paddingLeft="4dp"
-        android:paddingRight="16dp">
+        android:paddingRight="8dp">
 
         <ImageView
             android:id="@+id/atleta"
@@ -64,10 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/escudo_atleta"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@+id/nome_atleta"
-            android:layout_marginRight="72dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="-7dp"
             android:ellipsize="end"
@@ -75,7 +72,7 @@
             android:maxLines="1"
             android:paddingLeft="4dp"
             android:paddingTop="4dp"
-            android:text="Goleiro"
+            android:text="Zagueiro"
             android:layout_alignBottom="@+id/atleta" />
 
         <TextView
@@ -89,6 +86,23 @@
             android:gravity="bottom|right"
             android:text="9999.00"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/atleta_scouts"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/atleta"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
+            android:layout_toEndOf="@+id/atleta_posicao"
+            android:layout_toRightOf="@+id/atleta_posicao"
+            android:ellipsize="start"
+            android:gravity="bottom|right"
+            android:maxLines="1"
+            android:text="4PE, 1RB, 2FC, 1SG" />
 
     </RelativeLayout>
 

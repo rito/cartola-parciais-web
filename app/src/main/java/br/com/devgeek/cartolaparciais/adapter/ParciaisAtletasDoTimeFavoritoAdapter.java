@@ -3,6 +3,7 @@ package br.com.devgeek.cartolaparciais.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
+import br.com.devgeek.cartolaparciais.model.Scouts;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.util.ClubesUtil;
 import br.com.devgeek.cartolaparciais.util.PosicoesJogadoresUtil;
@@ -39,6 +41,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
         TextView atletaPosicao;
         ImageView fotoDoAtleta;
         ImageView escudoDoAtleta;
+        TextView scouts;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -48,6 +51,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
             atletaPosicao = (TextView) itemView.findViewById(R.id.atleta_posicao);
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
             nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
+            scouts = (TextView) itemView.findViewById(R.id.atleta_scouts);
         }
 
         private void setData(AtletasPontuados atleta){
@@ -59,20 +63,38 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
             nomeDoAtleta.setText(atleta.getApelido());
             atletaPosicao.setText(PosicoesJogadoresUtil.getPosicaoNome(atleta.getPosicaoId()));
-            escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId(),"30x30"));
+            escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId(),"60x60"));
 
-            if (atleta.getPontuacao() == null){
-                pontuacao.setText("");
-            } else {
+            pontuacao.setText("-.--");
+            pontuacao.setTextColor(ContextCompat.getColor(context, android.R.color.tab_indicator_text));
+
+            if (atleta.getPontuacao() != null){
+
                 pontuacao.setText(formatoPontuacao.format(atleta.getPontuacao()));
+
+                if (atleta.getPontuacao() > 0){
+                    pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
+                } else if (atleta.getPontuacao() < 0){
+                    pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
+                }
             }
 
-            if (atleta.getPontuacao() > 0){
-                pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
-            } else if (atleta.getPontuacao() < 0){
-                pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
+            if (atleta.getScouts().size() > 0){
+
+                String htmlScouts = "";
+                for (Scouts scout : atleta.getScouts()){
+
+                    if (!htmlScouts.equals("")) htmlScouts += " ";
+                    htmlScouts += scout.getScout();
+
+                    if (scout.getQuantidade() > 1){
+                        htmlScouts += "<sup>"+scout.getQuantidade()+"</sup>";
+                    }
+                }
+
+                scouts.setText(Html.fromHtml(htmlScouts));
             } else {
-                pontuacao.setTextColor(ContextCompat.getColor(context, android.R.color.tab_indicator_text));
+                scouts.setText("");
             }
         }
     }

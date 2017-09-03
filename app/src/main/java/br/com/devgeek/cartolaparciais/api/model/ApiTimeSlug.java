@@ -1,4 +1,4 @@
-package br.com.devgeek.cartolaparciais.api;
+package br.com.devgeek.cartolaparciais.api.model;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

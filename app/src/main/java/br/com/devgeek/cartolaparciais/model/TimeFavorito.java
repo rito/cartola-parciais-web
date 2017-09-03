@@ -1,6 +1,6 @@
 package br.com.devgeek.cartolaparciais.model;
 
-import br.com.devgeek.cartolaparciais.api.ApiTime;
+import br.com.devgeek.cartolaparciais.api.model.ApiTime;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

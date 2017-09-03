@@ -1,4 +1,4 @@
-package br.com.devgeek.cartolaparciais.api;
+package br.com.devgeek.cartolaparciais.api.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

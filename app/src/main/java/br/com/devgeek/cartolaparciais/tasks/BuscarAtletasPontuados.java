@@ -13,9 +13,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import br.com.devgeek.cartolaparciais.api.ApiAtletasPontuados;
-import br.com.devgeek.cartolaparciais.api.ApiTimeSlug;
-import br.com.devgeek.cartolaparciais.api.ApiTimeSlug_Atleta;
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
+import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
+import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug_Atleta;
 import br.com.devgeek.cartolaparciais.model.ParciaisTimes;
 import io.realm.Realm;
 import okhttp3.OkHttpClient;

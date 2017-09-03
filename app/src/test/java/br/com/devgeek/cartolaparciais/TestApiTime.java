@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import br.com.devgeek.cartolaparciais.api.ApiTime;
+import br.com.devgeek.cartolaparciais.api.model.ApiTime;
 import br.com.devgeek.cartolaparciais.api.service.ApiService;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
