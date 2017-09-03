@@ -15,4 +15,9 @@
     <color name="medium_grey">#757575</color>
     <color name="button_grey">#757575</color>
 
+
+    <color name="bottomNavigation_background">#fafafa</color>
+    <color name="bottomNavigation_itemActive">#2d2b2d</color>
+    <color name="bottomNavigation_item">#6c6c6c</color>
+
 </resources>

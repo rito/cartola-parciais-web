@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/posicao"
-            android:layout_width="16dp"
+            android:layout_width="12dp"
             android:layout_height="48dp"
             android:layout_alignTop="@+id/atleta"
             android:layout_toEndOf="@+id/atleta"

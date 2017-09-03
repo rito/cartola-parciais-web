@@ -3,6 +3,7 @@ package br.com.devgeek.cartolaparciais.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -27,6 +28,7 @@ import br.com.devgeek.cartolaparciais.api.ApiMercadoStatus;
 import br.com.devgeek.cartolaparciais.api.ApiTimeSlug;
 import br.com.devgeek.cartolaparciais.api.ApiTimeSlug_Atleta;
 import br.com.devgeek.cartolaparciais.api.service.ApiService;
+import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
 import br.com.devgeek.cartolaparciais.model.MercadoStatus;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
@@ -121,6 +123,12 @@ public class MainActivity extends AppCompatActivity {
                                .build();
 
         apiService = retrofit.create(ApiService.class);
+
+
+
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
     }
 
     @Override
