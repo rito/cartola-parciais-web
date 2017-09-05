@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -25,7 +26,7 @@ import br.com.devgeek.cartolaparciais.util.PosicoesJogadoresUtil;
 /**
  * Created by geovannefduarte
  */
-
+//https://android-arsenal.com/details/1/2464
 public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder> {
 
     private static String TAG = "ParciaisAtletasDoTimeFavoritoAdapter";
@@ -43,6 +44,8 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
         ImageView escudoDoAtleta;
         TextView scouts;
 
+        LinearLayout scoutsContent;
+
         public ViewHolder(View itemView){
             super(itemView);
 
@@ -52,6 +55,8 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
             nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
             scouts = (TextView) itemView.findViewById(R.id.atleta_scouts);
+
+            scoutsContent = (LinearLayout) itemView.findViewById(R.id.atleta_scouts_content);
         }
 
         private void setData(AtletasPontuados atleta){
@@ -84,15 +89,32 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                 String htmlScouts = "";
                 for (Scouts scout : atleta.getScouts()){
 
+
+//                    Chip chip = new Chip(context);
+//                    chip.setChipText(scout.getScout());
+//                    chip.setPadding(0,0,0,0);
+//
+//                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
+//                    layoutParams.leftMargin = (int) (60 * context.getResources().getDisplayMetrics().density);
+//                    layoutParams.rightMargin = (int) (60 * context.getResources().getDisplayMetrics().density);
+//                    layoutParams.topMargin = 0;
+//                    layoutParams.bottomMargin = 0;
+//
+//                    scoutsContent.addView(chip, layoutParams);
+
                     if (!htmlScouts.equals("")) htmlScouts += " ";
-                    htmlScouts += scout.getScout();
+                    htmlScouts += "<span style=\"border:1px solid\">"+scout.getScout();
 
                     if (scout.getQuantidade() > 1){
-                        htmlScouts += "<sup>"+scout.getQuantidade()+"</sup>";
+                        htmlScouts += "<small><sup>"+scout.getQuantidade()+"</sup></small>";
                     }
+
+                    htmlScouts += "</span>";
                 }
 
                 scouts.setText(Html.fromHtml(htmlScouts));
+                // https://android-arsenal.com/details/1/5396
+                // https://android-arsenal.com/details/1/5584
             } else {
                 scouts.setText("");
             }

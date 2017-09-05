@@ -55,7 +55,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
             toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
 
             // Add the following code to make the up arrow white:
-            final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.abc_ic_ab_back_material);
+            final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_back_material);
             upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
