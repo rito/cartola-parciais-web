@@ -21,21 +21,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refreshListaTimesFavoritos"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/containter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/appBarLayout_toolbar"
-        android:layout_above="@+id/bottom_navigation">
+        android:layout_above="@+id/bottom_navigation" >
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/listaTimesFavoritos"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.view.ViewPager>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

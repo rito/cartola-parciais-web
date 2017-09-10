@@ -108,7 +108,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
     @Override
     public ParciaisTimesFavoritosAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
 
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_parciaistimes, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.adapter_parciaistimes, parent, false);
 
         return new ParciaisTimesFavoritosAdapter.ViewHolder(view);
     }
