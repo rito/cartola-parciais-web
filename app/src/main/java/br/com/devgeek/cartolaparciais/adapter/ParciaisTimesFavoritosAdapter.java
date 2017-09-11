@@ -18,13 +18,13 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.activity.ParciaisAtletasDoTimeActivity;
-import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
+import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
+import io.realm.RealmResults;
 
 /**
  * Created by geovannefduarte
@@ -37,7 +37,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
     private Context context;
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
-    private List<TimeFavorito> listaTimesFavoritos;
+    private RealmResults<TimeFavorito> listaTimesFavoritos;
     private final Map<String, Integer> backgroundColor = new HashMap<String, Integer>();
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -98,11 +98,15 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
         }
     }
 
-    public ParciaisTimesFavoritosAdapter(Context context, List<TimeFavorito> listaTimesFavoritos){
+    public ParciaisTimesFavoritosAdapter(Context context, RealmResults<TimeFavorito> listaTimesFavoritos){
         this.context = context;
-        this.listaTimesFavoritos = listaTimesFavoritos;
+        update(listaTimesFavoritos);
         this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
         this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
+    }
+
+    public void update(RealmResults<TimeFavorito> listaTimesFavoritos){
+        this.listaTimesFavoritos = listaTimesFavoritos;
     }
 
     @Override

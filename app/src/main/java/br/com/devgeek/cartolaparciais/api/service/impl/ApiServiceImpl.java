@@ -1,9 +1,9 @@
 package br.com.devgeek.cartolaparciais.api.service.impl;
 
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
@@ -108,7 +108,7 @@ public class ApiServiceImpl {
         }
     }
 
-    public void buscarAtletasPontuados(){
+    public void buscarAtletasPontuados(FragmentActivity fragmentActivity){
 
         try {
 
@@ -121,11 +121,11 @@ public class ApiServiceImpl {
                         return null; //empty object of the datatype
                     })
                     .subscribe(
-                            apiAtletasPontuados -> atualizarParciaisTimesFavoritos(apiAtletasPontuados),
+                            apiAtletasPontuados -> atualizarParciaisTimesFavoritos(apiAtletasPontuados, fragmentActivity),
                             error -> {
                                 try {
                                     if (error instanceof NullPointerException){
-                                        atualizarParciaisTimesFavoritos(null);
+                                        atualizarParciaisTimesFavoritos(null, fragmentActivity);
                                     } else if (error instanceof HttpException){ // We had non-200 http error
                                         HttpException httpException = (HttpException) error;
                                         Response response = httpException.response();
@@ -142,11 +142,11 @@ public class ApiServiceImpl {
         } catch (Exception e){
             Log.e("BuscarAtletasPontuados", e.getMessage());
             e.printStackTrace();
-            atualizarParciaisTimesFavoritos(null);
+            atualizarParciaisTimesFavoritos(null, fragmentActivity);
         }
     }
 
-    private void atualizarParciaisTimesFavoritos(ApiAtletasPontuados atletasPontuadosEncontrados){
+    private void atualizarParciaisTimesFavoritos(ApiAtletasPontuados atletasPontuadosEncontrados, FragmentActivity fragmentActivity){
 
         Realm realm = null;
         List<TimeFavorito> timesFavoritos = null;
@@ -167,12 +167,12 @@ public class ApiServiceImpl {
 
             for (TimeFavorito timeFavorito : timesFavoritos){
 
-                atualizarParciaisDeCadaTimeFavorito(atletasPontuadosEncontrados, timeFavorito);
+                atualizarParciaisDeCadaTimeFavorito(atletasPontuadosEncontrados, timeFavorito, fragmentActivity);
             }
         }
     }
 
-    private void atualizarParciaisDeCadaTimeFavorito(ApiAtletasPontuados atletasPontuadosEncontrados, TimeFavorito timeFavorito){
+    private void atualizarParciaisDeCadaTimeFavorito(ApiAtletasPontuados atletasPontuadosEncontrados, TimeFavorito timeFavorito, FragmentActivity fragmentActivity){
 
         Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
 
@@ -229,7 +229,6 @@ public class ApiServiceImpl {
                                 if (realm != null) realm.close();
                             }
 
-                            //atualizarPosicoesDosTimesFavoritos();
                         },
                         error -> {
                             try {
@@ -245,46 +244,5 @@ public class ApiServiceImpl {
                             }
                         }
                 );
-    }
-
-    private void atualizarPosicoesDosTimesFavoritos(){
-
-        Realm realm = null;
-        List<TimeFavorito> timesFavoritos = null;
-
-        try {
-
-            realm = Realm.getDefaultInstance();
-            timesFavoritos = realm.copyFromRealm(realm.where(TimeFavorito.class).findAll());
-
-            if (timesFavoritos != null && timesFavoritos.size() > 0){
-
-                Collections.sort(timesFavoritos, (TimeFavorito t1, TimeFavorito t2) -> { // ordem inversa
-
-                    if (t1.getPontuacao() != null && t2.getPontuacao() != null){
-                        if (t1.getPontuacao() < t2.getPontuacao()) return 1;
-                        if (t1.getPontuacao() > t2.getPontuacao()) return -1;
-                    }
-
-                    if (t1.getVariacaoCartoletas() != null && t2.getVariacaoCartoletas() != null){
-                        if (t1.getVariacaoCartoletas() < t2.getVariacaoCartoletas()) return 1;
-                        if (t1.getVariacaoCartoletas() > t2.getVariacaoCartoletas()) return -1;
-                    }
-
-                    return t1.getNomeDoTime().compareTo(t2.getNomeDoTime());
-                });
-
-                for (int i=0; i<timesFavoritos.size(); i++){ timesFavoritos.get(i).setPosicao(i+1); }
-
-                List<TimeFavorito> finalTimesFavoritos = timesFavoritos;
-                realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(finalTimesFavoritos));
-            }
-        } catch (Exception e){
-
-            e.printStackTrace();
-
-        } finally {
-            if (realm != null) realm.close();
-        }
     }
 }

@@ -12,15 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.ParciaisTimesFavoritosAdapter;
 import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by geovannefduarte on 09/09/17.
@@ -29,10 +28,19 @@ public class ParciaisTimesFragment extends Fragment {
 
     private static final String TAG = "ParciaisTimesFragment";
 
+    private Realm realm;
+    private RealmResults<TimeFavorito> listaTimesFavoritos;
+    private RealmChangeListener listaTimesFavoritosListener = new RealmChangeListener(){
+        @Override
+        public void onChange(Object o){
+            adapter.update(listaTimesFavoritos);
+            adapter.notifyDataSetChanged();
+        }
+    };
+
     private ApiServiceImpl apiService;
     private ParciaisTimesFavoritosAdapter adapter;
     private SwipeRefreshLayout refreshListaTimesFavoritos;
-    private List<TimeFavorito> listaTimesFavoritos = new ArrayList<>();
 
     @Nullable
     @Override
@@ -40,6 +48,17 @@ public class ParciaisTimesFragment extends Fragment {
 
         apiService = new ApiServiceImpl();
         View view  = inflater.inflate(R.layout.fragment_parciaistimes, container, false);
+
+
+        realm = Realm.getDefaultInstance();
+        Sort[] sortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING };
+        String[] sortColumns = { "pontuacao", "variacaoCartoletas", "nomeDoTime" };
+        listaTimesFavoritos = realm.where(TimeFavorito.class).findAllSortedAsync(sortColumns, sortOrder);
+
+
+        refreshListaTimesFavoritos = (SwipeRefreshLayout) view.findViewById(R.id.refreshListaTimesFavoritos);
+        refreshListaTimesFavoritos.setOnRefreshListener(() -> atualizarDados());
+
 
         // Configurar recyclerView
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listaTimesFavoritos);
@@ -55,55 +74,27 @@ public class ParciaisTimesFragment extends Fragment {
         recyclerView.setAdapter( adapter );
 
 
-        Realm realm = null;
-        // Buscar times favoritos
-        try {
-
-            realm = Realm.getDefaultInstance();
-
-            List<TimeFavorito> timesFavoritos = realm.copyFromRealm(realm.where(TimeFavorito.class).findAll());
-
-            if (timesFavoritos != null && timesFavoritos.size() > 0){
-
-                Collections.sort(timesFavoritos, (TimeFavorito t1, TimeFavorito t2) -> { // ordem inversa
-
-                    if (t1.getPontuacao() != null && t2.getPontuacao() != null){
-                        if (t1.getPontuacao() < t2.getPontuacao()) return 1;
-                        if (t1.getPontuacao() > t2.getPontuacao()) return -1;
-                    }
-
-                    if (t1.getVariacaoCartoletas() != null && t2.getVariacaoCartoletas() != null){
-                        if (t1.getVariacaoCartoletas() < t2.getVariacaoCartoletas()) return 1;
-                        if (t1.getVariacaoCartoletas() > t2.getVariacaoCartoletas()) return -1;
-                    }
-
-                    return t1.getNomeDoTime().compareTo(t2.getNomeDoTime());
-                });
-
-                listaTimesFavoritos.clear();
-                listaTimesFavoritos.addAll( timesFavoritos );
-                adapter.notifyDataSetChanged();
-            }
-        } catch (Exception e){
-
-            e.printStackTrace();
-
-        } finally {
-            if (realm != null) realm.close();
-            atualizarDados();
-        }
-
-
-        refreshListaTimesFavoritos = (SwipeRefreshLayout) view.findViewById(R.id.refreshListaTimesFavoritos);
-        refreshListaTimesFavoritos.setOnRefreshListener(() -> atualizarDados());
-
         return view;
     }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        atualizarDados();
+        listaTimesFavoritos.addChangeListener(listaTimesFavoritosListener);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        listaTimesFavoritos.removeChangeListener(listaTimesFavoritosListener);
+    }
+
 
     private void atualizarDados(){
 
         apiService.verificarMercadoStatus();
-        apiService.buscarAtletasPontuados();
+        apiService.buscarAtletasPontuados(getActivity());
         new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
     }
 }

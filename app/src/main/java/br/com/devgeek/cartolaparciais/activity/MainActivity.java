@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
+import br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
 
     private MainActivityViewPagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
+    private NonSwipeableViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         // Configurar toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Parciais");
+        setToolbarTitle("Parciais");
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
 
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // setup the ViewPager
-        mViewPager = (ViewPager) findViewById(R.id.containter);
+        mViewPager = (NonSwipeableViewPager) findViewById(R.id.containter);
         setupViewPager(mViewPager);
 
 
@@ -72,19 +73,27 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()){
                 case R.id.tab_parciais:
                     setViewPager(0);
+                    setToolbarTitle("Parciais");
                     break;
                 case R.id.tab_ligas:
                     setViewPager(1);
+                    setToolbarTitle("Ligas");
                     break;
                 case R.id.tab_jogadores:
                     setViewPager(2);
+                    setToolbarTitle("Jogadores");
                     break;
                 case R.id.tab_jogos:
                     setViewPager(3);
+                    setToolbarTitle("Jogos");
                     break;
             }
             return true;
         });
+    }
+
+    private void setToolbarTitle(String title){
+        getSupportActionBar().setTitle(title);
     }
 
     private void setupViewPager(ViewPager viewPager){
@@ -97,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setViewPager(int fragmentNumber){
-        mViewPager.setCurrentItem(fragmentNumber);
+        mViewPager.setCurrentItem(fragmentNumber, false);
     }
 
     @Override
