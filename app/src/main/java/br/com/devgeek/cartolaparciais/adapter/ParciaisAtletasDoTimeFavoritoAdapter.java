@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,19 +117,23 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
                 for (Scouts scout : atleta.getScouts()){
 
-                    String htmlScouts = "";
-                    if (!htmlScouts.equals("")) htmlScouts += " ";
-                    htmlScouts += "<span>"+scout.getScout();
+                    SpannableStringBuilder scoutText;
 
                     if (scout.getQuantidade() > 1){
-                        htmlScouts += "<sup>"+scout.getQuantidade()+"</sup>";
-                    }
+                        scoutText = new SpannableStringBuilder(scout.getScout()+scout.getQuantidade());
 
-                    htmlScouts += "</span>";
+                        scoutText.setSpan(new SuperscriptSpan(), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        scoutText.setSpan(new RelativeSizeSpan(0.6f), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    } else {
+                        scoutText = new SpannableStringBuilder(scout.getScout());
+                    }
 
 
                     Button tag = new Button(context);
-                    tag.setText(Html.fromHtml(htmlScouts));
+                    tag.setText(scoutText);
+                    //tag.setStateListAnimator(null);
+                    tag.setTransformationMethod(null);
                     tag.setMinWidth(0);  tag.setMinimumWidth(0);
                     tag.setMinHeight(0); tag.setMinimumHeight(0);
                     tag.setBackgroundResource(R.drawable.scoutbutton);

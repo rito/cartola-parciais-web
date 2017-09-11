@@ -66,6 +66,7 @@
             android:layout_alignBottom="@+id/atleta"
             android:layout_below="@+id/nome_atleta"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="-7dp"
             android:layout_toRightOf="@+id/escudo_atleta"
             android:ellipsize="end"
