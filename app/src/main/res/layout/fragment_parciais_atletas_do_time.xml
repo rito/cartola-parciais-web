@@ -46,8 +46,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="72dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="72dp"
             android:layout_toRightOf="@+id/escudo_atleta"
             android:ellipsize="end"
             android:gravity="bottom|left"
@@ -63,17 +63,17 @@
             style="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/escudo_atleta"
+            android:layout_alignBottom="@+id/atleta"
             android:layout_below="@+id/nome_atleta"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="-7dp"
+            android:layout_toRightOf="@+id/escudo_atleta"
             android:ellipsize="end"
             android:gravity="top|left"
             android:maxLines="1"
             android:paddingLeft="4dp"
             android:paddingTop="4dp"
-            android:text="Zagueiro"
-            android:layout_alignBottom="@+id/atleta" />
+            android:text="Zagueiro" />
 
         <TextView
             android:id="@+id/atleta_pontuacao"
@@ -87,23 +87,6 @@
             android:text="9999.00"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/atleta_scouts"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/atleta"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="30dp"
-            android:layout_toEndOf="@+id/atleta_posicao"
-            android:layout_toRightOf="@+id/atleta_posicao"
-            android:ellipsize="start"
-            android:gravity="bottom|right"
-            android:maxLines="1"
-            android:text="4PE, 1RB, 2FC, 1SG" />
-
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
             android:layout_width="wrap_content"
@@ -114,15 +97,20 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="30dp"
             android:layout_toEndOf="@+id/atleta_posicao"
-            android:layout_toRightOf="@+id/atleta_posicao">
+            android:layout_toRightOf="@+id/atleta_posicao"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:id="@+id/atleta_scouts_content"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:gravity="right|center_vertical"
                 android:orientation="horizontal">
-
             </LinearLayout>
+
         </HorizontalScrollView>
 
     </RelativeLayout>

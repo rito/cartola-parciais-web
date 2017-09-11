@@ -1,12 +1,15 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,6 +38,30 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
     private DecimalFormat formatoPontuacao;
     private List<AtletasPontuados> atletasPontuados;
 
+    public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados){
+        this.context = context;
+        this.atletasPontuados = atletasPontuados;
+        this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
+    }
+
+    @Override
+    public ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+
+        View view = LayoutInflater.from(context).inflate(R.layout.fragment_parciais_atletas_do_time, parent, false);
+
+        return new ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder holder, int position){
+        holder.setData( atletasPontuados.get( position ) );
+    }
+
+    @Override
+    public int getItemCount(){
+        return atletasPontuados.size();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView pontuacao;
@@ -42,8 +69,6 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
         TextView atletaPosicao;
         ImageView fotoDoAtleta;
         ImageView escudoDoAtleta;
-        TextView scouts;
-
         LinearLayout scoutsContent;
 
         public ViewHolder(View itemView){
@@ -54,8 +79,6 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
             atletaPosicao = (TextView) itemView.findViewById(R.id.atleta_posicao);
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
             nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
-            scouts = (TextView) itemView.findViewById(R.id.atleta_scouts);
-
             scoutsContent = (LinearLayout) itemView.findViewById(R.id.atleta_scouts_content);
         }
 
@@ -86,62 +109,36 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
             if (atleta.getScouts().size() > 0){
 
-                String htmlScouts = "";
+                Resources resources = context.getResources();
+                int leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, resources.getDisplayMetrics());
+
                 for (Scouts scout : atleta.getScouts()){
 
-
-//                    Chip chip = new Chip(context);
-//                    chip.setChipText(scout.getScout());
-//                    chip.setPadding(0,0,0,0);
-//
-//                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-//                    layoutParams.leftMargin = (int) (60 * context.getResources().getDisplayMetrics().density);
-//                    layoutParams.rightMargin = (int) (60 * context.getResources().getDisplayMetrics().density);
-//                    layoutParams.topMargin = 0;
-//                    layoutParams.bottomMargin = 0;
-//
-//                    scoutsContent.addView(chip, layoutParams);
-
+                    String htmlScouts = "";
                     if (!htmlScouts.equals("")) htmlScouts += " ";
-                    htmlScouts += "<span style=\"border:1px solid\">"+scout.getScout();
+                    htmlScouts += "<span>"+scout.getScout();
 
                     if (scout.getQuantidade() > 1){
-                        htmlScouts += "<small><sup>"+scout.getQuantidade()+"</sup></small>";
+                        htmlScouts += "<sup>"+scout.getQuantidade()+"</sup>";
                     }
 
                     htmlScouts += "</span>";
-                }
 
-                scouts.setText(Html.fromHtml(htmlScouts));
-                // https://android-arsenal.com/details/1/5396
-                // https://android-arsenal.com/details/1/5584
-            } else {
-                scouts.setText("");
+
+                    Button tag = new Button(context);
+                    tag.setText(Html.fromHtml(htmlScouts));
+                    tag.setMinWidth(0);  tag.setMinimumWidth(0);
+                    tag.setMinHeight(0); tag.setMinimumHeight(0);
+                    tag.setBackgroundResource(R.drawable.scoutbutton);
+                    tag.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                    ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) tag.getLayoutParams();
+                    p.setMargins(leftMargin, 0, 0, 0);
+                    tag.requestLayout();
+
+                    scoutsContent.addView(tag);
+                }
             }
         }
-    }
-
-    public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados){
-        this.context = context;
-        this.atletasPontuados = atletasPontuados;
-        this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
-    }
-
-    @Override
-    public ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_parciais_atletas_do_time, parent, false);
-
-        return new ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder holder, int position){
-        holder.setData( atletasPontuados.get( position ) );
-    }
-
-    @Override
-    public int getItemCount(){
-        return atletasPontuados.size();
     }
 }
