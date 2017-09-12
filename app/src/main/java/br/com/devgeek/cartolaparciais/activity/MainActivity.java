@@ -12,12 +12,10 @@ import android.view.MenuItem;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
+import br.com.devgeek.cartolaparciais.fragment.ParciaisJogadoresFragment;
+import br.com.devgeek.cartolaparciais.fragment.ParciaisTimesFragment;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager;
-import io.realm.DynamicRealm;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
 
 import static br.com.devgeek.cartolaparciais.R.id.action_adicionartimes;
 
@@ -34,30 +32,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        Realm.init(this);
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(2)               // Must be bumped when the schema changes
-                .migration(realmMigration())    // Migration to run instead of throwing an exception
-                .deleteRealmIfMigrationNeeded()
-                .initialData(new Realm.Transaction(){
-                    @Override
-                    public void execute(Realm realm){
-//                        realm.createObject(TimeFavorito.class);
-                    }})
-                .build();
-//        Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
-        Realm.setDefaultConfiguration(realmConfig);
-
 
         // Configurar toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setToolbarTitle("Parciais");
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
-
-
-
-
 
 
 
@@ -100,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Parciais");
         mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Ligas");
-        mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Jogadores");
+        mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
         mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Jogos");
         viewPager.setAdapter(mPagerAdapter);
     }
@@ -136,49 +116,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private RealmMigration realmMigration(){
-
-        return new RealmMigration(){
-            @Override
-            public void migrate(DynamicRealm realm, long oldVersion, long newVersion){
-
-//                // DynamicRealm exposes an editable schema
-//                RealmSchema schema = realm.getSchema();
-//
-//                // Migrate to version 1: Add a new class.
-//                // Example:
-//                // public Person extends RealmObject {
-//                //     private String name;
-//                //     private int age;
-//                //     // getters and setters left out for brevity
-//                // }
-//                if (oldVersion == 0){
-//                    schema.create("Person")
-//                            .addField("name", String.class)
-//                            .addField("age", int.class);
-//                    oldVersion++;
-//                }
-//
-//                // Migrate to version 2: Add a primary key + object references
-//                // Example:
-//                // public Person extends RealmObject {
-//                //     private String name;
-//                //     @PrimaryKey
-//                //     private int age;
-//                //     private Dog favoriteDog;
-//                //     private RealmList<Dog> dogs;
-//                //     // getters and setters left out for brevity
-//                // }
-//                if (oldVersion == 1){
-//                    schema.get("Person")
-//                            .addField("id", long.class, FieldAttribute.PRIMARY_KEY)
-//                            .addRealmObjectField("favoriteDog", schema.get("Dog"))
-//                            .addRealmListField("dogs", schema.get("Dog"));
-//                    oldVersion++;
-//                }
-            }
-        };
     }
 }

@@ -99,6 +99,7 @@
             android:layout_marginTop="30dp"
             android:layout_toEndOf="@+id/atleta_posicao"
             android:layout_toRightOf="@+id/atleta_posicao"
+            android:fadeScrollbars="true"
             android:fillViewport="true">
 
             <LinearLayout

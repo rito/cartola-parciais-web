@@ -1,4 +1,4 @@
-package br.com.devgeek.cartolaparciais.activity;
+package br.com.devgeek.cartolaparciais.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +32,7 @@ public class ParciaisTimesFragment extends Fragment {
     private RealmResults<TimeFavorito> listaTimesFavoritos;
     private RealmChangeListener listaTimesFavoritosListener = new RealmChangeListener(){
         @Override
-        public void onChange(Object o){
+        public void onChange(Object object){
             adapter.update(listaTimesFavoritos);
             adapter.notifyDataSetChanged();
         }
@@ -93,8 +93,7 @@ public class ParciaisTimesFragment extends Fragment {
 
     private void atualizarDados(){
 
-        apiService.verificarMercadoStatus();
-        apiService.buscarAtletasPontuados(getActivity());
+        apiService.atualizarParciais(getContext());
         new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
     }
 }

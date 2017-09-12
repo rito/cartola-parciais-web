@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
@@ -28,37 +27,41 @@ import br.com.devgeek.cartolaparciais.model.Scouts;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.util.ClubesUtil;
 import br.com.devgeek.cartolaparciais.util.PosicoesJogadoresUtil;
+import io.realm.RealmResults;
 
 import static br.com.devgeek.cartolaparciais.model.Scouts.getLegendaDosScouts;
 
 /**
  * Created by geovannefduarte
  */
-//https://android-arsenal.com/details/1/2464
-public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder> {
 
-    private static final String TAG = "ParciaisAtletasDoTimeFa";
+public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogadoresAdapter.ViewHolder> {
+
+    private static final String TAG = "ParciaisJogadoresAdapte";
 
     private Context context;
     private DecimalFormat formatoPontuacao;
-    private List<AtletasPontuados> atletasPontuados;
+    private RealmResults<AtletasPontuados> atletasPontuados;
 
-    public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados){
+    public ParciaisJogadoresAdapter(Context context, RealmResults<AtletasPontuados> atletasPontuados){
         this.context = context;
-        this.atletasPontuados = atletasPontuados;
+        update(atletasPontuados);
         this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
     }
 
-    @Override
-    public ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_parciais_atletas_do_time, parent, false);
-
-        return new ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder(view);
+    public void update(RealmResults<AtletasPontuados> atletasPontuados){
+        this.atletasPontuados = atletasPontuados;
     }
 
     @Override
-    public void onBindViewHolder(ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder holder, int position){
+    public ParciaisJogadoresAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+
+        View view = LayoutInflater.from(context).inflate(R.layout.fragment_parciais_atletas_do_time, parent, false);
+        return new ParciaisJogadoresAdapter.ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ParciaisJogadoresAdapter.ViewHolder holder, int position){
         holder.setData( atletasPontuados.get( position ) );
     }
 

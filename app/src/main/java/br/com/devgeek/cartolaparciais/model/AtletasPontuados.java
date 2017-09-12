@@ -18,6 +18,8 @@ public class AtletasPontuados extends RealmObject {
     @PrimaryKey
     private String atletaId;
 
+    private Integer rodada;
+
     private String apelido;
     private Double pontuacao;
     private RealmList<Scouts> scouts;
@@ -31,8 +33,9 @@ public class AtletasPontuados extends RealmObject {
     }
 
 
-    public AtletasPontuados(String atletaId, ApiAtletasPontuados_PontuacaoAtleta pontuacaoAtleta){
+    public AtletasPontuados(String atletaId, Integer rodada, ApiAtletasPontuados_PontuacaoAtleta pontuacaoAtleta){
         this.atletaId = atletaId;
+        this.rodada = rodada;
         this.apelido = pontuacaoAtleta.getApelido();
         this.pontuacao = pontuacaoAtleta.getPontuacao();
         this.foto = pontuacaoAtleta.getFoto();
@@ -61,8 +64,9 @@ public class AtletasPontuados extends RealmObject {
     }
 
 
-    public AtletasPontuados(String atletaId, String apelido, Double pontuacao, HashMap<String, Integer> scouts, String foto, Integer posicaoId, Integer clubeId){
+    public AtletasPontuados(String atletaId, Integer rodada, String apelido, Double pontuacao, HashMap<String, Integer> scouts, String foto, Integer posicaoId, Integer clubeId){
         this.atletaId = atletaId;
+        this.rodada = rodada;
         this.apelido = apelido;
         this.pontuacao = pontuacao;
         this.foto = foto;
@@ -96,6 +100,12 @@ public class AtletasPontuados extends RealmObject {
     }
     public void setAtletaId(String atletaId){
         this.atletaId = atletaId;
+    }
+    public Integer getRodada(){
+        return rodada;
+    }
+    public void setRodada(Integer rodada){
+        this.rodada = rodada;
     }
     public String getApelido(){
         return apelido;

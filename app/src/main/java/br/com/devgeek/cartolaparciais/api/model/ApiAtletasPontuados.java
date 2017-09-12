@@ -31,8 +31,7 @@ public class ApiAtletasPontuados implements Serializable {
     }
 
 
-    public ApiAtletasPontuados(Integer rodada,
-                               Map<String, ApiAtletasPontuados_PontuacaoAtleta> atletas) {
+    public ApiAtletasPontuados(Integer rodada, Map<String, ApiAtletasPontuados_PontuacaoAtleta> atletas){
         super();
         this.rodada = rodada;
         this.atletas = atletas;

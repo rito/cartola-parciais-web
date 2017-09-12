@@ -32,7 +32,7 @@ public class BuscarTimesLigasActivity extends AppCompatActivity {
 
     private EditText nomeTime;
     private BuscarTimesAdapter adapter;
-    private List<ApiTime> listaTimes = new ArrayList<ApiTime>();
+    private List<ApiTime> listaTimes = new ArrayList<>();
 
     private Retrofit retrofit;
     private ApiService apiService;
