@@ -89,10 +89,16 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
         private void setData(AtletasPontuados atleta){
 
-            Picasso.with( context )
-                    .load( atleta.getFoto().replace("_FORMATO","_140x140") )
-                    .error( R.drawable.atleta )
-                    .into( fotoDoAtleta );
+            boolean userIsLogged = false;
+
+            if (userIsLogged){
+
+                Picasso.with( context ).load( atleta.getFoto().replace("_FORMATO","_140x140") ).into( fotoDoAtleta );
+
+            } else {
+
+                Picasso.with( context ).load( R.drawable.atleta ).into( fotoDoAtleta );
+            }
 
             nomeDoAtleta.setText(atleta.getApelido());
             atletaPosicao.setText(PosicoesJogadoresUtil.getPosicaoNome(atleta.getPosicaoId()));
