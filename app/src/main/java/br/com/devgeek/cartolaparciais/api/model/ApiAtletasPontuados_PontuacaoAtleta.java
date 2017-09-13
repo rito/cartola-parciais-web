@@ -6,7 +6,6 @@ import java.util.Map;
 /**
  * Created by geovannefduarte
  */
-
 public class ApiAtletasPontuados_PontuacaoAtleta implements Serializable {
 
     private static final long serialVersionUID = 1L;

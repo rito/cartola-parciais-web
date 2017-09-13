@@ -2,6 +2,7 @@ package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -41,12 +42,14 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
     private Context context;
     private DecimalFormat formatoPontuacao;
+    private DecimalFormat formatoCartoletas;
     private List<AtletasPontuados> atletasPontuados;
 
     public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados){
         this.context = context;
         this.atletasPontuados = atletasPontuados;
         this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
+        this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
     }
 
     @Override
@@ -70,6 +73,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView pontuacao;
+        TextView cartoletas;
         TextView nomeDoAtleta;
         TextView atletaPosicao;
         ImageView fotoDoAtleta;
@@ -83,6 +87,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
             escudoDoAtleta = (ImageView) itemView.findViewById(R.id.escudo_atleta);
             atletaPosicao = (TextView) itemView.findViewById(R.id.atleta_posicao);
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
+            cartoletas = (TextView) itemView.findViewById(R.id.atleta_cartoletas);
             nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
             scoutsContent = (LinearLayout) itemView.findViewById(R.id.atleta_scouts_content);
         }
@@ -120,6 +125,9 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
             if (scoutsContent.getChildCount() > 0) scoutsContent.removeAllViews();
 
+            cartoletas.setVisibility(View.GONE);
+            cartoletas.setVisibility(View.INVISIBLE);
+
             if (atleta.getScouts().size() > 0){
 
                 Resources resources = context.getResources();
@@ -142,9 +150,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
 
                     TextView tag = new TextView(context);
-                    //Button tag = new Button(context);
                     tag.setText(scoutText);
-                    //tag.setStateListAnimator(null);
                     tag.setTransformationMethod(null);
                     tag.setMinWidth(0);  tag.setMinimumWidth(0);
                     tag.setMinHeight(0); tag.setMinimumHeight(0);
@@ -155,7 +161,10 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                     p.setMargins(leftMargin, 0, 0, 0);
                     tag.requestLayout();
 
-                    tag.setOnClickListener(v -> Toast.makeText(context, getLegendaDosScouts(scout.getScout(), scout.getQuantidade()), Toast.LENGTH_SHORT).show() );
+                    tag.setOnClickListener(v -> {
+                        final Toast toast = Toast.makeText(context, getLegendaDosScouts(scout.getScout(), scout.getQuantidade()), Toast.LENGTH_SHORT); toast.show();
+                        new Handler().postDelayed(() -> toast.cancel(), 1000);
+                    } );
 
                     scoutsContent.addView(tag);
                 }

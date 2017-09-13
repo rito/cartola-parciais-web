@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado;
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado_PontuacaoAtleta;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtleta;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
@@ -23,11 +25,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToAtualizarMercado;
+import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToAtualizarParciais;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
 
@@ -56,7 +61,9 @@ public class ApiServiceImpl {
 
         if (isNetworkAvailable(context)){
 
-            verificarMercadoStatus();
+            if (isTimeToAtualizarMercado()){
+                verificarMercadoStatus();
+            }
 
         } else {
             Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
@@ -68,7 +75,9 @@ public class ApiServiceImpl {
 
         if (isNetworkAvailable(context)){
 
-            buscarAtletasPontuados();
+            if (isTimeToAtualizarParciais()){
+                buscarAtletasPontuados();
+            }
 
         } else {
             Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
@@ -146,8 +155,9 @@ public class ApiServiceImpl {
             buscarAtletasPontuados.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .onErrorReturn((Throwable throwable) -> {
-                        logErrorOnConsole(TAG, "buscarAtletasPontuados.onErrorReturn()  -> "+throwable.getMessage(), throwable);
-                        return null; //empty object of the datatype
+                        if (!throwable.getMessage().toString().equals("Null is not a valid element")){
+                            logErrorOnConsole(TAG, "buscarAtletasPontuados.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        } return null;
                     })
                     .subscribe(
                             apiAtletasPontuados -> {
@@ -186,9 +196,7 @@ public class ApiServiceImpl {
                             error -> {
                                 try {
                                     if (error instanceof NullPointerException){
-
-                                        // https://api.cartolafc.globo.com/atletas/mercado
-
+                                        buscarAtletasMercado();
                                         atualizarParciaisTimesFavoritos(null);
                                     } else if (error instanceof HttpException){ // We had non-200 http error
                                         logErrorOnConsole(TAG, "ApiAtletasPontuados [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
@@ -268,14 +276,14 @@ public class ApiServiceImpl {
 
                                             } else {
 
-                                                timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                             }
 
                                         } else {
 
                                             pontuacao += atleta.getPontos_num();
                                             variacaoCartoletas += atleta.getVariacao_num();
-                                            timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                            timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                         }
                                     }
 
@@ -314,6 +322,74 @@ public class ApiServiceImpl {
 
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao atualizarParciaisDeCadaTimeFavorito() -> "+e.getMessage(), e);
+        }
+    }
+
+    private void buscarAtletasMercado(){
+
+        try {
+
+            Observable<ApiAtletasMercado> buscarAtletasMercado = apiService.buscarAtletasMercado();
+
+            buscarAtletasMercado.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn((Throwable throwable) -> {
+                        logErrorOnConsole(TAG, "buscarAtletasMercado.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        return null; //empty object of the datatype
+                    })
+                    .subscribe(apiAtletasMercado -> {
+
+                        Realm realm = null;
+
+                        if( apiAtletasMercado != null && apiAtletasMercado.getAtletas().size() > 0 ){
+
+                            try {
+
+                                realm = Realm.getDefaultInstance();
+
+                                int rodada = apiAtletasMercado.getAtletas().get(0).getRodada_id();
+                                RealmList<AtletasPontuados> listaAtletasPontuados = new RealmList<>();
+
+                                for (ApiAtletasMercado_PontuacaoAtleta atleta : apiAtletasMercado.getAtletas()){
+                                    listaAtletasPontuados.add(new AtletasPontuados(rodada, atleta));
+                                }
+
+                                if (listaAtletasPontuados.size() > 0){
+
+                                    final RealmResults<AtletasPontuados> atletasPontuados = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAll();
+
+                                    realm = Realm.getDefaultInstance();
+                                    realm.executeTransaction(realmTransaction -> {
+                                        atletasPontuados.deleteAllFromRealm();
+                                        realmTransaction.copyToRealmOrUpdate(listaAtletasPontuados);
+                                    });
+                                }
+
+                            } catch (Exception e){
+
+                                logErrorOnConsole(TAG, e.getMessage(), e);
+
+                            } finally {
+                                if (realm != null) realm.close();
+                            }
+                        }
+                    }, error -> {
+                        try {
+                            if (error instanceof NullPointerException){
+                                logErrorOnConsole(TAG, "ApiAtletasMercado_PontuacaoAtleta [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                            } else if (error instanceof HttpException){ // We had non-200 http error
+                                logErrorOnConsole(TAG, "ApiAtletasMercado_PontuacaoAtleta [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                            } else if (error instanceof IOException){ // A network error happened
+                                logErrorOnConsole(TAG, "ApiAtletasMercado_PontuacaoAtleta [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                            } else {
+                                logErrorOnConsole(TAG, "ApiAtletasMercado_PontuacaoAtleta -> " + error.getMessage() + " / " + error.getClass(), error);
+                            }
+                        } catch (Exception e){
+                            logErrorOnConsole(TAG, "ApiAtletasMercado_PontuacaoAtleta -> " + error.getMessage() + " / " + error.getClass(), error);
+                        }
+                    });
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "Falha ao buscarAtletasMercado() -> "+e.getMessage(), e);
         }
     }
 }

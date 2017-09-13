@@ -17,8 +17,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.activity.ParciaisAtletasDoTimeActivity;
@@ -38,7 +36,63 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
     private RealmResults<TimeFavorito> listaTimesFavoritos;
-    private final Map<String, Integer> backgroundColor = new HashMap<String, Integer>();
+
+    public ParciaisTimesFavoritosAdapter(Context context, RealmResults<TimeFavorito> listaTimesFavoritos){
+        this.context = context;
+        update(listaTimesFavoritos);
+        this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
+        this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
+    }
+
+    public void update(RealmResults<TimeFavorito> listaTimesFavoritos){
+        this.listaTimesFavoritos = listaTimesFavoritos;
+    }
+
+    @Override
+    public ParciaisTimesFavoritosAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+
+        View view = LayoutInflater.from(context).inflate(R.layout.adapter_parciaistimes, parent, false);
+
+        return new ParciaisTimesFavoritosAdapter.ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ParciaisTimesFavoritosAdapter.ViewHolder holder, int position){
+
+        int backgroundColor = ContextCompat.getColor(context, R.color.bgColorOdd);
+
+        if ((position % 2) == 0){
+            backgroundColor = ContextCompat.getColor(context, R.color.bgColorEven);
+        }
+
+        holder.setData( listaTimesFavoritos.get( position ), backgroundColor );
+
+        holder.itemView.setOnClickListener((View v) -> {
+
+            Log.i(TAG, "width: "+holder.escudo.getWidth()+" | height: "+holder.escudo.getHeight());
+            Log.i(TAG, "measuredWidth: "+holder.escudo.getMeasuredWidth()+" | measuredHeight: "+holder.escudo.getMeasuredHeight());
+
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+
+            String pontuacaoFormatada = "";
+            if (listaTimesFavoritos.get( position ).getPontuacao() != null){
+                pontuacaoFormatada = formatoPontuacao.format(listaTimesFavoritos.get( position ).getPontuacao());
+            }
+            ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(listaTimesFavoritos.get( position ).getTimeId(), listaTimesFavoritos.get( position ).getNomeDoTime(), listaTimesFavoritos.get( position ).getUrlEscudoPng(), listaTimesFavoritos.get( position ).getNomeDoCartoleiro(), pontuacaoFormatada);
+
+            bundle.putParcelable("dadosParciaisAtletasDoTime", dadosParciaisAtletasDoTime);
+            intent.putExtras(bundle);
+            intent.setClass(context, ParciaisAtletasDoTimeActivity.class);
+            context.startActivity(intent);
+            ((Activity) context).overridePendingTransition(R.anim.slide_in_right_to_left,R.anim.slide_in_left_to_right);
+        });
+    }
+
+    @Override
+    public int getItemCount(){
+        return listaTimesFavoritos.size();
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -96,62 +150,5 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
                 }
             }
         }
-    }
-
-    public ParciaisTimesFavoritosAdapter(Context context, RealmResults<TimeFavorito> listaTimesFavoritos){
-        this.context = context;
-        update(listaTimesFavoritos);
-        this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
-        this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
-    }
-
-    public void update(RealmResults<TimeFavorito> listaTimesFavoritos){
-        this.listaTimesFavoritos = listaTimesFavoritos;
-    }
-
-    @Override
-    public ParciaisTimesFavoritosAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-
-        View view = LayoutInflater.from(context).inflate(R.layout.adapter_parciaistimes, parent, false);
-
-        return new ParciaisTimesFavoritosAdapter.ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(ParciaisTimesFavoritosAdapter.ViewHolder holder, int position){
-
-        int backgroundColor = ContextCompat.getColor(context, R.color.bgColorOdd);
-
-        if ((position % 2) == 0){
-            backgroundColor = ContextCompat.getColor(context, R.color.bgColorEven);
-        }
-
-        holder.setData( listaTimesFavoritos.get( position ), backgroundColor );
-
-        holder.itemView.setOnClickListener((View v) -> {
-
-            Log.i(TAG, "width: "+holder.escudo.getWidth()+" | height: "+holder.escudo.getHeight());
-            Log.i(TAG, "measuredWidth: "+holder.escudo.getMeasuredWidth()+" | measuredHeight: "+holder.escudo.getMeasuredHeight());
-
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
-
-            String pontuacaoFormatada = "";
-            if (listaTimesFavoritos.get( position ).getPontuacao() != null){
-                pontuacaoFormatada = formatoPontuacao.format(listaTimesFavoritos.get( position ).getPontuacao());
-            }
-            ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(listaTimesFavoritos.get( position ).getTimeId(), listaTimesFavoritos.get( position ).getNomeDoTime(), listaTimesFavoritos.get( position ).getUrlEscudoPng(), listaTimesFavoritos.get( position ).getNomeDoCartoleiro(), pontuacaoFormatada);
-
-            bundle.putParcelable("dadosParciaisAtletasDoTime", dadosParciaisAtletasDoTime);
-            intent.putExtras(bundle);
-            intent.setClass(context, ParciaisAtletasDoTimeActivity.class);
-            context.startActivity(intent);
-            ((Activity) context).overridePendingTransition(R.anim.slide_in_right_to_left,R.anim.slide_in_left_to_right);
-        });
-    }
-
-    @Override
-    public int getItemCount(){
-        return listaTimesFavoritos.size();
     }
 }

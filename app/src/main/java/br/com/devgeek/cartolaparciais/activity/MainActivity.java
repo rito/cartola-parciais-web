@@ -49,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
+
+        // http://blog.iamsuleiman.com/quick-return-pattern-with-android-design-support-library/
+        // bottomNavigationView.setBehaviorTranslationEnabled(true); https://android.jlelse.eu/ultimate-guide-to-bottom-navigation-on-android-75e4efb8105f
+
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.tab_parciais:
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.tab_jogos:
                     setViewPager(3);
                     setToolbarTitle("Jogos");
+                    // https://api.cartolafc.globo.com/partidas
                     break;
             }
             return true;

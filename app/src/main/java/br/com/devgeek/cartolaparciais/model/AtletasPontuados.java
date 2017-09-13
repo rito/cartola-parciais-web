@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado_PontuacaoAtleta;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtleta;
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -22,6 +23,7 @@ public class AtletasPontuados extends RealmObject {
 
     private String apelido;
     private Double pontuacao;
+    private Double cartoletas;
     private RealmList<Scouts> scouts;
 
     private String foto;
@@ -33,11 +35,13 @@ public class AtletasPontuados extends RealmObject {
     }
 
 
-    public AtletasPontuados(String atletaId, Integer rodada, ApiAtletasPontuados_PontuacaoAtleta pontuacaoAtleta){
-        this.atletaId = atletaId;
+    public AtletasPontuados(Integer rodada, ApiAtletasMercado_PontuacaoAtleta pontuacaoAtleta){
         this.rodada = rodada;
+        this.atletaId = String.valueOf(pontuacaoAtleta.getAtleta_id());
+
         this.apelido = pontuacaoAtleta.getApelido();
         this.pontuacao = pontuacaoAtleta.getPontuacao();
+        this.cartoletas = pontuacaoAtleta.getCartoletas();
         this.foto = pontuacaoAtleta.getFoto();
         this.posicaoId = pontuacaoAtleta.getPosicao_id();
         this.clubeId = pontuacaoAtleta.getClube_id();
@@ -64,11 +68,44 @@ public class AtletasPontuados extends RealmObject {
     }
 
 
-    public AtletasPontuados(String atletaId, Integer rodada, String apelido, Double pontuacao, HashMap<String, Integer> scouts, String foto, Integer posicaoId, Integer clubeId){
+    public AtletasPontuados(String atletaId, Integer rodada, ApiAtletasPontuados_PontuacaoAtleta pontuacaoAtleta){
+        this.atletaId = atletaId;
+        this.rodada = rodada;
+        this.apelido = pontuacaoAtleta.getApelido();
+        this.pontuacao = pontuacaoAtleta.getPontuacao();
+        this.cartoletas = null;
+        this.foto = pontuacaoAtleta.getFoto();
+        this.posicaoId = pontuacaoAtleta.getPosicao_id();
+        this.clubeId = pontuacaoAtleta.getClube_id();
+
+        this.scouts = new RealmList<>();
+        if (pontuacaoAtleta.getScout() != null && pontuacaoAtleta.getScout().size() > 0){
+
+            for (Map.Entry<String, Integer> entry : pontuacaoAtleta.getScout().entrySet()){
+
+                if (entry.getKey() != null && !entry.getKey().toString().equals("") && entry.getValue() != null){
+
+                    try {
+
+                        int quantidade = Integer.valueOf(entry.getValue().toString());
+                        this.scouts.add(new Scouts(entry.getKey().toString(), quantidade));
+
+                    } catch (Exception e){
+                        Log.e("AtletasPontuados", e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+
+    public AtletasPontuados(String atletaId, Integer rodada, String apelido, Double pontuacao, Double cartoletas, HashMap<String, Integer> scouts, String foto, Integer posicaoId, Integer clubeId){
         this.atletaId = atletaId;
         this.rodada = rodada;
         this.apelido = apelido;
         this.pontuacao = pontuacao;
+        this.cartoletas = cartoletas;
         this.foto = foto;
         this.posicaoId = posicaoId;
         this.clubeId = clubeId;
@@ -118,6 +155,12 @@ public class AtletasPontuados extends RealmObject {
     }
     public void setPontuacao(Double pontuacao){
         this.pontuacao = pontuacao;
+    }
+    public Double getCartoletas(){
+        return cartoletas;
+    }
+    public void setCartoletas(Double cartoletas){
+        this.cartoletas = cartoletas;
     }
     public RealmList<Scouts> getScouts(){
         return scouts;

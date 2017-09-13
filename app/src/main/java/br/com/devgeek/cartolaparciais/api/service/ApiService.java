@@ -2,6 +2,7 @@ package br.com.devgeek.cartolaparciais.api.service;
 
 import java.util.List;
 
+import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
 import br.com.devgeek.cartolaparciais.api.model.ApiTime;
@@ -30,4 +31,7 @@ public interface ApiService {
 
     @GET("atletas/pontuados")
     Observable<ApiAtletasPontuados> buscarAtletasPontuados();
+
+    @GET("atletas/mercado")
+    Observable<ApiAtletasMercado> buscarAtletasMercado();
 }

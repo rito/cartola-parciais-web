@@ -88,6 +88,22 @@
             android:text="9999.00"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/atleta_cartoletas"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/atleta"
+            android:layout_alignLeft="@+id/atleta_pontuacao"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@+id/atleta_pontuacao"
+            android:layout_below="@+id/atleta_pontuacao"
+            android:layout_marginTop="-7dp"
+            android:gravity="top|right"
+            android:paddingTop="4dp"
+            android:text="C$ 999.99" />
+
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
             android:layout_width="wrap_content"

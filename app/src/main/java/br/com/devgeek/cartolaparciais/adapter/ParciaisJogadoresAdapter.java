@@ -2,6 +2,7 @@ package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -41,12 +42,14 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
     private Context context;
     private DecimalFormat formatoPontuacao;
+    private DecimalFormat formatoCartoletas;
     private RealmResults<AtletasPontuados> atletasPontuados;
 
     public ParciaisJogadoresAdapter(Context context, RealmResults<AtletasPontuados> atletasPontuados){
         this.context = context;
         update(atletasPontuados);
         this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
+        this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
     }
 
     public void update(RealmResults<AtletasPontuados> atletasPontuados){
@@ -73,6 +76,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView pontuacao;
+        TextView cartoletas;
         TextView nomeDoAtleta;
         TextView atletaPosicao;
         ImageView fotoDoAtleta;
@@ -86,6 +90,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
             escudoDoAtleta = (ImageView) itemView.findViewById(R.id.escudo_atleta);
             atletaPosicao = (TextView) itemView.findViewById(R.id.atleta_posicao);
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
+            cartoletas = (TextView) itemView.findViewById(R.id.atleta_cartoletas);
             nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
             scoutsContent = (LinearLayout) itemView.findViewById(R.id.atleta_scouts_content);
         }
@@ -114,16 +119,34 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
                 pontuacao.setText(formatoPontuacao.format(atleta.getPontuacao()));
 
-                if (atleta.getPontuacao() > 0){
-                    pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
-                } else if (atleta.getPontuacao() < 0){
-                    pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
+                if (atleta.getCartoletas() == null){
+                    if (atleta.getPontuacao() > 0){
+                        pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
+                    } else if (atleta.getPontuacao() < 0){
+                        pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
+                    }
                 }
             }
 
             if (scoutsContent.getChildCount() > 0) scoutsContent.removeAllViews();
 
-            if (atleta.getScouts().size() > 0){
+            if (atleta.getCartoletas() != null){
+
+                cartoletas.setText("C$ "+formatoCartoletas.format(atleta.getCartoletas()));
+                if (atleta.getCartoletas() > 0){
+                    cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
+                } else {
+                    cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
+                }
+
+                scoutsContent.setVisibility(View.GONE);
+                scoutsContent.setVisibility(View.INVISIBLE);
+            }
+
+            if (atleta.getCartoletas() == null && atleta.getScouts().size() > 0){
+
+                cartoletas.setVisibility(View.GONE);
+                cartoletas.setVisibility(View.INVISIBLE);
 
                 Resources resources = context.getResources();
                 int leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, resources.getDisplayMetrics());
@@ -145,9 +168,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
 
                     TextView tag = new TextView(context);
-                    //Button tag = new Button(context);
                     tag.setText(scoutText);
-                    //tag.setStateListAnimator(null);
                     tag.setTransformationMethod(null);
                     tag.setMinWidth(0);  tag.setMinimumWidth(0);
                     tag.setMinHeight(0); tag.setMinimumHeight(0);
@@ -158,7 +179,10 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
                     p.setMargins(leftMargin, 0, 0, 0);
                     tag.requestLayout();
 
-                    tag.setOnClickListener(v -> Toast.makeText(context, getLegendaDosScouts(scout.getScout(), scout.getQuantidade()), Toast.LENGTH_SHORT).show() );
+                    tag.setOnClickListener(v -> {
+                        final Toast toast = Toast.makeText(context, getLegendaDosScouts(scout.getScout(), scout.getQuantidade()), Toast.LENGTH_SHORT); toast.show();
+                        new Handler().postDelayed(() -> toast.cancel(), 1000);
+                    } );
 
                     scoutsContent.addView(tag);
                 }

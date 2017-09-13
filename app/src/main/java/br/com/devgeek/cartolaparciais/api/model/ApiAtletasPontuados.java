@@ -15,7 +15,6 @@ import okhttp3.Response;
 /**
  * Created by geovannefduarte
  */
-
 public class ApiAtletasPontuados implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,21 +35,6 @@ public class ApiAtletasPontuados implements Serializable {
         this.rodada = rodada;
         this.atletas = atletas;
     }
-
-
-    public int getRodada(){
-        return rodada;
-    }
-    public void setRodada(int rodada){
-        this.rodada = rodada;
-    }
-    public Map<String, ApiAtletasPontuados_PontuacaoAtleta> getAtletas(){
-        return atletas;
-    }
-    public void setAtletas(Map<String, ApiAtletasPontuados_PontuacaoAtleta> atletas){
-        this.atletas = atletas;
-    }
-
 
     public static ApiAtletasPontuados getDataViaAPI(OkHttpClient httpClient){
 
@@ -83,5 +67,21 @@ public class ApiAtletasPontuados implements Serializable {
         }
 
         return atletasPontuados;
+    }
+
+    public int getRodada(){
+        return rodada;
+    }
+
+    public void setRodada(int rodada){
+        this.rodada = rodada;
+    }
+
+    public Map<String, ApiAtletasPontuados_PontuacaoAtleta> getAtletas(){
+        return atletas;
+    }
+
+    public void setAtletas(Map<String, ApiAtletasPontuados_PontuacaoAtleta> atletas){
+        this.atletas = atletas;
     }
 }
