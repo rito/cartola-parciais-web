@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisJogadoresFragment;
+import br.com.devgeek.cartolaparciais.fragment.ParciaisLigasFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisTimesFragment;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager){
         mPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Parciais");
-        mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Ligas");
+        mPagerAdapter.addFragment(new ParciaisLigasFragment(), "Ligas");
         mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
         mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Jogos");
         viewPager.setAdapter(mPagerAdapter);

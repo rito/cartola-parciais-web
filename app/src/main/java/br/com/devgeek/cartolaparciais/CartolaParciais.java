@@ -15,28 +15,8 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOn
 public class CartolaParciais extends Application {
 
     private final static int ONE_MINUTE = 60000;
-    protected static Long lastTimeAtualizarParciaisWasExecuted = null;
     protected static Long lastTimeAtualizarMercadoWasExecuted = null;
-
-    public static boolean isTimeToAtualizarParciais(){
-
-        try {
-
-            Long currentTime = System.currentTimeMillis();
-
-            if (lastTimeAtualizarParciaisWasExecuted == null || (currentTime - lastTimeAtualizarParciaisWasExecuted) > ONE_MINUTE){
-                lastTimeAtualizarParciaisWasExecuted = currentTime;
-                return  true;
-            }
-
-            return false;
-
-        } catch (Exception e){
-
-            logErrorOnConsole("isTimeToAtualizarParciais", e.getMessage(), e);
-            return  true;
-        }
-    }
+    protected static Long lastTimeAtualizarParciaisWasExecuted = null;
 
     public static boolean isTimeToAtualizarMercado(){
 
@@ -54,6 +34,26 @@ public class CartolaParciais extends Application {
         } catch (Exception e){
 
             logErrorOnConsole("isTimeToAtualizarMercado", e.getMessage(), e);
+            return  true;
+        }
+    }
+
+    public static boolean isTimeToAtualizarParciais(){
+
+        try {
+
+            Long currentTime = System.currentTimeMillis();
+
+            if (lastTimeAtualizarParciaisWasExecuted == null || (currentTime - lastTimeAtualizarParciaisWasExecuted) > ONE_MINUTE){
+                lastTimeAtualizarParciaisWasExecuted = currentTime;
+                return  true;
+            }
+
+            return false;
+
+        } catch (Exception e){
+
+            logErrorOnConsole("isTimeToAtualizarParciais", e.getMessage(), e);
             return  true;
         }
     }
