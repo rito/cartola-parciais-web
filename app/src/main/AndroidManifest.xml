@@ -8,6 +8,11 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".CartolaParciais"
         android:allowBackup="true"
@@ -27,7 +32,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.BuscarTimesLigasActivity" />
-        <activity android:name=".activity.ParciaisAtletasDoTimeActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activity.ParciaisAtletasDoTimeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" ></activity>
     </application>
 
 </manifest>
