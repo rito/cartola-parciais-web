@@ -5,11 +5,11 @@ import java.util.List;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
 import br.com.devgeek.cartolaparciais.api.model.ApiLogin;
-import br.com.devgeek.cartolaparciais.api.model.ApiLogin_Payload;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
 import br.com.devgeek.cartolaparciais.api.model.ApiTime;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -40,5 +40,5 @@ public interface ApiService {
     Observable<ApiAtletasMercado> buscarAtletasMercado();
 
     @POST("api/authentication")
-    Observable<ApiLogin> fazerLoginNaGlobo(@Body ApiLogin_Payload payload);
+    Observable<ApiLogin> fazerLoginNaGlobo(@Body RequestBody params);
 }

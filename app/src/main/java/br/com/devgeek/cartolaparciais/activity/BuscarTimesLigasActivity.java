@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -22,9 +23,13 @@ import br.com.devgeek.cartolaparciais.api.service.ApiService;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
 
 public class BuscarTimesLigasActivity extends AppCompatActivity {
 
@@ -86,18 +91,40 @@ public class BuscarTimesLigasActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable){
 
-                String nomeTimeParaBuscar = nomeTime.getText().toString().toLowerCase(Locale.getDefault());
+                if (isNetworkAvailable(getApplicationContext())){
 
-                timesBuscados = apiService.buscarTimes(nomeTimeParaBuscar);
+                    String nomeTimeParaBuscar = nomeTime.getText().toString().toLowerCase(Locale.getDefault());
 
-                timesBuscados.subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(timesEncontrados -> {
+                    timesBuscados = apiService.buscarTimes(nomeTimeParaBuscar);
 
-                            listaTimes.clear();
-                            listaTimes.addAll( timesEncontrados );
-                            adapter.notifyDataSetChanged();
-                        });
+                    timesBuscados.subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .onErrorReturn((Throwable throwable) -> {
+                                logErrorOnConsole(TAG, "buscarTimes.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                                return null; //empty object of the datatype
+                            })
+                            .subscribe(timesEncontrados -> {
+
+                                listaTimes.clear();
+                                listaTimes.addAll( timesEncontrados );
+                                adapter.notifyDataSetChanged();
+
+                            }, error -> {
+                                try {
+                                    if (error instanceof NullPointerException){
+                                        logErrorOnConsole(TAG, "ApiTime [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof HttpException){ // We had non-200 http error
+                                        logErrorOnConsole(TAG, "ApiTime [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof IOException){ // A network error happened
+                                        logErrorOnConsole(TAG, "ApiTime [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else {
+                                        logErrorOnConsole(TAG, "ApiTime -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    }
+                                } catch (Exception e){
+                                    logErrorOnConsole(TAG, "ApiTime -> " + error.getMessage() + " / " + error.getClass(), error);
+                                }
+                            });
+                }
             }
         });
     }

@@ -93,7 +93,7 @@ public class ParciaisTimesFragment extends Fragment {
 
     private void atualizarDados(){
 
-        apiService.atualizarParciais(getContext());
+        apiService.atualizarParciais(getContext(), true);
         new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
     }
 }

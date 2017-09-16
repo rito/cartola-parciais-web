@@ -2,6 +2,7 @@ package br.com.devgeek.cartolaparciais;
 
 import android.app.Application;
 
+import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
@@ -64,9 +65,9 @@ public class CartolaParciais extends Application {
 
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(4)               // Must be bumped when the schema changes
+                .schemaVersion(5)               // Must be bumped when the schema changes
                 .migration(realmMigration())    // Migration to run instead of throwing an exception
-//                .deleteRealmIfMigrationNeeded()
+                //.deleteRealmIfMigrationNeeded()
                 .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
                 .build();
 //        Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
@@ -88,6 +89,10 @@ public class CartolaParciais extends Application {
             if (oldVersion == 3){
                 schema.get("AtletasPontuados").addField("cartoletas", Double.class);
                 oldVersion++;
+            }
+
+            if (oldVersion == 4){
+                schema.create("UsuarioGlobo").addField("glbId", String.class, FieldAttribute.PRIMARY_KEY);
             }
 
 //                // Migrate to version 1: Add a new class.

@@ -11,8 +11,8 @@ android {
         applicationId "br.com.devgeek.cartolaparciais"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 6
-        versionName "17.9.13"
+        versionCode 7
+        versionName "17.9.16"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

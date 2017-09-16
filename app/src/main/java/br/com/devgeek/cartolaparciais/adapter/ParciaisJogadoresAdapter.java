@@ -41,13 +41,15 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
     private static final String TAG = "ParciaisJogadoresAdapte";
 
     private Context context;
+    private boolean userGloboIsLogged;
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
     private RealmResults<AtletasPontuados> atletasPontuados;
 
-    public ParciaisJogadoresAdapter(Context context, RealmResults<AtletasPontuados> atletasPontuados){
+    public ParciaisJogadoresAdapter(Context context, RealmResults<AtletasPontuados> atletasPontuados, boolean userGloboIsLogged){
         this.context = context;
         update(atletasPontuados);
+        this.userGloboIsLogged = userGloboIsLogged;
         this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
         this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
     }
@@ -97,9 +99,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
         private void setData(AtletasPontuados atleta){
 
-            boolean userIsLogged = false;
-
-            if (userIsLogged){
+            if (userGloboIsLogged){
 
                 Picasso.with( context ).load( atleta.getFoto().replace("_FORMATO","_140x140") ).into( fotoDoAtleta );
 
@@ -129,6 +129,20 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
             }
 
             if (scoutsContent.getChildCount() > 0) scoutsContent.removeAllViews();
+
+            if (atleta.getCartoletas() == null && atleta.getScouts().size() == 0){
+
+                cartoletas.setVisibility(View.GONE);
+                cartoletas.setVisibility(View.INVISIBLE);
+
+                scoutsContent.setVisibility(View.GONE);
+                scoutsContent.setVisibility(View.INVISIBLE);
+
+            } else {
+
+                cartoletas.setVisibility(View.VISIBLE);
+                scoutsContent.setVisibility(View.VISIBLE);
+            }
 
             if (atleta.getCartoletas() != null){
 

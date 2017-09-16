@@ -21,6 +21,7 @@ import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.api.model.ApiTime;
+import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import io.realm.Realm;
 
@@ -32,6 +33,7 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
 
     private Context context;
     private List<ApiTime> listaTimes;
+    private ApiServiceImpl apiService;
     private final Map<String, Integer> backgroundColor = new HashMap<String, Integer>();
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,16 +79,11 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
 
                         realm =  Realm.getDefaultInstance();
 
-                        realm.executeTransaction(new Realm.Transaction(){
-                            @Override
-                            public void execute(Realm realm){
-
-                                realm.copyToRealmOrUpdate(new TimeFavorito(time));
-                            }
-                        });
+                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(new TimeFavorito(time)));
 
                         Toast.makeText(context, time.getNomeDoTime()+" adicionado a lista de favoritos", Toast.LENGTH_SHORT).show();
 
+                        apiService.atualizarParciais(context, false);
 
                     } catch (Exception e){
 
@@ -105,17 +102,15 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
 
                         realm =  Realm.getDefaultInstance();
 
-                        realm.executeTransaction(new Realm.Transaction(){
-                            @Override
-                            public void execute(Realm realm){
+                        realm.executeTransaction(realmTransaction -> {
 
-                                TimeFavorito timeFavorito = realm.where(TimeFavorito.class).equalTo("timeId", time.getTimeId()).findFirst();
-                                timeFavorito.deleteFromRealm();
-                            }
+                            TimeFavorito timeFavorito = realmTransaction.where(TimeFavorito.class).equalTo("timeId", time.getTimeId()).findFirst();
+                            timeFavorito.deleteFromRealm();
                         });
 
                         Toast.makeText(context, time.getNomeDoTime()+" removido da lista de favoritos", Toast.LENGTH_SHORT).show();
 
+                        apiService.atualizarParciais(context, false);
 
                     } catch (Exception e){
 
@@ -159,6 +154,7 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
     public BuscarTimesAdapter(Context context, List<ApiTime> listaTimes){
         this.context = context;
         this.listaTimes = listaTimes;
+        this.apiService = new ApiServiceImpl();
     }
 
     @Override

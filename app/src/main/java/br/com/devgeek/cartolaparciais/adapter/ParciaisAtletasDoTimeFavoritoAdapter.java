@@ -41,13 +41,15 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
     private static final String TAG = "ParciaisAtletasDoTimeFa";
 
     private Context context;
+    private boolean userGloboIsLogged;
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
     private List<AtletasPontuados> atletasPontuados;
 
-    public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados){
+    public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados, boolean userGloboIsLogged){
         this.context = context;
         this.atletasPontuados = atletasPontuados;
+        this.userGloboIsLogged = userGloboIsLogged;
         this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
         this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
     }
@@ -94,9 +96,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
         private void setData(AtletasPontuados atleta){
 
-            boolean userIsLogged = false;
-
-            if (userIsLogged){
+            if (userGloboIsLogged){
 
                 Picasso.with( context ).load( atleta.getFoto().replace("_FORMATO","_140x140") ).into( fotoDoAtleta );
 

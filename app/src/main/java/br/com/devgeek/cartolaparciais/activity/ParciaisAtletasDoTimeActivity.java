@@ -29,6 +29,8 @@ import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
 import io.realm.Realm;
 
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
+
 public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
 
     private static String TAG = "ParciaisAtletasDoTime";
@@ -106,7 +108,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
             DividerItemDecoration divider = new DividerItemDecoration( this, mLayoutManager.getOrientation() );
             recyclerView.addItemDecoration( divider );
 
-            adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados );
+            adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados, userGloboIsLogged() );
             recyclerView.setAdapter( adapter );
         }
     }

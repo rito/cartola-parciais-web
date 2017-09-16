@@ -21,6 +21,8 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
+
 /**
  * Created by geovannefduarte
  */
@@ -72,7 +74,7 @@ public class ParciaisJogadoresFragment extends Fragment {
         DividerItemDecoration divider = new DividerItemDecoration( getActivity() , mLayoutManager.getOrientation() );
         recyclerView.addItemDecoration( divider );
 
-        adapter = new ParciaisJogadoresAdapter( getActivity() , listaAtletasPontuados );
+        adapter = new ParciaisJogadoresAdapter( getActivity(), listaAtletasPontuados, userGloboIsLogged());
         recyclerView.setAdapter( adapter );
 
 
@@ -95,7 +97,7 @@ public class ParciaisJogadoresFragment extends Fragment {
 
     private void atualizarDados(){
 
-        apiService.atualizarParciais(getContext());
+        apiService.atualizarParciais(getContext(), true);
         new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
     }
 }
