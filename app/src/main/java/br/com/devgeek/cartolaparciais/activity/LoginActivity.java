@@ -3,19 +3,38 @@ package br.com.devgeek.cartolaparciais.activity;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.IOException;
+
 import br.com.devgeek.cartolaparciais.R;
+import br.com.devgeek.cartolaparciais.api.model.ApiLogin;
+import br.com.devgeek.cartolaparciais.api.model.ApiLogin_Payload;
+import br.com.devgeek.cartolaparciais.api.service.ApiService;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-
     private static final int SERVICE_ID = 4728;
+
+    private Retrofit retrofit;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -31,6 +50,59 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+        findViewById(R.id.entrar).setOnClickListener(view -> {
+
+            retrofit = new Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl("https://login.globo.com/")
+                    .build();
+
+            apiService = retrofit.create(ApiService.class);
+
+            if (isNetworkAvailable(getApplicationContext())){
+
+                ApiLogin_Payload payload = new ApiLogin_Payload("geovanne@devgeek.com.br", "G.d_101202", SERVICE_ID);
+
+                try {
+
+                    Observable<ApiLogin> fazerLoginNaGlobo = apiService.fazerLoginNaGlobo(payload);
+
+                    fazerLoginNaGlobo.subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .onErrorReturn((Throwable throwable) -> {
+                                logErrorOnConsole(TAG, "fazerLoginNaGlobo.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                                return null; //empty object of the datatype
+                            })
+                            .subscribe(login -> {
+
+                                Log.w(TAG, "fazerLoginNaGlobo: "+login.getUserMessage());
+
+                            }, error -> {
+                                try {
+                                    if (error instanceof NullPointerException){
+                                        logErrorOnConsole(TAG, "ApiLogin [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof HttpException){ // We had non-200 http error
+                                        logErrorOnConsole(TAG, "ApiLogin [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof IOException){ // A network error happened
+                                        logErrorOnConsole(TAG, "ApiLogin [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else {
+                                        logErrorOnConsole(TAG, "ApiLogin -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    }
+                                } catch (Exception e){
+                                    logErrorOnConsole(TAG, "ApiLogin -> " + error.getMessage() + " / " + error.getClass(), error);
+                                }
+                            });
+                } catch (Exception e){
+                    logErrorOnConsole(TAG, "Falha ao fazerLoginNaGlobo() -> "+e.getMessage(), e);
+                }
+
+            } else {
+                Snackbar.make( view, "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
+                logErrorOnConsole(TAG, "Sem conexão com a internet", null);
+            }
+        });
         //https://login.globo.com/api/authentication
         //{"payload":{"email":"geovanne@devgeek.com.br","password":"G.d_101202","serviceId":4728}}
     }

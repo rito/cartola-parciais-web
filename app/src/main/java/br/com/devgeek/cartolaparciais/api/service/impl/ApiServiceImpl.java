@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,6 +14,8 @@ import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado_PontuacaoAtleta;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtleta;
+import br.com.devgeek.cartolaparciais.api.model.ApiLogin;
+import br.com.devgeek.cartolaparciais.api.model.ApiLogin_Payload;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug_Atleta;
@@ -57,6 +60,18 @@ public class ApiServiceImpl {
         apiService = retrofit.create(ApiService.class);
     }
 
+    public void fazerLoginNaGlobo(Context context, String email, String password){
+
+        if (isNetworkAvailable(context)){
+
+            fazerLoginNaGlobo(new ApiLogin_Payload(email, password, 4728));
+
+        } else {
+            Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
+            logErrorOnConsole(TAG, "Sem conexão com a internet", null);
+        }
+    }
+
     public void atualizarMercado(Context context){
 
         if (isNetworkAvailable(context)){
@@ -82,6 +97,42 @@ public class ApiServiceImpl {
         } else {
             Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
             logErrorOnConsole(TAG, "Sem conexão com a internet", null);
+        }
+    }
+
+    private void fazerLoginNaGlobo(ApiLogin_Payload payload){
+
+        try {
+
+            Observable<ApiLogin> fazerLoginNaGlobo = apiService.fazerLoginNaGlobo(payload);
+
+            fazerLoginNaGlobo.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn((Throwable throwable) -> {
+                        logErrorOnConsole(TAG, "fazerLoginNaGlobo.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        return null; //empty object of the datatype
+                    })
+                    .subscribe(login -> {
+
+                        Log.w(TAG, "fazerLoginNaGlobo: "+login.getUserMessage());
+
+                    }, error -> {
+                        try {
+                            if (error instanceof NullPointerException){
+                                logErrorOnConsole(TAG, "ApiLogin [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                            } else if (error instanceof HttpException){ // We had non-200 http error
+                                logErrorOnConsole(TAG, "ApiLogin [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                            } else if (error instanceof IOException){ // A network error happened
+                                logErrorOnConsole(TAG, "ApiLogin [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                            } else {
+                                logErrorOnConsole(TAG, "ApiLogin -> " + error.getMessage() + " / " + error.getClass(), error);
+                            }
+                        } catch (Exception e){
+                            logErrorOnConsole(TAG, "ApiLogin -> " + error.getMessage() + " / " + error.getClass(), error);
+                        }
+                    });
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "Falha ao fazerLoginNaGlobo() -> "+e.getMessage(), e);
         }
     }
 
