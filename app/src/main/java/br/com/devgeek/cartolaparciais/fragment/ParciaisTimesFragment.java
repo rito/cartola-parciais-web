@@ -30,6 +30,8 @@ public class ParciaisTimesFragment extends Fragment {
 
     private Realm realm;
     private RealmResults<TimeFavorito> listaTimesFavoritos;
+    private ApiServiceImpl apiService;
+    private ParciaisTimesFavoritosAdapter adapter;
     private RealmChangeListener listaTimesFavoritosListener = new RealmChangeListener(){
         @Override
         public void onChange(Object object){
@@ -37,9 +39,6 @@ public class ParciaisTimesFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     };
-
-    private ApiServiceImpl apiService;
-    private ParciaisTimesFavoritosAdapter adapter;
     private SwipeRefreshLayout refreshListaTimesFavoritos;
 
     @Nullable
@@ -53,7 +52,7 @@ public class ParciaisTimesFragment extends Fragment {
         realm = Realm.getDefaultInstance();
         Sort[] sortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING };
         String[] sortColumns = { "pontuacao", "variacaoCartoletas", "nomeDoTime" };
-        listaTimesFavoritos = realm.where(TimeFavorito.class).findAllSortedAsync(sortColumns, sortOrder);
+        listaTimesFavoritos = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).findAllSortedAsync(sortColumns, sortOrder);
 
 
         refreshListaTimesFavoritos = (SwipeRefreshLayout) view.findViewById(R.id.refreshListaTimesFavoritos);

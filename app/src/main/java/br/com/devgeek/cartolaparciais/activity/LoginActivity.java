@@ -36,18 +36,6 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOn
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "LoginActivity";
-    private static final int SERVICE_ID = 4728;
-
-    private RequestBody body;
-    private Retrofit retrofit;
-    private ApiService apiService;
-    private ProgressDialog progressDialog;
-    private Observable<ApiLogin> fazerLoginNaGlobo;
-
-    private EditText email;
-    private EditText senha;
-
     public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
             "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                     "\\@" +
@@ -57,6 +45,15 @@ public class LoginActivity extends AppCompatActivity {
                     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                     ")+"
     );
+    private static final String TAG = "LoginActivity";
+    private static final int SERVICE_ID = 4728;
+    private RequestBody body;
+    private Retrofit retrofit;
+    private ApiService apiService;
+    private ProgressDialog progressDialog;
+    private Observable<ApiLogin> fazerLoginNaGlobo;
+    private EditText email;
+    private EditText senha;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -153,6 +150,10 @@ public class LoginActivity extends AppCompatActivity {
                                 Realm realm = null;
 
                                 try {
+
+                                    // GET -> https://api.cartolafc.globo.com/auth/time
+                                    // Content-Type -> application/json
+                                    // X-GLB-Token
 
                                     realm = Realm.getDefaultInstance();
                                     UsuarioGlobo usuarioGlobo = new UsuarioGlobo(login.getGlbId());

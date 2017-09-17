@@ -31,10 +31,41 @@ import io.realm.Realm;
 
 public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.ViewHolder> {
 
+    private final Map<String, Integer> backgroundColor = new HashMap<String, Integer>();
     private Context context;
     private List<ApiTime> listaTimes;
     private ApiServiceImpl apiService;
-    private final Map<String, Integer> backgroundColor = new HashMap<String, Integer>();
+
+    public BuscarTimesAdapter(Context context, List<ApiTime> listaTimes){
+        this.context = context;
+        this.listaTimes = listaTimes;
+        this.apiService = new ApiServiceImpl();
+    }
+
+    @Override
+    public BuscarTimesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+
+        View view = LayoutInflater.from(context).inflate(R.layout.fragment_buscartimes, parent, false);
+
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(BuscarTimesAdapter.ViewHolder holder, int position){
+
+        int backgroundColor = ContextCompat.getColor(context, R.color.bgColorOdd);
+
+        if ((position % 2) == 0){
+            backgroundColor = ContextCompat.getColor(context, R.color.bgColorEven);
+        }
+
+        holder.setData( listaTimes.get( position ), backgroundColor );
+    }
+
+    @Override
+    public int getItemCount(){
+        return listaTimes.size();
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -79,7 +110,7 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
 
                         realm =  Realm.getDefaultInstance();
 
-                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(new TimeFavorito(time)));
+                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(new TimeFavorito(time, true, false)));
 
                         Toast.makeText(context, time.getNomeDoTime()+" adicionado a lista de favoritos", Toast.LENGTH_SHORT).show();
 
@@ -149,36 +180,5 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
                 if (realm != null) realm.close();
             }
         }
-    }
-
-    public BuscarTimesAdapter(Context context, List<ApiTime> listaTimes){
-        this.context = context;
-        this.listaTimes = listaTimes;
-        this.apiService = new ApiServiceImpl();
-    }
-
-    @Override
-    public BuscarTimesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_buscartimes, parent, false);
-
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(BuscarTimesAdapter.ViewHolder holder, int position){
-
-        int backgroundColor = ContextCompat.getColor(context, R.color.bgColorOdd);
-
-        if ((position % 2) == 0){
-            backgroundColor = ContextCompat.getColor(context, R.color.bgColorEven);
-        }
-
-        holder.setData( listaTimes.get( position ), backgroundColor );
-    }
-
-    @Override
-    public int getItemCount(){
-        return listaTimes.size();
     }
 }

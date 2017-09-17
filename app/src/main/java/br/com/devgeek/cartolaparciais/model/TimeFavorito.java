@@ -25,8 +25,9 @@ public class TimeFavorito extends RealmObject {
     private String urlEscudoPlaceholderPng;
     private String fotoPerfil;
     private Boolean assinante;
+    private boolean timeFavorito;
+    private boolean timeDoUsuario;
 
-    private Integer posicao;
     private Double pontuacao;
     private Double variacaoCartoletas;
 
@@ -36,7 +37,7 @@ public class TimeFavorito extends RealmObject {
     }
 
 
-    public TimeFavorito(ApiTime time){
+    public TimeFavorito(ApiTime time, boolean timeFavorito, boolean timeDoUsuario){
         this.timeId = time.getTimeId();
         this.nomeDoTime = time.getNomeDoTime();
         this.nomeDoCartoleiro = time.getNomeDoCartoleiro();
@@ -46,10 +47,12 @@ public class TimeFavorito extends RealmObject {
         this.urlEscudoPlaceholderPng = time.getUrlEscudoPlaceholderPng();
         this.fotoPerfil = time.getFotoPerfil();
         this.assinante = time.getAssinante();
+        this.timeFavorito = timeFavorito;
+        this.timeDoUsuario = timeDoUsuario;
     }
 
 
-    public TimeFavorito(Long timeId, String nomeDoTime, String nomeDoCartoleiro, String slug, Long facebookId, String urlEscudoPng, String urlEscudoPlaceholderPng, String fotoPerfil, Boolean assinante){
+    public TimeFavorito(Long timeId, String nomeDoTime, String nomeDoCartoleiro, String slug, Long facebookId, String urlEscudoPng, String urlEscudoPlaceholderPng, String fotoPerfil, Boolean assinante, boolean timeFavorito, boolean timeDoUsuario){
         this.timeId = timeId;
         this.nomeDoTime = nomeDoTime;
         this.nomeDoCartoleiro = nomeDoCartoleiro;
@@ -59,6 +62,8 @@ public class TimeFavorito extends RealmObject {
         this.urlEscudoPlaceholderPng = urlEscudoPlaceholderPng;
         this.fotoPerfil = fotoPerfil;
         this.assinante = assinante;
+        this.timeFavorito = timeFavorito;
+        this.timeDoUsuario = timeDoUsuario;
     }
 
 
@@ -116,11 +121,17 @@ public class TimeFavorito extends RealmObject {
     public void setAssinante(Boolean assinante){
         this.assinante = assinante;
     }
-    public Integer getPosicao(){
-        return posicao;
+    public boolean isTimeFavorito(){
+        return timeFavorito;
     }
-    public void setPosicao(Integer posicao){
-        this.posicao = posicao;
+    public void setTimeFavorito(boolean timeFavorito){
+        this.timeFavorito = timeFavorito;
+    }
+    public boolean isTimeDoUsuario(){
+        return timeDoUsuario;
+    }
+    public void setTimeDoUsuario(boolean timeDoUsuario){
+        this.timeDoUsuario = timeDoUsuario;
     }
     public Double getPontuacao(){
         return pontuacao;

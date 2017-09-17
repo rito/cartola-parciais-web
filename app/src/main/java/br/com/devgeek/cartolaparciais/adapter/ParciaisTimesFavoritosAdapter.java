@@ -59,13 +59,17 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
     @Override
     public void onBindViewHolder(ParciaisTimesFavoritosAdapter.ViewHolder holder, int position){
 
-        int backgroundColor = ContextCompat.getColor(context, R.color.bgColorOdd);
+        int backgroundColor = ContextCompat.getColor(context, R.color.bgColorUser);
 
-        if ((position % 2) == 0){
-            backgroundColor = ContextCompat.getColor(context, R.color.bgColorEven);
+        if (!listaTimesFavoritos.get( position ).isTimeDoUsuario()){
+            if ((position % 2) == 0){
+                backgroundColor = ContextCompat.getColor(context, R.color.bgColorEven);
+            } else {
+                backgroundColor = ContextCompat.getColor(context, R.color.bgColorOdd);
+            }
         }
 
-        holder.setData( listaTimesFavoritos.get( position ), backgroundColor );
+        holder.setData( listaTimesFavoritos.get( position ), backgroundColor, position );
 
         holder.itemView.setOnClickListener((View v) -> {
 
@@ -116,7 +120,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
             background = (RelativeLayout) itemView.findViewById(R.id.parciais_background);
         }
 
-        private void setData( TimeFavorito timeFavorito , int backgroundColor ){
+        private void setData( TimeFavorito timeFavorito , int backgroundColor, int position){
 
             Picasso.with( context )
                     .load( timeFavorito.getUrlEscudoPng() )
@@ -126,12 +130,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
             nomeTime.setText(timeFavorito.getNomeDoTime());
             nomeCartoleiro.setText(timeFavorito.getNomeDoCartoleiro());
             background.setBackgroundColor(backgroundColor);
-
-            if (timeFavorito.getPosicao() == null){
-                posicao.setText("");
-            } else {
-                posicao.setText(String.valueOf(timeFavorito.getPosicao()));
-            }
+            posicao.setText(String.valueOf(position+1));
 
             if (timeFavorito.getPontuacao() == null){
                 pontuacao.setText("");

@@ -2,10 +2,12 @@ package br.com.devgeek.cartolaparciais;
 
 import android.app.Application;
 
+import io.realm.DynamicRealmObject;
 import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
+import io.realm.RealmResults;
 import io.realm.RealmSchema;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
@@ -65,12 +67,12 @@ public class CartolaParciais extends Application {
 
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(5)               // Must be bumped when the schema changes
+                .schemaVersion(6)               // Must be bumped when the schema changes
                 .migration(realmMigration())    // Migration to run instead of throwing an exception
                 //.deleteRealmIfMigrationNeeded()
                 .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
                 .build();
-//        Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
+        // Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
         Realm.setDefaultConfiguration(realmConfig);
     }
 
@@ -93,39 +95,22 @@ public class CartolaParciais extends Application {
 
             if (oldVersion == 4){
                 schema.create("UsuarioGlobo").addField("glbId", String.class, FieldAttribute.PRIMARY_KEY);
+                oldVersion++;
             }
 
-//                // Migrate to version 1: Add a new class.
-//                // Example:
-//                // public Person extends RealmObject {
-//                //     private String name;
-//                //     private int age;
-//                //     // getters and setters left out for brevity
-//                // }
-//                if (oldVersion == 2){
-//                    schema.create("Person")
-//                            .addField("name", String.class)
-//                            .addField("age", int.class);
-//                    oldVersion++;
-//                }
-//
-//                // Migrate to version 2: Add a primary key + object references
-//                // Example:
-//                // public Person extends RealmObject {
-//                //     private String name;
-//                //     @PrimaryKey
-//                //     private int age;
-//                //     private Dog favoriteDog;
-//                //     private RealmList<Dog> dogs;
-//                //     // getters and setters left out for brevity
-//                // }
-//                if (oldVersion == 1){
-//                    schema.get("Person")
-//                            .addField("id", long.class, FieldAttribute.PRIMARY_KEY)
-//                            .addRealmObjectField("favoriteDog", schema.get("Dog"))
-//                            .addRealmListField("dogs", schema.get("Dog"));
-//                    oldVersion++;
-//                }
+            if (oldVersion == 5){
+                schema.get("TimeFavorito")
+                      .removeField("posicao")
+                      .addField("timeFavorito", boolean.class)
+                      .addField("timeDoUsuario", boolean.class);
+
+                RealmResults<DynamicRealmObject> listaTimesFavoritos = realm.where("TimeFavorito").findAll();
+                if (listaTimesFavoritos != null && listaTimesFavoritos.size() > 0){
+                    for (DynamicRealmObject realmObject : listaTimesFavoritos){
+                        realmObject.setBoolean("timeFavorito", true);
+                    }
+                } oldVersion++;
+            }
         };
     }
 }

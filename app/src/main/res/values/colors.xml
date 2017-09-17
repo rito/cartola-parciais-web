@@ -9,6 +9,7 @@
 
     <color name="bgColorOdd">#ebf5f7</color>
     <color name="bgColorEven">#FFFFFF</color>
+    <color name="bgColorUser">#FFF8DC</color>
 
     <color name="white">#ffffff</color>
     <color name="dark_grey">#424242</color>
