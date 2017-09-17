@@ -232,17 +232,25 @@ public class LoginActivity extends AppCompatActivity {
 
                     try {
 
+                        TimeFavorito timeFavorito = null;
                         realm = Realm.getDefaultInstance();
-                        TimeFavorito timeFavorito = realm.copyFromRealm(realm.where(TimeFavorito.class).equalTo("timeId", authTime.getTime().getTimeId()).findFirst());
+
+                        try {
+                            timeFavorito = realm.copyFromRealm(realm.where(TimeFavorito.class).equalTo("timeId", authTime.getTime().getTimeId()).findFirst());
+                        } catch (Exception e){
+                            if (!e.getMessage().equals("Null objects cannot be copied from Realm."))
+                                logErrorOnConsole(TAG, e.getMessage(), e);
+                        }
 
                         if (timeFavorito != null){
 
                             timeFavorito.setTimeDoUsuario(true);
-                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
+                            saveTimeFavoritoToRealm(realm, timeFavorito);
 
                         } else {
 
-                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(new TimeFavorito(authTime.getTime(), true, true)));
+                            timeFavorito = new TimeFavorito(authTime.getTime(), true, true);
+                            saveTimeFavoritoToRealm(realm, timeFavorito);
                         }
 
                         ApiServiceImpl apiServiceImpl = new ApiServiceImpl();
@@ -278,6 +286,10 @@ public class LoginActivity extends AppCompatActivity {
                     } progressDialog.dismiss();
                     finishActivityWithAnimation();
                 });
+    }
+
+    private void saveTimeFavoritoToRealm(Realm realm, TimeFavorito timeFavorito){
+        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
     }
 
     @Override

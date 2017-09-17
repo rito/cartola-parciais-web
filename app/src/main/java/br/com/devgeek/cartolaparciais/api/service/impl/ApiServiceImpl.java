@@ -97,14 +97,16 @@ public class ApiServiceImpl {
     public void atualizarLigas(Context context, boolean checkTime){
 
         String token = getX_GLB_Token();
-        if (isNetworkAvailable(context) && token != null){
+        if (isNetworkAvailable(context)){
 
-            if (checkTime){
-                if (isTimeToUpdateLigas()){
+            if (token != null){
+                if (checkTime){
+                    if (isTimeToUpdateLigas()){
+                        buscarLigasDoTimeLogado(token);
+                    }
+                } else {
                     buscarLigasDoTimeLogado(token);
                 }
-            } else {
-                buscarLigasDoTimeLogado(token);
             }
 
         } else {

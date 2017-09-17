@@ -99,7 +99,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
         private void setData(AtletasPontuados atleta){
 
-            if (userGloboIsLogged){
+            if (userGloboIsLogged && atleta.getFoto() != null){
 
                 Picasso.with( context ).load( atleta.getFoto().replace("_FORMATO","_140x140") ).into( fotoDoAtleta );
 
