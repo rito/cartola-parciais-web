@@ -29,9 +29,10 @@ public class ParciaisTimesFragment extends Fragment {
     private static final String TAG = "ParciaisTimesFragment";
 
     private Realm realm;
-    private RealmResults<TimeFavorito> listaTimesFavoritos;
     private ApiServiceImpl apiService;
     private ParciaisTimesFavoritosAdapter adapter;
+    private RealmResults<TimeFavorito> listaTimesFavoritos;
+    private SwipeRefreshLayout refreshListaTimesFavoritos;
     private RealmChangeListener listaTimesFavoritosListener = new RealmChangeListener(){
         @Override
         public void onChange(Object object){
@@ -39,17 +40,16 @@ public class ParciaisTimesFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     };
-    private SwipeRefreshLayout refreshListaTimesFavoritos;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 
         apiService = new ApiServiceImpl();
+        realm = Realm.getDefaultInstance();
         View view  = inflater.inflate(R.layout.fragment_parciaistimes, container, false);
 
 
-        realm = Realm.getDefaultInstance();
         Sort[] sortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING };
         String[] sortColumns = { "pontuacao", "variacaoCartoletas", "nomeDoTime" };
         listaTimesFavoritos = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).findAllSortedAsync(sortColumns, sortOrder);
@@ -92,7 +92,8 @@ public class ParciaisTimesFragment extends Fragment {
 
     private void atualizarDados(){
 
-        apiService.atualizarParciais(getContext(), true);
+        apiService.atualizarParciais(   getContext(), true);
+        apiService.atualizarLigas(      getContext(), true);
         new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
     }
 }

@@ -11,6 +11,10 @@
     <color name="bgColorEven">#FFFFFF</color>
     <color name="bgColorUser">#FFF8DC</color>
 
+    <color name="scout_button">#E6E9ED</color>
+
+    <color name="ligas_title_background">#ededed</color>
+
     <color name="white">#ffffff</color>
     <color name="dark_grey">#424242</color>
     <color name="medium_grey">#757575</color>

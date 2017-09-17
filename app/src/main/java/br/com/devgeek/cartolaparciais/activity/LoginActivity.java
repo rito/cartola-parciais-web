@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +19,11 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import br.com.devgeek.cartolaparciais.R;
+import br.com.devgeek.cartolaparciais.api.model.ApiAuthTime;
 import br.com.devgeek.cartolaparciais.api.model.ApiLogin;
 import br.com.devgeek.cartolaparciais.api.service.ApiService;
+import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
+import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.model.UsuarioGlobo;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -47,11 +51,14 @@ public class LoginActivity extends AppCompatActivity {
     );
     private static final String TAG = "LoginActivity";
     private static final int SERVICE_ID = 4728;
-    private RequestBody body;
     private Retrofit retrofit;
     private ApiService apiService;
     private ProgressDialog progressDialog;
+
+    private RequestBody bodyApiLogin;
     private Observable<ApiLogin> fazerLoginNaGlobo;
+    private Observable<ApiAuthTime> informacoesDoTimeLogado;
+
     private EditText email;
     private EditText senha;
 
@@ -117,8 +124,8 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
 
-                body = RequestBody.create( okhttp3.MediaType.parse( "application/json; charset=utf-8" ), "{\"payload\":{\"email\":\""+email+"\",\"password\":\""+password+"\",\"serviceId\":"+SERVICE_ID+"}}" );
-                fazerLoginNaGlobo = apiService.fazerLoginNaGlobo(body);
+                bodyApiLogin = RequestBody.create( okhttp3.MediaType.parse( ApiService.APPLICATION_JSON ), "{\"payload\":{\"email\":\""+email+"\",\"password\":\""+password+"\",\"serviceId\":"+SERVICE_ID+"}}" );
+                fazerLoginNaGlobo = apiService.fazerLoginNaGlobo(bodyApiLogin);
 
                 fazerLoginNaGlobo.subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -147,32 +154,8 @@ public class LoginActivity extends AppCompatActivity {
 
                             } else {
 
-                                Realm realm = null;
+                                saveX_GLB_TokenOnRealm(view, login);
 
-                                try {
-
-                                    // GET -> https://api.cartolafc.globo.com/auth/time
-                                    // Content-Type -> application/json
-                                    // X-GLB-Token
-
-                                    realm = Realm.getDefaultInstance();
-                                    UsuarioGlobo usuarioGlobo = new UsuarioGlobo(login.getGlbId());
-                                    UsuarioGlobo usuarioGloboOnRealm = realm.where(UsuarioGlobo.class).findFirst();
-
-                                    if (usuarioGloboOnRealm != null) usuarioGloboOnRealm.deleteFromRealm();
-                                    realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(usuarioGlobo));
-
-                                    finishActivityWithAnimation();
-
-                                } catch (Exception e){
-
-                                    progressDialog.dismiss();
-                                    logErrorOnConsole(TAG, e.getMessage(), e);
-                                    Snackbar.make( view, login.getUserMessage(), Snackbar.LENGTH_LONG ).setAction( "Action", null ).show();
-
-                                } finally {
-                                    if (realm != null) realm.close();
-                                }
                             }
                         }, error -> {
                             try {
@@ -197,6 +180,104 @@ public class LoginActivity extends AppCompatActivity {
             Snackbar.make( view, "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
             logErrorOnConsole(TAG, "Sem conexão com a internet", null);
         }
+    }
+
+    private void saveX_GLB_TokenOnRealm(View view, ApiLogin login){
+
+        Realm realm = null;
+
+        try {
+
+            realm = Realm.getDefaultInstance();
+            UsuarioGlobo usuarioGlobo = new UsuarioGlobo(login.getGlbId());
+            UsuarioGlobo usuarioGloboOnRealm = realm.where(UsuarioGlobo.class).findFirst();
+
+            if (usuarioGloboOnRealm != null) usuarioGloboOnRealm.deleteFromRealm();
+            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(usuarioGlobo));
+
+            buscarInformacoesDoTimeLogado(view, login);
+
+        } catch (Exception e){
+
+            progressDialog.dismiss();
+            logErrorOnConsole(TAG, e.getMessage(), e);
+            Snackbar.make( view, login.getUserMessage(), Snackbar.LENGTH_LONG ).setAction( "Action", null ).show();
+
+        } finally {
+            if (realm != null) realm.close();
+        }
+    }
+
+    private void buscarInformacoesDoTimeLogado(View view, ApiLogin login){
+
+        retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("https://api.cartolafc.globo.com/")
+                .build();
+
+        apiService = retrofit.create(ApiService.class);
+
+        informacoesDoTimeLogado = apiService.informacoesDoTimeLogado(login.getGlbId());
+
+        informacoesDoTimeLogado.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn((Throwable throwable) -> {
+                    logErrorOnConsole(TAG, "buscarInformacoesDoTimeLogado.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                    return null; //empty object of the datatype
+                })
+                .subscribe(authTime -> {
+
+                    Realm realm = null;
+
+                    try {
+
+                        realm = Realm.getDefaultInstance();
+                        TimeFavorito timeFavorito = realm.copyFromRealm(realm.where(TimeFavorito.class).equalTo("timeId", authTime.getTime().getTimeId()).findFirst());
+
+                        if (timeFavorito != null){
+
+                            timeFavorito.setTimeDoUsuario(true);
+                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
+
+                        } else {
+
+                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(new TimeFavorito(authTime.getTime(), true, true)));
+                        }
+
+                        ApiServiceImpl apiServiceImpl = new ApiServiceImpl();
+                        apiServiceImpl.atualizarLigas(getApplicationContext(), false);
+                        apiServiceImpl.atualizarParciais(getApplicationContext(), false);
+
+                        new Handler().postDelayed(() -> finishActivityWithAnimation(), 1250);
+
+                    } catch (Exception e){
+
+                        progressDialog.dismiss();
+                        logErrorOnConsole(TAG, e.getMessage(), e);
+                        Snackbar.make( view, login.getUserMessage(), Snackbar.LENGTH_LONG ).setAction( "Action", null ).show();
+                        finishActivityWithAnimation();
+
+                    } finally {
+                        if (realm != null) realm.close();
+                    }
+
+                }, error -> {
+                    try {
+                        if (error instanceof NullPointerException){
+                            logErrorOnConsole(TAG, "ApiAuthTime [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                        } else if (error instanceof HttpException){ // We had non-200 http error
+                            logErrorOnConsole(TAG, "ApiAuthTime [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                        } else if (error instanceof IOException){ // A network error happened
+                            logErrorOnConsole(TAG, "ApiAuthTime [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                        } else {
+                            logErrorOnConsole(TAG, "ApiAuthTime -> " + error.getMessage() + " / " + error.getClass(), error);
+                        }
+                    } catch (Exception e){
+                        logErrorOnConsole(TAG, "ApiAuthTime -> " + error.getMessage() + " / " + error.getClass(), error);
+                    } progressDialog.dismiss();
+                    finishActivityWithAnimation();
+                });
     }
 
     @Override

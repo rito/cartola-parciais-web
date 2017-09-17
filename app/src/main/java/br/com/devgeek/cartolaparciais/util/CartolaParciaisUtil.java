@@ -55,4 +55,27 @@ public class CartolaParciaisUtil {
 
         return userGloboIsLogged;
     }
+
+    public static String getX_GLB_Token(){
+
+        String token = null;
+        Realm realm = null;
+
+        try {
+
+            realm = Realm.getDefaultInstance();
+            UsuarioGlobo usuarioGlobo = realm.where(UsuarioGlobo.class).findFirst();
+
+            if (usuarioGlobo != null && usuarioGlobo.getGlbId() != null) token = usuarioGlobo.getGlbId();
+
+        } catch (Exception e){
+
+            logErrorOnConsole(TAG, e.getMessage(), e);
+
+        } finally {
+            if (realm != null) realm.close();
+        }
+
+        return token;
+    }
 }

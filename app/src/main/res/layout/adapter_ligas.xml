@@ -7,17 +7,50 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/parciais_background"
+        android:id="@+id/ligas_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@color/bgColorOdd"
-        android:paddingRight="16dp">
+        android:visibility="invisible"
+        android:background="@color/ligas_title_background">
+
+        <TextView
+            android:id="@+id/tipo_liga"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="Minhas ligas"
+            android:textStyle="bold"
+            android:paddingRight="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ligas_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingLeft="0dp"
+        android:paddingRight="8dp">
 
         <ImageView
-            android:id="@+id/atleta"
+            android:id="@+id/flamula"
             android:layout_width="48dp"
             android:layout_height="44dp"
             android:layout_marginBottom="6dp"
@@ -26,20 +59,7 @@
             tools:src="@drawable/arkenstone_fc" />
 
         <TextView
-            android:id="@+id/posicao"
-            android:layout_width="12dp"
-            android:layout_height="48dp"
-            android:layout_alignTop="@+id/atleta"
-            android:layout_toEndOf="@+id/atleta"
-            android:layout_toRightOf="@+id/atleta"
-            android:ellipsize="end"
-            android:gravity="right|center_vertical"
-            android:maxLines="1"
-            android:text="01"
-            android:textSize="10sp" />
-
-        <TextView
-            android:id="@+id/nome_time"
+            android:id="@+id/nome_liga"
             style="@android:style/TextAppearance.DeviceDefault.Medium"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
@@ -47,27 +67,27 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="72dp"
-            android:layout_toRightOf="@+id/posicao"
+            android:layout_toRightOf="@+id/flamula"
             android:ellipsize="end"
             android:gravity="bottom|left"
             android:maxEms="10"
             android:maxLines="1"
             android:paddingLeft="4dp"
             android:scrollHorizontally="true"
-            android:text="Arkenstone Futebol Clube FC"
+            android:text="Família Duarte no Cartola FC"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/nome_cartoleiro"
+            android:id="@+id/descricao_liga"
             style="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/posicao"
-            android:layout_alignLeft="@+id/nome_time"
+            android:layout_alignBottom="@+id/flamula"
+            android:layout_alignLeft="@+id/nome_liga"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignStart="@+id/nome_time"
-            android:layout_below="@+id/nome_time"
+            android:layout_alignStart="@+id/nome_liga"
+            android:layout_below="@+id/nome_liga"
             android:layout_marginRight="72dp"
             android:layout_marginTop="-7dp"
             android:ellipsize="end"
@@ -75,35 +95,36 @@
             android:maxLines="1"
             android:paddingLeft="4dp"
             android:paddingTop="4dp"
-            android:text="Geovanne Fernandes Duarte Fernandes Duarte" />
+            android:text="Liga da Família Duarte no Cartola FC" />
 
         <TextView
-            android:id="@+id/atleta_pontuacao"
+            android:id="@+id/ranking"
             style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="72dp"
+            android:layout_width="80dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="bottom|right"
-            android:text="9999.00"
+            android:text="1183185°"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/cartoletas"
+            android:id="@+id/total_times_liga"
             style="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/nome_cartoleiro"
-            android:layout_alignLeft="@+id/atleta_pontuacao"
+            android:layout_alignBottom="@+id/descricao_liga"
+            android:layout_alignLeft="@+id/ranking"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignStart="@+id/atleta_pontuacao"
-            android:layout_below="@+id/atleta_pontuacao"
+            android:layout_alignStart="@+id/ranking"
+            android:layout_below="@+id/ranking"
             android:layout_marginTop="-7dp"
             android:gravity="top|right"
+            android:paddingRight="6dp"
             android:paddingTop="4dp"
-            android:text="C$ 999.99" />
+            android:text="41964196" />
 
     </RelativeLayout>
 

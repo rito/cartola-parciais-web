@@ -13,11 +13,14 @@ import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado_PontuacaoAtleta;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtleta;
+import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas;
+import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas_liga;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug_Atleta;
 import br.com.devgeek.cartolaparciais.api.service.ApiService;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
+import br.com.devgeek.cartolaparciais.model.Liga;
 import br.com.devgeek.cartolaparciais.model.MercadoStatus;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import io.reactivex.Observable;
@@ -32,7 +35,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToAtualizarMercado;
-import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToAtualizarParciais;
+import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdateLigas;
+import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdateParciais;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.getX_GLB_Token;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
 
@@ -76,11 +81,30 @@ public class ApiServiceImpl {
         if (isNetworkAvailable(context)){
 
             if (checkTime){
-                if (isTimeToAtualizarParciais()){
+                if (isTimeToUpdateParciais()){
                     buscarAtletasPontuados();
                 }
             } else {
                 buscarAtletasPontuados();
+            }
+
+        } else {
+            Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
+            logErrorOnConsole(TAG, "Sem conexão com a internet", null);
+        }
+    }
+
+    public void atualizarLigas(Context context, boolean checkTime){
+
+        String token = getX_GLB_Token();
+        if (isNetworkAvailable(context) && token != null){
+
+            if (checkTime){
+                if (isTimeToUpdateLigas()){
+                    buscarLigasDoTimeLogado(token);
+                }
+            } else {
+                buscarLigasDoTimeLogado(token);
             }
 
         } else {
@@ -397,6 +421,87 @@ public class ApiServiceImpl {
                     });
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao buscarAtletasMercado() -> "+e.getMessage(), e);
+        }
+    }
+
+    private void buscarLigasDoTimeLogado(String token){
+
+        try {
+
+            Observable<ApiAuthLigas> buscarLigasDoTimeLogado = apiService.buscarLigasDoTimeLogado(token);
+
+            buscarLigasDoTimeLogado.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn((Throwable throwable) -> {
+                        logErrorOnConsole(TAG, "buscarLigasDoTimeLogado.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        return null;
+                    })
+                    .subscribe(
+                            ligasDaApi -> {
+
+                                Realm realm = null;
+
+                                try {
+
+                                    realm = Realm.getDefaultInstance();
+                                    final RealmResults<Liga> ligasOnRealm = realm.where(Liga.class).findAll();
+                                    if (ligasOnRealm != null && ligasOnRealm.size() > 0)  realm.executeTransaction(realmTransaction -> ligasOnRealm.deleteAllFromRealm() );
+
+                                    RealmList<Liga> ligasDoCartoleiro = new RealmList<>();
+                                    boolean hasEditorial = false, hasMataMata = false, hasMinhasLigas = false;
+
+                                    if (ligasDaApi != null && ligasDaApi.getLigas() != null && ligasDaApi.getLigas().size() > 0){
+
+                                        for (ApiAuthLigas_liga liga : ligasDaApi.getLigas()){
+
+                                            String tipoLiga = "";
+                                            if (liga.getClubeId() != null || liga.isEditorial() || liga.getTotalTimesLiga() == 0){
+                                                hasEditorial = true; tipoLiga = "Editorial";
+                                            } else if (liga.isMata_mata()){
+                                                hasMataMata = true; tipoLiga = "Mata-Mata";
+                                            } else {
+                                                hasMinhasLigas = true; tipoLiga = "Minhas ligas";
+                                            }
+
+                                            ligasDoCartoleiro.add(new Liga(liga, tipoLiga));
+                                        }
+                                    }
+
+                                    if (hasEditorial)   ligasDoCartoleiro.add(new Liga(-999, "", "", "Editorial"));
+                                    if (hasMataMata)    ligasDoCartoleiro.add(new Liga(-555, "", "", "Mata-Mata"));
+                                    if (hasMinhasLigas) ligasDoCartoleiro.add(new Liga(-111, "", "", "Minhas ligas"));
+
+                                    if (ligasDoCartoleiro.size() > 0){
+
+                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(ligasDoCartoleiro));
+                                    }
+                                } catch (Exception e){
+
+                                    logErrorOnConsole(TAG, e.getMessage(), e);
+
+                                } finally {
+                                    if (realm != null) realm.close();
+                                }
+                            },
+                            error -> {
+                                try {
+                                    if (error instanceof NullPointerException){
+                                        buscarAtletasMercado();
+                                        atualizarParciaisTimesFavoritos(null);
+                                    } else if (error instanceof HttpException){ // We had non-200 http error
+                                        logErrorOnConsole(TAG, "ApiAuthLigas [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof IOException){ // A network error happened
+                                        logErrorOnConsole(TAG, "ApiAuthLigas [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else {
+                                        logErrorOnConsole(TAG, "ApiAuthLigas -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    }
+                                } catch (Exception e){
+                                    logErrorOnConsole(TAG, "ApiAuthLigas -> " + error.getMessage() + " / " + error.getClass(), error);
+                                }
+                            });
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "Falha ao buscarLigasDoTimeLogado() -> "+e.getMessage(), e);
+            atualizarParciaisTimesFavoritos(null);
         }
     }
 }

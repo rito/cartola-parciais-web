@@ -18,8 +18,24 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOn
 public class CartolaParciais extends Application {
 
     private final static int ONE_MINUTE = 60000;
+    protected static Long lastTimeAtualizarLigasWasExecuted = null;
     protected static Long lastTimeAtualizarMercadoWasExecuted = null;
     protected static Long lastTimeAtualizarParciaisWasExecuted = null;
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+
+        Realm.init(this);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+                .schemaVersion(7)               // Must be bumped when the schema changes
+                .migration(realmMigration())    // Migration to run instead of throwing an exception
+                //.deleteRealmIfMigrationNeeded()
+                .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
+                .build();
+        //Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
+        Realm.setDefaultConfiguration(realmConfig);
+    }
 
     public static boolean isTimeToAtualizarMercado(){
 
@@ -41,7 +57,7 @@ public class CartolaParciais extends Application {
         }
     }
 
-    public static boolean isTimeToAtualizarParciais(){
+    public static boolean isTimeToUpdateParciais(){
 
         try {
 
@@ -56,24 +72,29 @@ public class CartolaParciais extends Application {
 
         } catch (Exception e){
 
-            logErrorOnConsole("isTimeToAtualizarParciais", e.getMessage(), e);
+            logErrorOnConsole("isTimeToUpdateParciais", e.getMessage(), e);
             return  true;
         }
     }
 
-    @Override
-    public void onCreate(){
-        super.onCreate();
+    public static boolean isTimeToUpdateLigas(){
 
-        Realm.init(this);
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(6)               // Must be bumped when the schema changes
-                .migration(realmMigration())    // Migration to run instead of throwing an exception
-                //.deleteRealmIfMigrationNeeded()
-                .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
-                .build();
-        // Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
-        Realm.setDefaultConfiguration(realmConfig);
+        try {
+
+            Long currentTime = System.currentTimeMillis();
+
+            if (lastTimeAtualizarLigasWasExecuted == null || (currentTime - lastTimeAtualizarLigasWasExecuted) > ONE_MINUTE){
+                lastTimeAtualizarLigasWasExecuted = currentTime;
+                return  true;
+            }
+
+            return false;
+
+        } catch (Exception e){
+
+            logErrorOnConsole("isTimeToUpdateLigas", e.getMessage(), e);
+            return  true;
+        }
     }
 
     private final RealmMigration realmMigration(){
@@ -110,6 +131,20 @@ public class CartolaParciais extends Application {
                         realmObject.setBoolean("timeFavorito", true);
                     }
                 } oldVersion++;
+            }
+
+            if (oldVersion == 6){
+                schema.create("Liga")
+                      .addField("ligaId", long.class, FieldAttribute.PRIMARY_KEY)
+                      .addField("timeDonoId", Long.class)
+                      .addField("nomeDaLiga", String.class)
+                      .addField("descricaoDaLiga", String.class)
+                      .addField("slug", String.class)
+                      .addField("urlFlamulaPng", String.class)
+                      .addField("totalTimesLiga", Long.class)
+                      .addField("ranking", Long.class)
+                      .addField("tipoLiga", String.class);
+                oldVersion++;
             }
         };
     }

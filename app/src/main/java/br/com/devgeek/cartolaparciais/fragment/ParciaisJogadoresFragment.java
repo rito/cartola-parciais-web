@@ -97,7 +97,8 @@ public class ParciaisJogadoresFragment extends Fragment {
 
     private void atualizarDados(){
 
-        apiService.atualizarParciais(getContext(), true);
+        apiService.atualizarParciais(   getContext(), true);
+        apiService.atualizarLigas(      getContext(), true);
         new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
     }
 }

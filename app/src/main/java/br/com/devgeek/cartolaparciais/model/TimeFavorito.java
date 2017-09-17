@@ -8,7 +8,6 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by geovannefduarte
  */
-
 public class TimeFavorito extends RealmObject {
 
     public static String FORMATO_PONTUACAO = "#0.00";

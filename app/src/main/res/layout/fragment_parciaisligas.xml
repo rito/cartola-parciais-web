@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <Button
         android:id="@+id/fazerLogin"
         android:layout_width="wrap_content"
@@ -11,4 +10,18 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="Fazer Login" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLigas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listaDeLigas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
