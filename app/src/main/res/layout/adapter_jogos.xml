@@ -46,31 +46,22 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:background="@color/bgColorOdd"
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
-        <ImageView
-            android:id="@+id/clube_casa"
-            android:layout_width="48dp"
-            android:layout_height="44dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
-            android:scaleType="fitEnd"
-            tools:src="@drawable/sao_paulo_60x60" />
-
         <TextView
             android:id="@+id/placar_versus"
-            style="@android:style/TextAppearance.DeviceDefault.Large"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
             android:layout_width="24dp"
             android:layout_height="44dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="6dp"
-            android:layout_toEndOf="@+id/clube_casa"
-            android:layout_toLeftOf="@+id/clube_visitante"
-            android:layout_toRightOf="@+id/clube_casa"
             android:ellipsize="end"
             android:gravity="center_horizontal|center_vertical"
             android:maxEms="10"
@@ -78,16 +69,164 @@
             android:scrollHorizontally="true"
             android:text="X" />
 
-        <ImageView
-            android:id="@+id/clube_visitante"
-            android:layout_width="48dp"
-            android:layout_height="44dp"
+        <TextView
+            android:id="@+id/jogo_hora"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
-            android:scaleType="fitStart"
-            tools:src="@drawable/sao_paulo_60x60" />
+            android:layout_marginTop="1dp"
+            android:ellipsize="end"
+            android:gravity="top|center_horizontal"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="16h00" />
+        
+        <TextView
+            android:id="@+id/jogo_local"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="32dp"
+            android:ellipsize="end"
+            android:gravity="bottom|center_horizontal"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="Morumbi" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:text="left">
+
+                <TextView
+                    android:id="@+id/sigla_casa"
+                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toLeftOf="@+id/clube_casa"
+                    android:layout_toStartOf="@+id/clube_casa"
+                    android:ellipsize="end"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:maxEms="10"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="SAO" />
+
+                <ImageView
+                    android:id="@+id/clube_casa"
+                    android:layout_width="56dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toLeftOf="@+id/placar_casa"
+                    android:layout_toStartOf="@+id/placar_casa"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/sao_paulo_60x60" />
+
+                <TextView
+                    android:id="@+id/placar_casa"
+                    style="@android:style/TextAppearance.DeviceDefault.Large"
+                    android:layout_width="30dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="6dp"
+                    android:ellipsize="end"
+                    android:gravity="right|center_vertical"
+                    android:maxEms="10"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="12" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:text="right">
+
+                <TextView
+                    android:id="@+id/sigla_visitante"
+                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toEndOf="@+id/clube_visitante"
+                    android:layout_toLeftOf="@+id/clube_visitante"
+                    android:layout_toRightOf="@+id/clube_visitante"
+                    android:ellipsize="end"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:maxEms="10"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="SAO" />
+
+                <ImageView
+                    android:id="@+id/clube_visitante"
+                    android:layout_width="56dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toEndOf="@+id/placar_visitante"
+                    android:layout_toRightOf="@+id/placar_visitante"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/sao_paulo_60x60" />
+
+                <TextView
+                    android:id="@+id/placar_visitante"
+                    style="@android:style/TextAppearance.DeviceDefault.Large"
+                    android:layout_width="30dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="6dp"
+                    android:ellipsize="end"
+                    android:gravity="left|center_vertical"
+                    android:maxEms="10"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:text="12" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>
