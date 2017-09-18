@@ -107,7 +107,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
             nomeDoAtleta.setText(atleta.getApelido());
             atletaPosicao.setText(PosicoesJogadoresUtil.getPosicaoNome(atleta.getPosicaoId()));
-            escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId(),"60x60"));
+            escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId()));
 
             pontuacao.setText("-.--");
             pontuacao.setTextColor(ContextCompat.getColor(context, android.R.color.tab_indicator_text));

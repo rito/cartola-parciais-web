@@ -83,89 +83,29 @@ public class ClubesUtil {
         }
     }
 
-    public static int getClubeEscudo(int idClube, String tamanho){
+    public static int getClubeEscudo(int idClube){
 
         switch (idClube){
-            case ATLETICO_GO:
-                     if (tamanho.equals("30x30")){ return R.drawable.atletico_go_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.atletico_go_45x45; }
-                else {                             return R.drawable.atletico_go_60x60; }
-            case ATLETICO_MG:
-                     if (tamanho.equals("30x30")){ return R.drawable.atletico_mg_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.atletico_mg_45x45; }
-                else {                             return R.drawable.atletico_mg_60x60; }
-            case ATLETICO_PR:
-                     if (tamanho.equals("30x30")){ return R.drawable.atletico_pr_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.atletico_pr_45x45; }
-                else {                             return R.drawable.atletico_pr_60x60; }
-            case AVAI:
-                     if (tamanho.equals("30x30")){ return R.drawable.avai_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.avai_45x45; }
-                else {                             return R.drawable.avai_60x60; }
-            case BAHIA:
-                     if (tamanho.equals("30x30")){ return R.drawable.bahia_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.bahia_45x45; }
-                else {                             return R.drawable.bahia_60x60; }
-            case BOTAFOGO:
-                     if (tamanho.equals("30x30")){ return R.drawable.botafogo_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.botafogo_45x45; }
-                else {                             return R.drawable.botafogo_60x60; }
-            case CHAPECOENSE:
-                     if (tamanho.equals("30x30")){ return R.drawable.chapecoense_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.chapecoense_45x45; }
-                else {                             return R.drawable.chapecoense_60x60; }
-            case CORINTHIANS:
-                     if (tamanho.equals("30x30")){ return R.drawable.corinthians_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.corinthians_45x45; }
-                else {                             return R.drawable.corinthians_60x60; }
-            case CORITIBA:
-                     if (tamanho.equals("30x30")){ return R.drawable.coritiba_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.coritiba_45x45; }
-                else {                             return R.drawable.coritiba_60x60; }
-            case CRUZEIRO:
-                     if (tamanho.equals("30x30")){ return R.drawable.cruzeiro_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.cruzeiro_45x45; }
-                else {                             return R.drawable.cruzeiro_60x60; }
-            case FLAMENGO:
-                     if (tamanho.equals("30x30")){ return R.drawable.flamengo_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.flamengo_45x45; }
-                else {                             return R.drawable.flamengo_60x60; }
-            case FLUMINENSE:
-                     if (tamanho.equals("30x30")){ return R.drawable.fluminense_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.fluminense_45x45; }
-                else {                             return R.drawable.fluminense_60x60; }
-            case GREMIO:
-                     if (tamanho.equals("30x30")){ return R.drawable.gremio_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.gremio_45x45; }
-                else {                             return R.drawable.gremio_60x60; }
-            case PALMEIRAS:
-                     if (tamanho.equals("30x30")){ return R.drawable.palmeiras_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.palmeiras_45x45; }
-                else {                             return R.drawable.palmeiras_60x60; }
-            case PONTE_PRETA:
-                     if (tamanho.equals("30x30")){ return R.drawable.ponte_preta_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.ponte_preta_45x45; }
-                else {                             return R.drawable.ponte_preta_60x60; }
-            case SANTOS:
-                     if (tamanho.equals("30x30")){ return R.drawable.santos_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.santos_45x45; }
-                else {                             return R.drawable.santos_60x60; }
-            case SAO_PAULO:
-                     if (tamanho.equals("30x30")){ return R.drawable.sao_paulo_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.sao_paulo_45x45; }
-                else {                             return R.drawable.sao_paulo_60x60; }
-            case SPORT:
-                     if (tamanho.equals("30x30")){ return R.drawable.sport_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.sport_45x45; }
-                else {                             return R.drawable.sport_60x60; }
-            case VASCO:
-                     if (tamanho.equals("30x30")){ return R.drawable.vasco_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.vasco_45x45; }
-                else {                             return R.drawable.vasco_60x60; }
-            case VITORIA:
-                     if (tamanho.equals("30x30")){ return R.drawable.vitoria_30x30; }
-                else if (tamanho.equals("45x45")){ return R.drawable.vitoria_45x45; }
-                else {                             return R.drawable.vitoria_60x60; }
+            case ATLETICO_GO:   return R.drawable.atletico_go_60x60;
+            case ATLETICO_MG:   return R.drawable.atletico_mg_60x60;
+            case ATLETICO_PR:   return R.drawable.atletico_pr_60x60;
+            case AVAI:          return R.drawable.avai_60x60;
+            case BAHIA:         return R.drawable.bahia_60x60;
+            case BOTAFOGO:      return R.drawable.botafogo_60x60;
+            case CHAPECOENSE:   return R.drawable.chapecoense_60x60;
+            case CORINTHIANS:   return R.drawable.corinthians_60x60;
+            case CORITIBA:      return R.drawable.coritiba_60x60;
+            case CRUZEIRO:      return R.drawable.cruzeiro_60x60;
+            case FLAMENGO:      return R.drawable.flamengo_60x60;
+            case FLUMINENSE:    return R.drawable.fluminense_60x60;
+            case GREMIO:        return R.drawable.gremio_60x60;
+            case PALMEIRAS:     return R.drawable.palmeiras_60x60;
+            case PONTE_PRETA:   return R.drawable.ponte_preta_60x60;
+            case SANTOS:        return R.drawable.santos_60x60;
+            case SAO_PAULO:     return R.drawable.sao_paulo_60x60;
+            case SPORT:         return R.drawable.sport_60x60;
+            case VASCO:         return R.drawable.vasco_60x60;
+            case VITORIA:       return R.drawable.vitoria_60x60;
             default: return R.drawable.clube;
         }
     }

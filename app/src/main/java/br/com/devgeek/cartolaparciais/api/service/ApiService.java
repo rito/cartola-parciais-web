@@ -44,7 +44,7 @@ public interface ApiService {
     @POST("api/authentication")
     Observable<ApiLogin> fazerLoginNaGlobo(@Body RequestBody params);
 
-    @GET("auth/time")
+    @GET("auth/time/info")
     Observable<ApiAuthTime> informacoesDoTimeLogado(@Header("X-GLB-Token") String token);
 
     @GET("auth/ligas")
