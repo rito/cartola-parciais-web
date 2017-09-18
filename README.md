@@ -3,7 +3,6 @@
 ```
 amigos_cartola: "//api.cartolafc.globo.com/auth/amigos",
 atleta_pontuacao: "//api.cartolafc.globo.com/auth/mercado/atleta/{idAtleta}/pontuacao",
-auth: "//api.cartolafc.globo.com/auth/time/info",
 banir_times: "//api.cartolafc.globo.com/auth/liga/{slugLiga}/banir",
 busca_ligas: "//api.cartolafc.globo.com/ligas?q=",
 campeoes_ligas_nacionais: "//api.cartolafc.globo.com/logged/ligas/campeoes-nacionais",
@@ -35,6 +34,7 @@ validarAssinaturaUsuarioSemTime: "//api.cartolafc.globo.com/logged/time/validar-
 #### Implementados
 ```
 atletas_parciais: "//api.cartolafc.globo.com/atletas/pontuados",
+auth: "//api.cartolafc.globo.com/auth/time/info",
 busca_times: "//api.cartolafc.globo.com/times?q=",
 mercado: "//api.cartolafc.globo.com/atletas/mercado",
 ligas_do_usuario: "//api.cartolafc.globo.com/auth/ligas",
