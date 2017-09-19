@@ -32,7 +32,7 @@
             android:maxLines="1"
             android:paddingRight="4dp"
             android:scrollHorizontally="true"
-            android:text="Minhas ligas"
+            android:text="Rodada"
             android:textStyle="bold" />
 
     </RelativeLayout>
@@ -46,7 +46,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/bgColorOdd"
+        android:background="@color/white"
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
@@ -60,8 +60,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:gravity="center_horizontal|center_vertical"
             android:maxEms="10"
@@ -79,14 +78,14 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:gravity="top|center_horizontal"
             android:maxEms="10"
             android:maxLines="1"
             android:scrollHorizontally="true"
             android:text="16h00" />
-        
+
         <TextView
             android:id="@+id/jogo_local"
             style="@android:style/TextAppearance.DeviceDefault.Small"
@@ -102,17 +101,21 @@
             android:gravity="bottom|center_horizontal"
             android:maxEms="10"
             android:maxLines="1"
+            android:paddingBottom="2dp"
             android:scrollHorizontally="true"
             android:text="Morumbi" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
                 android:layout_weight=".5"
                 android:text="left">
 
@@ -138,10 +141,10 @@
                 <ImageView
                     android:id="@+id/clube_casa"
                     android:layout_width="56dp"
-                    android:layout_height="44dp"
+                    android:layout_height="36dp"
                     android:layout_alignParentTop="true"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_toLeftOf="@+id/placar_casa"
                     android:layout_toStartOf="@+id/placar_casa"
                     android:scaleType="fitCenter"
@@ -163,13 +166,16 @@
                     android:maxEms="10"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
-                    android:text="12" />
+                    android:text="12"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="1dp"
                 android:layout_weight=".5"
                 android:text="right">
 
@@ -184,7 +190,6 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="6dp"
                     android:layout_toEndOf="@+id/clube_visitante"
-                    android:layout_toLeftOf="@+id/clube_visitante"
                     android:layout_toRightOf="@+id/clube_visitante"
                     android:ellipsize="end"
                     android:gravity="center_horizontal|center_vertical"
@@ -196,10 +201,10 @@
                 <ImageView
                     android:id="@+id/clube_visitante"
                     android:layout_width="56dp"
-                    android:layout_height="44dp"
+                    android:layout_height="36dp"
                     android:layout_alignParentTop="true"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/placar_visitante"
                     android:layout_toRightOf="@+id/placar_visitante"
                     android:scaleType="fitCenter"
@@ -221,7 +226,8 @@
                     android:maxEms="10"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
-                    android:text="12" />
+                    android:text="12"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 

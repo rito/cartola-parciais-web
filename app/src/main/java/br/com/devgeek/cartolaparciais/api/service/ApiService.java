@@ -8,6 +8,7 @@ import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas;
 import br.com.devgeek.cartolaparciais.api.model.ApiAuthTime;
 import br.com.devgeek.cartolaparciais.api.model.ApiLogin;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
+import br.com.devgeek.cartolaparciais.api.model.ApiPartidas;
 import br.com.devgeek.cartolaparciais.api.model.ApiTime;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
 import io.reactivex.Observable;
@@ -25,6 +26,12 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     String APPLICATION_JSON = "application/json; charset=utf-8";
+
+    @GET("partidas")
+    Observable<ApiPartidas> buscarPartidas();
+
+    @GET("partidas/{rodada}")
+    Observable<ApiPartidas> buscarPartidasDaRodada(@Path("rodada") int rodada);
 
     @GET("times?")
     Observable<List<ApiTime>> buscarTimes(@Query("q") String nomeTime);

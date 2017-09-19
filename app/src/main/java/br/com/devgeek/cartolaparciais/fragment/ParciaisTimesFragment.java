@@ -94,6 +94,7 @@ public class ParciaisTimesFragment extends Fragment {
 
         apiService.atualizarParciais(   getContext(), true);
         apiService.atualizarLigas(      getContext(), true);
+        apiService.atualizarPartidas(   getContext(), true);
         new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
     }
 }

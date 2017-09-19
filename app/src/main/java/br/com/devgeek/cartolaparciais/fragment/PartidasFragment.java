@@ -13,58 +13,59 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import br.com.devgeek.cartolaparciais.R;
-import br.com.devgeek.cartolaparciais.adapter.ParciaisJogadoresAdapter;
+import br.com.devgeek.cartolaparciais.adapter.PartidasAdapter;
 import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
-import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
+import br.com.devgeek.cartolaparciais.model.Partida;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
-
 /**
- * Created by geovannefduarte
+ * Created by geovannefduarte on 18/09/17.
  */
-public class ParciaisJogadoresFragment extends Fragment {
+public class PartidasFragment extends Fragment {
 
-    private static final String TAG = "ParciaisJogadoresFragme";
+    private static final String TAG = "PartidasFragment";
 
     private Realm realm;
-    private RealmResults<AtletasPontuados> listaAtletasPontuados;
     private ApiServiceImpl apiService;
-    private ParciaisJogadoresAdapter adapter;
-    private RealmChangeListener listaAtletasPontuadosListener = new RealmChangeListener(){
+
+    private RealmResults<Partida> partidas;
+    private SwipeRefreshLayout refreshPartidas;
+
+    private PartidasAdapter adapter;
+    private RecyclerView recyclerView;
+    private RealmChangeListener partidasListener = new RealmChangeListener(){
         @Override
         public void onChange(Object object){
-            adapter.update(listaAtletasPontuados);
+            adapter.update(partidas);
             adapter.notifyDataSetChanged();
         }
     };
-    private SwipeRefreshLayout refreshListaTimesFavoritos;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 
         apiService = new ApiServiceImpl();
-        View view  = inflater.inflate(R.layout.fragment_parciaisjogadores, container, false);
-
-
         realm = Realm.getDefaultInstance();
-        Sort[] sortOrder = { Sort.DESCENDING, Sort.ASCENDING };
-        String[] sortColumns = { "pontuacao", "apelido" };
-        listaAtletasPontuados = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAllSortedAsync(sortColumns, sortOrder);
+        View view = inflater.inflate(R.layout.fragment_partidas, container, false);
 
 
+        Sort[] sortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING, Sort.ASCENDING };
+        String[] sortColumns = { "rodada", "tituloRodada", "dataPartida", "local" };
+        partidas = realm.where(Partida.class).findAllSortedAsync(sortColumns, sortOrder);
+//        partidas = realm.where(Partida.class).isNotNull( "tituloRodada" ).findAllAsync();
 
-        refreshListaTimesFavoritos = (SwipeRefreshLayout) view.findViewById(R.id.refreshListaParciaisJogadores);
-        refreshListaTimesFavoritos.setOnRefreshListener(() -> atualizarDados());
 
+        refreshPartidas = (SwipeRefreshLayout) view.findViewById(R.id.refreshPartidas);
+        refreshPartidas.setOnRefreshListener(() -> atualizarDados());
 
 
         // Configurar recyclerView
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listaParciaisJogadores);
+        recyclerView = (RecyclerView) view.findViewById(R.id.listaDePartidas);
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager( getActivity() );
@@ -73,10 +74,8 @@ public class ParciaisJogadoresFragment extends Fragment {
         DividerItemDecoration divider = new DividerItemDecoration( getActivity() , mLayoutManager.getOrientation() );
         recyclerView.addItemDecoration( divider );
 
-        adapter = new ParciaisJogadoresAdapter( getActivity(), listaAtletasPontuados, userGloboIsLogged());
+        adapter = new PartidasAdapter( getActivity() , partidas );
         recyclerView.setAdapter( adapter );
-
-
 
         return view;
     }
@@ -85,20 +84,21 @@ public class ParciaisJogadoresFragment extends Fragment {
     public void onStart(){
         super.onStart();
         atualizarDados();
-        listaAtletasPontuados.addChangeListener(listaAtletasPontuadosListener);
+        partidas.addChangeListener(partidasListener);
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        listaAtletasPontuados.removeChangeListener(listaAtletasPontuadosListener);
+        partidas.removeChangeListener(partidasListener);
     }
+
 
     private void atualizarDados(){
 
         apiService.atualizarParciais(   getContext(), true);
         apiService.atualizarLigas(      getContext(), true);
         apiService.atualizarPartidas(   getContext(), true);
-        new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
+        new Handler().postDelayed(() -> refreshPartidas.setRefreshing(false), 850);
     }
 }

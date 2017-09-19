@@ -15,6 +15,7 @@ import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisJogadoresFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisLigasFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisTimesFragment;
+import br.com.devgeek.cartolaparciais.fragment.PartidasFragment;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager;
 
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Parciais");
         mPagerAdapter.addFragment(new ParciaisLigasFragment(), "Ligas");
         mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
-        mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Jogos");
+        mPagerAdapter.addFragment(new PartidasFragment(), "Jogos");
         viewPager.setAdapter(mPagerAdapter);
     }
 

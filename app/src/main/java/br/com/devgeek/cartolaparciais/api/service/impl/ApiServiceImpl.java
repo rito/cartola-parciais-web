@@ -16,12 +16,15 @@ import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtl
 import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas;
 import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas_liga;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
+import br.com.devgeek.cartolaparciais.api.model.ApiPartidas;
+import br.com.devgeek.cartolaparciais.api.model.ApiPartidas_Partida;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug;
 import br.com.devgeek.cartolaparciais.api.model.ApiTimeSlug_Atleta;
 import br.com.devgeek.cartolaparciais.api.service.ApiService;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
 import br.com.devgeek.cartolaparciais.model.Liga;
 import br.com.devgeek.cartolaparciais.model.MercadoStatus;
+import br.com.devgeek.cartolaparciais.model.Partida;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -37,6 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToAtualizarMercado;
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdateLigas;
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdateParciais;
+import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdatePartidas;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.getX_GLB_Token;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
@@ -47,6 +51,7 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOn
 public class ApiServiceImpl {
 
     private static final String TAG = "ApiServiceImpl";
+    // Erro 503 - Mercado em manutencao
 
     private Retrofit retrofit;
     private ApiService apiService;
@@ -68,6 +73,24 @@ public class ApiServiceImpl {
 
             if (isTimeToAtualizarMercado()){
                 verificarMercadoStatus();
+            }
+
+        } else {
+            Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
+            logErrorOnConsole(TAG, "Sem conexão com a internet", null);
+        }
+    }
+
+    public void atualizarPartidas(Context context, boolean checkTime){
+
+        if (isNetworkAvailable(context)){
+
+            if (checkTime){
+                if (isTimeToUpdatePartidas()){
+                    buscarPartidas(null);
+                }
+            } else {
+                buscarPartidas(null);
             }
 
         } else {
@@ -504,6 +527,118 @@ public class ApiServiceImpl {
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao buscarLigasDoTimeLogado() -> "+e.getMessage(), e);
             atualizarParciaisTimesFavoritos(null);
+        }
+    }
+
+    private void buscarPartidas(Integer buscarRodada){
+
+        try {
+
+            Observable<ApiPartidas> buscarPartidas;
+
+            if (buscarRodada == null){
+
+                buscarPartidas = apiService.buscarPartidas();
+
+            } else {
+
+                buscarPartidas = apiService.buscarPartidasDaRodada(buscarRodada);
+            }
+
+            buscarPartidas.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn((Throwable throwable) -> {
+                        logErrorOnConsole(TAG, "buscarPartidas.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        return null;
+                    })
+                    .subscribe(
+                            partidas -> {
+
+                                Realm realm = null;
+
+                                try {
+
+                                    realm = Realm.getDefaultInstance();
+                                    RealmList<Partida> listaPartidas = new RealmList<>();
+
+                                    if (partidas != null){
+
+                                        final int rodada = partidas.getRodada();
+                                        listaPartidas.add(new Partida((-rodada), rodada, rodada+"ª rodada"));
+
+                                        AsyncTask.execute(() -> verificarRodadasAnteriores(rodada-1) );
+
+                                        if (partidas != null && partidas.getPartidas() != null && partidas.getPartidas().size() > 0){
+
+                                            for (ApiPartidas_Partida partida : partidas.getPartidas()){
+
+                                                listaPartidas.add(new Partida(rodada, null, partida));
+                                            }
+                                        }
+                                    }
+
+                                    if (listaPartidas.size() > 0){
+
+                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(listaPartidas));
+                                    }
+
+                                } catch (Exception e){
+
+                                    logErrorOnConsole(TAG, e.getMessage(), e);
+
+                                } finally {
+                                    if (realm != null) realm.close();
+                                }
+                            },
+                            error -> {
+                                try {
+                                    if (error instanceof NullPointerException){
+                                        buscarAtletasMercado();
+                                        atualizarParciaisTimesFavoritos(null);
+                                    } else if (error instanceof HttpException){ // We had non-200 http error
+                                        logErrorOnConsole(TAG, "ApiPartidas [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof IOException){ // A network error happened
+                                        logErrorOnConsole(TAG, "ApiPartidas [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else {
+                                        logErrorOnConsole(TAG, "ApiPartidas -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    }
+                                } catch (Exception e){
+                                    logErrorOnConsole(TAG, "ApiPartidas -> " + error.getMessage() + " / " + error.getClass(), error);
+                                }
+                            });
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "Falha ao buscarPartidas() -> "+e.getMessage(), e);
+            atualizarParciaisTimesFavoritos(null);
+        }
+    }
+
+    private void verificarRodadasAnteriores(int rodada){
+
+        if (rodada > 0){
+
+            Realm realm = null;
+
+            try {
+
+                realm = Realm.getDefaultInstance();
+                final RealmResults<Partida> partidas = realm.where(Partida.class).equalTo("rodada", rodada).findAll();
+
+                if (partidas == null || partidas.size() == 0){
+
+                    buscarPartidas(rodada);
+
+                } else {
+
+                    verificarRodadasAnteriores(rodada - 1);
+                }
+
+            } catch (Exception e){
+
+                logErrorOnConsole(TAG, e.getMessage(), e);
+
+            } finally {
+                if (realm != null) realm.close();
+            }
         }
     }
 }

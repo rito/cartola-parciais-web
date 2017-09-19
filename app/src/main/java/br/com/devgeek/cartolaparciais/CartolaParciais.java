@@ -21,21 +21,7 @@ public class CartolaParciais extends Application {
     protected static Long lastTimeAtualizarLigasWasExecuted = null;
     protected static Long lastTimeAtualizarMercadoWasExecuted = null;
     protected static Long lastTimeAtualizarParciaisWasExecuted = null;
-
-    @Override
-    public void onCreate(){
-        super.onCreate();
-
-        Realm.init(this);
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(7)               // Must be bumped when the schema changes
-                .migration(realmMigration())    // Migration to run instead of throwing an exception
-                //.deleteRealmIfMigrationNeeded()
-                .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
-                .build();
-        //Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
-        Realm.setDefaultConfiguration(realmConfig);
-    }
+    protected static Long lastTimeAtualizarPartidasWasExecuted = null;
 
     public static boolean isTimeToAtualizarMercado(){
 
@@ -53,6 +39,26 @@ public class CartolaParciais extends Application {
         } catch (Exception e){
 
             logErrorOnConsole("isTimeToAtualizarMercado", e.getMessage(), e);
+            return  true;
+        }
+    }
+
+    public static boolean isTimeToUpdatePartidas(){
+
+        try {
+
+            Long currentTime = System.currentTimeMillis();
+
+            if (lastTimeAtualizarPartidasWasExecuted == null || (currentTime - lastTimeAtualizarPartidasWasExecuted) > ONE_MINUTE){
+                lastTimeAtualizarPartidasWasExecuted = currentTime;
+                return  true;
+            }
+
+            return false;
+
+        } catch (Exception e){
+
+            logErrorOnConsole("isTimeToUpdatePartidas", e.getMessage(), e);
             return  true;
         }
     }
@@ -95,6 +101,21 @@ public class CartolaParciais extends Application {
             logErrorOnConsole("isTimeToUpdateLigas", e.getMessage(), e);
             return  true;
         }
+    }
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+
+        Realm.init(this);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+                .schemaVersion(8)               // Must be bumped when the schema changes
+                .migration(realmMigration())    // Migration to run instead of throwing an exception
+                //.deleteRealmIfMigrationNeeded()
+                .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
+                .build();
+        //Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
+        Realm.setDefaultConfiguration(realmConfig);
     }
 
     private final RealmMigration realmMigration(){
@@ -144,6 +165,30 @@ public class CartolaParciais extends Application {
                       .addField("totalTimesLiga", Long.class)
                       .addField("ranking", Long.class)
                       .addField("tipoLiga", String.class);
+                oldVersion++;
+            }
+
+            if (oldVersion == 7){
+                schema.create("Partida")
+                        .addField("idPartida", long.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("rodada", int.class)
+                        .addField("tituloRodada", String.class)
+                        .addField("dataPartida", String.class)
+                        .addField("local", String.class)
+
+                        .addField("idTimeCasa", int.class)
+                        .addField("posicaoTimeCasa", int.class)
+                        .addField("placarTimeCasa", int.class)
+                        .addField("aproveitamentoTimeCasa", String.class)
+
+                        .addField("idTimeVisitante", int.class)
+                        .addField("posicaoTimeVisitante", int.class)
+                        .addField("placarTimeVisitante", int.class)
+                        .addField("aproveitamentoTimeVisitante", String.class)
+
+                        .addField("urlConfronto", String.class)
+                        .addField("urlTransmissao", String.class)
+                        .addField("valida", boolean.class);
                 oldVersion++;
             }
         };
