@@ -10,21 +10,23 @@
     <RelativeLayout
         android:id="@+id/parciais_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@color/white"
-        android:paddingLeft="4dp"
+        android:paddingLeft="0dp"
         android:paddingRight="8dp">
 
         <ImageView
             android:id="@+id/atleta"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_marginBottom="4dp"
+            android:layout_marginLeft="-18dp"
             android:layout_marginTop="4dp"
-            android:scaleType="fitEnd"
+            android:scaleType="centerCrop"
+            android:scrollY="-12dp"
             tools:src="@drawable/atleta" />
 
         <ImageView
@@ -32,7 +34,7 @@
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="-16dp"
+            android:layout_marginLeft="-25dp"
             android:layout_marginTop="27dp"
             android:layout_toEndOf="@+id/atleta"
             android:layout_toRightOf="@+id/atleta"
@@ -48,7 +50,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="4dp"
-            android:layout_marginRight="72dp"
+            android:layout_marginRight="80dp"
             android:layout_toRightOf="@+id/escudo_atleta"
             android:ellipsize="end"
             android:gravity="bottom|left"
@@ -56,6 +58,7 @@
             android:maxLines="1"
             android:scrollHorizontally="true"
             android:text="Rogério Ceni do São Paulo FC"
+            android:textColor="@color/textDark"
             android:textStyle="bold" />
 
         <TextView
@@ -78,30 +81,14 @@
         <TextView
             android:id="@+id/atleta_pontuacao"
             style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="72dp"
+            android:layout_width="100dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="bottom|right"
-            android:text="9999.00"
+            android:text="99.00"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/atleta_cartoletas"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/atleta"
-            android:layout_alignLeft="@+id/atleta_pontuacao"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignStart="@+id/atleta_pontuacao"
-            android:layout_below="@+id/atleta_pontuacao"
-            android:layout_marginTop="-7dp"
-            android:gravity="top|right"
-            android:paddingTop="4dp"
-            android:text="C$ 999.99" />
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"

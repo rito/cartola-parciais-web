@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,24 +127,35 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
 
             Picasso.with( context )
                     .load( timeFavorito.getUrlEscudoPng() )
+                    .resize(140,140).centerCrop().noFade()
                     .error( R.drawable.arkenstone_fc )
                     .into( escudo );
 
-            nomeTime.setText(timeFavorito.getNomeDoTime());
-            nomeCartoleiro.setText(timeFavorito.getNomeDoCartoleiro());
+            SpannableStringBuilder nomeDoTime = new SpannableStringBuilder(timeFavorito.getNomeDoTime());
+            nomeDoTime.setSpan(new RelativeSizeSpan(0.9f), 0, nomeDoTime.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            nomeTime.setText(nomeDoTime);
+
+            SpannableStringBuilder nomeDoCartoleiro = new SpannableStringBuilder(timeFavorito.getNomeDoCartoleiro());
+            nomeDoCartoleiro.setSpan(new RelativeSizeSpan(0.95f), 0, nomeDoCartoleiro.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            nomeCartoleiro.setText(nomeDoCartoleiro);
+
             background.setBackgroundColor(backgroundColor);
             posicao.setText(String.valueOf(position+1));
 
             if (timeFavorito.getPontuacao() == null){
                 pontuacao.setText("");
             } else {
-                pontuacao.setText(formatoPontuacao.format(timeFavorito.getPontuacao()));
+                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(timeFavorito.getPontuacao()));
+                pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                pontuacao.setText(pontuacaoFormatada);
             }
 
             if (timeFavorito.getVariacaoCartoletas() == null || timeFavorito.getVariacaoCartoletas() == 0){
                 cartoletas.setText("");
             } else {
-                cartoletas.setText("C$ "+formatoCartoletas.format(timeFavorito.getVariacaoCartoletas()));
+                SpannableStringBuilder cartoletasFormatada = new SpannableStringBuilder("C$ "+formatoCartoletas.format(timeFavorito.getVariacaoCartoletas()));
+                cartoletasFormatada.setSpan(new RelativeSizeSpan(0.85f), 0, cartoletasFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                cartoletas.setText(cartoletasFormatada);
                 if (timeFavorito.getVariacaoCartoletas() > 0){
                     cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
                 } else {

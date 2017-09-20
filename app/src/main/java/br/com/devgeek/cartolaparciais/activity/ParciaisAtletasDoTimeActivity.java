@@ -90,7 +90,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
 //                        }
 //                    });
             Picasso.with( getApplicationContext() )
-                   .load( dadosParciaisAtletasDoTime.getUrlEscudoPng() )
+                   .load( dadosParciaisAtletasDoTime.getUrlEscudoPng() ).noFade()
                    .error( R.drawable.arkenstone_fc )
                    .into( escudo );
 

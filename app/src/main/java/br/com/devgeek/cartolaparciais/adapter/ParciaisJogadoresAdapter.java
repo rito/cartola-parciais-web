@@ -2,11 +2,15 @@ package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
 import android.util.TypedValue;
@@ -78,7 +82,6 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView pontuacao;
-        TextView cartoletas;
         TextView nomeDoAtleta;
         TextView atletaPosicao;
         ImageView fotoDoAtleta;
@@ -92,7 +95,6 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
             escudoDoAtleta = (ImageView) itemView.findViewById(R.id.escudo_atleta);
             atletaPosicao = (TextView) itemView.findViewById(R.id.atleta_posicao);
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
-            cartoletas = (TextView) itemView.findViewById(R.id.atleta_cartoletas);
             nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
             scoutsContent = (LinearLayout) itemView.findViewById(R.id.atleta_scouts_content);
         }
@@ -101,11 +103,11 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
             if (userGloboIsLogged && atleta.getFoto() != null){
 
-                Picasso.with( context ).load( atleta.getFoto().replace("_FORMATO","_140x140") ).into( fotoDoAtleta );
+                Picasso.with( context ).load( atleta.getFoto().replace("_FORMATO","_140x140") ).noFade().into( fotoDoAtleta );
 
             } else {
 
-                Picasso.with( context ).load( R.drawable.atleta ).into( fotoDoAtleta );
+                Picasso.with( context ).load( R.drawable.atleta ).noFade().into( fotoDoAtleta );
             }
 
             nomeDoAtleta.setText(atleta.getApelido());
@@ -117,50 +119,43 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
             if (atleta.getPontuacao() != null && (atleta.getPosicaoId() != PosicoesJogadoresUtil.TECNICO || (atleta.getPosicaoId() == PosicoesJogadoresUtil.TECNICO && atleta.getPontuacao() != 0))){
 
-                pontuacao.setText(formatoPontuacao.format(atleta.getPontuacao()));
+                Spanned concatenated;
+                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(atleta.getPontuacao()));
 
-                if (atleta.getCartoletas() == null){
-                    if (atleta.getPontuacao() > 0){
-                        pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
-                    } else if (atleta.getPontuacao() < 0){
-                        pontuacao.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
-                    }
+                if (atleta.getPontuacao() > 0){
+                    pontuacaoFormatada.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.cartoletaPositiva)), 0, pontuacaoFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                } else if (atleta.getPontuacao() < 0){
+                    pontuacaoFormatada.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.cartoletaNegativa)), 0, pontuacaoFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 }
+
+                if (atleta.getCartoletas() != null){
+
+                    SpannableStringBuilder cartoletasFormatada = new SpannableStringBuilder("C$ "+formatoCartoletas.format(atleta.getCartoletas()));
+                    cartoletasFormatada.setSpan(new RelativeSizeSpan(0.65f), 0, cartoletasFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    if (atleta.getCartoletas() > 0){
+                        cartoletasFormatada.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.cartoletaPositiva)), 0, cartoletasFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    } else if (atleta.getCartoletas() < 0){
+                        cartoletasFormatada.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.cartoletaNegativa)), 0, cartoletasFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+
+                    SpannableStringBuilder separador = new SpannableStringBuilder(" \u2022 ");
+                    separador.setSpan(new RelativeSizeSpan(0.65f), 0, separador.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    separador.setSpan(new ForegroundColorSpan(Color.BLACK), 0, separador.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    concatenated = (Spanned) TextUtils.concat(cartoletasFormatada,separador,pontuacaoFormatada);
+
+                } else {
+                    concatenated = (Spanned) TextUtils.concat(pontuacaoFormatada);
+                }
+
+                SpannableStringBuilder result = new SpannableStringBuilder(concatenated);
+                pontuacao.setText(result, TextView.BufferType.SPANNABLE);
             }
 
             if (scoutsContent.getChildCount() > 0) scoutsContent.removeAllViews();
 
-            if (atleta.getCartoletas() == null && atleta.getScouts().size() == 0){
-
-                cartoletas.setVisibility(View.GONE);
-                cartoletas.setVisibility(View.INVISIBLE);
-
-                scoutsContent.setVisibility(View.GONE);
-                scoutsContent.setVisibility(View.INVISIBLE);
-
-            } else {
-
-                cartoletas.setVisibility(View.VISIBLE);
-                scoutsContent.setVisibility(View.VISIBLE);
-            }
-
-            if (atleta.getCartoletas() != null){
-
-                cartoletas.setText("C$ "+formatoCartoletas.format(atleta.getCartoletas()));
-                if (atleta.getCartoletas() > 0){
-                    cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
-                } else {
-                    cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
-                }
-
-                scoutsContent.setVisibility(View.GONE);
-                scoutsContent.setVisibility(View.INVISIBLE);
-            }
-
             if (atleta.getCartoletas() == null && atleta.getScouts().size() > 0){
-
-                cartoletas.setVisibility(View.GONE);
-                cartoletas.setVisibility(View.INVISIBLE);
 
                 Resources resources = context.getResources();
                 int leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, resources.getDisplayMetrics());

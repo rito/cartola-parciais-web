@@ -92,7 +92,7 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
         private void setData( ApiTime time , int backgroundColor ){
 
             Picasso.with( context )
-                    .load( time.getUrlEscudoPng() )
+                    .load( time.getUrlEscudoPng() ).noFade()
                     .into( escudo );
 
             nomeTime.setText(time.getNomeDoTime());

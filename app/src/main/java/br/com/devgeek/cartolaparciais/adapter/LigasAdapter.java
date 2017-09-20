@@ -107,7 +107,7 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
                 ligas_title.setVisibility(View.INVISIBLE);
                 ligas_background.setVisibility(View.VISIBLE);
 
-                Picasso.with( context ).load( liga.getUrlFlamulaPng() ).into( flamula );
+                Picasso.with( context ).load( liga.getUrlFlamulaPng() ).noFade().into( flamula );
                 nome_liga.setText( liga.getNomeDaLiga() );
                 descricao_liga.setText( liga.getDescricaoDaLiga() );
 

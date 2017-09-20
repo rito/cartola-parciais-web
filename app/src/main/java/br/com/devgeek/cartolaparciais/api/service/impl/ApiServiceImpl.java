@@ -59,10 +59,10 @@ public class ApiServiceImpl {
 
     public ApiServiceImpl(){
         retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://api.cartolafc.globo.com/")
-                .build();
+                               .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                               .addConverterFactory(GsonConverterFactory.create())
+                               .baseUrl("https://api.cartolafc.globo.com/")
+                               .build();
 
         apiService = retrofit.create(ApiService.class);
     }
