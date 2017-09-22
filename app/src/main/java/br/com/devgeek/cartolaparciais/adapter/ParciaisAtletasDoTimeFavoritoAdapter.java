@@ -1,9 +1,7 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -13,7 +11,6 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +46,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
     private List<AtletasPontuados> atletasPontuados;
+    private static Toast toast = null;
 
     public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados, boolean userGloboIsLogged){
         this.context = context;
@@ -118,6 +116,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
                 Spanned concatenated;
                 SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(atleta.getPontuacao()));
+                pontuacaoFormatada.setSpan(new RelativeSizeSpan(1.2f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 if (atleta.getPontuacao() > 0){
                     pontuacaoFormatada.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.cartoletaPositiva)), 0, pontuacaoFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -128,7 +127,8 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                 if (atleta.getCartoletas() != null){
 
                     SpannableStringBuilder cartoletasFormatada = new SpannableStringBuilder("C$ "+formatoCartoletas.format(atleta.getCartoletas()));
-                    cartoletasFormatada.setSpan(new RelativeSizeSpan(0.65f), 0, cartoletasFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    cartoletasFormatada.setSpan(new RelativeSizeSpan(0.65f), 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    cartoletasFormatada.setSpan(new RelativeSizeSpan(0.95f), 3, cartoletasFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     if (atleta.getCartoletas() > 0){
                         cartoletasFormatada.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.cartoletaPositiva)), 0, cartoletasFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -137,7 +137,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                     }
 
                     SpannableStringBuilder separador = new SpannableStringBuilder(" \u2022 ");
-                    separador.setSpan(new RelativeSizeSpan(0.65f), 0, separador.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    separador.setSpan(new RelativeSizeSpan(0.85f), 0, separador.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     separador.setSpan(new ForegroundColorSpan(Color.BLACK), 0, separador.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
                     concatenated = (Spanned) TextUtils.concat(cartoletasFormatada,separador,pontuacaoFormatada);
@@ -154,8 +154,8 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
             if (atleta.getScouts().size() > 0){
 
-                Resources resources = context.getResources();
-                int leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, resources.getDisplayMetrics());
+                //Resources resources = context.getResources();
+                //int leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, resources.getDisplayMetrics());
 
                 for (Scouts scout : atleta.getScouts()){
 
@@ -165,10 +165,13 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                         scoutText = new SpannableStringBuilder(scout.getScout()+scout.getQuantidade());
 
                         scoutText.setSpan(new SuperscriptSpan(), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        scoutText.setSpan(new RelativeSizeSpan(0.6f), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        scoutText.setSpan(new RelativeSizeSpan(0.85f), 0, scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        scoutText.setSpan(new RelativeSizeSpan(0.8f), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     } else {
                         scoutText = new SpannableStringBuilder(scout.getScout());
+                        scoutText.setSpan(new SuperscriptSpan(), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        scoutText.setSpan(new RelativeSizeSpan(0.85f), 0, scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
 
@@ -182,12 +185,12 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                     tag.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
                     ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) tag.getLayoutParams();
-                    p.setMargins(leftMargin, 0, 0, 0);
+                    p.setMargins(0, 0, 0, 0);
                     tag.requestLayout();
 
                     tag.setOnClickListener(v -> {
-                        final Toast toast = Toast.makeText(context, getLegendaDosScouts(scout.getScout(), scout.getQuantidade()), Toast.LENGTH_SHORT); toast.show();
-                        new Handler().postDelayed(() -> toast.cancel(), 1000);
+                        if (toast != null) toast.cancel();
+                        toast = Toast.makeText(context, getLegendaDosScouts(scout.getScout(), scout.getQuantidade()), Toast.LENGTH_SHORT); toast.show();
                     } );
 
                     scoutsContent.addView(tag);

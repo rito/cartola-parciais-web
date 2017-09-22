@@ -154,7 +154,8 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
                 cartoletas.setText("");
             } else {
                 SpannableStringBuilder cartoletasFormatada = new SpannableStringBuilder("C$ "+formatoCartoletas.format(timeFavorito.getVariacaoCartoletas()));
-                cartoletasFormatada.setSpan(new RelativeSizeSpan(0.85f), 0, cartoletasFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                cartoletasFormatada.setSpan(new RelativeSizeSpan(0.65f), 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                cartoletasFormatada.setSpan(new RelativeSizeSpan(0.90f), 3, cartoletasFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 cartoletas.setText(cartoletasFormatada);
                 if (timeFavorito.getVariacaoCartoletas() > 0){
                     cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaPositiva));
