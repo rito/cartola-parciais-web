@@ -23,13 +23,13 @@ public class Partida extends RealmObject {
     
     private int idTimeCasa;
     private int posicaoTimeCasa;
-    private int placarTimeCasa;
+    private Integer placarTimeCasa;
     private String aproveitamentoTimeCasa;
 
 
     private int idTimeVisitante;
     private int posicaoTimeVisitante;
-    private int placarTimeVisitante;
+    private Integer placarTimeVisitante;
     private String aproveitamentoTimeVisitante;
 
     
@@ -69,7 +69,7 @@ public class Partida extends RealmObject {
     }
 
 
-    public Partida(long idPartida, int rodada, String tituloRodada, String dataPartida, String local, int idTimeCasa, int posicaoTimeCasa, int placarTimeCasa, String aproveitamentoTimeCasa, int idTimeVisitante, int posicaoTimeVisitante, int placarTimeVisitante, String aproveitamentoTimeVisitante, String urlConfronto, String urlTransmissao, boolean valida){
+    public Partida(long idPartida, int rodada, String tituloRodada, String dataPartida, String local, int idTimeCasa, int posicaoTimeCasa, Integer placarTimeCasa, String aproveitamentoTimeCasa, int idTimeVisitante, int posicaoTimeVisitante, Integer placarTimeVisitante, String aproveitamentoTimeVisitante, String urlConfronto, String urlTransmissao, boolean valida){
         this.idPartida = idPartida;
         this.rodada = rodada;
         this.tituloRodada = tituloRodada;
@@ -131,10 +131,10 @@ public class Partida extends RealmObject {
     public void setPosicaoTimeCasa(int posicaoTimeCasa){
         this.posicaoTimeCasa = posicaoTimeCasa;
     }
-    public int getPlacarTimeCasa(){
+    public Integer getPlacarTimeCasa(){
         return placarTimeCasa;
     }
-    public void setPlacarTimeCasa(int placarTimeCasa){
+    public void setPlacarTimeCasa(Integer placarTimeCasa){
         this.placarTimeCasa = placarTimeCasa;
     }
     public String getAproveitamentoTimeCasa(){
@@ -155,10 +155,10 @@ public class Partida extends RealmObject {
     public void setPosicaoTimeVisitante(int posicaoTimeVisitante){
         this.posicaoTimeVisitante = posicaoTimeVisitante;
     }
-    public int getPlacarTimeVisitante(){
+    public Integer getPlacarTimeVisitante(){
         return placarTimeVisitante;
     }
-    public void setPlacarTimeVisitante(int placarTimeVisitante){
+    public void setPlacarTimeVisitante(Integer placarTimeVisitante){
         this.placarTimeVisitante = placarTimeVisitante;
     }
     public String getAproveitamentoTimeVisitante(){

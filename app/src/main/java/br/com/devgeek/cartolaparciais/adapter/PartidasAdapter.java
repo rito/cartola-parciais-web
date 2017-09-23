@@ -145,11 +145,21 @@ public class PartidasAdapter extends RecyclerView.Adapter<PartidasAdapter.ViewHo
                 localPartida.setSpan(new RelativeSizeSpan(0.7f), 0, localPartida.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 jogo_local.setText(localPartida);
 
-                placar_casa.setText(String.valueOf(partida.getPlacarTimeCasa()));
+                if (partida.getPlacarTimeCasa() == null){
+                    placar_casa.setText("");
+                } else {
+                    placar_casa.setText(String.valueOf(partida.getPlacarTimeCasa()));
+                }
+
                 sigla_casa.setText(getClubeAbreviada(partida.getIdTimeCasa()));
                 clube_casa.setImageResource(getClubeEscudo(partida.getIdTimeCasa()));
 
-                placar_visitante.setText(String.valueOf(partida.getPlacarTimeVisitante()));
+                if (partida.getPlacarTimeVisitante() == null){
+                    placar_visitante.setText("");
+                } else {
+                    placar_visitante.setText(String.valueOf(partida.getPlacarTimeVisitante()));
+                }
+
                 sigla_visitante.setText(getClubeAbreviada(partida.getIdTimeVisitante()));
                 clube_visitante.setImageResource(getClubeEscudo(partida.getIdTimeVisitante()));
 

@@ -26,7 +26,7 @@ public class ApiPartidas_Partida {
     private int posicaoTimeCasa;
 
     @SerializedName("placar_oficial_mandante")
-    private int placarTimeCasa;
+    private Integer placarTimeCasa;
 
     @SerializedName("aproveitamento_mandante")
     private ArrayList<String> aproveitamentoTimeCasa;
@@ -39,7 +39,7 @@ public class ApiPartidas_Partida {
     private int posicaoTimeVisitante;
 
     @SerializedName("placar_oficial_visitante")
-    private int placarTimeVisitante;
+    private Integer placarTimeVisitante;
 
     @SerializedName("aproveitamento_visitante")
     private ArrayList<String> aproveitamentoTimeVisitante;
@@ -59,7 +59,7 @@ public class ApiPartidas_Partida {
     }
 
 
-    public ApiPartidas_Partida(long idPartida, String dataPartida, String local, int idTimeCasa, int posicaoTimeCasa, int placarTimeCasa, ArrayList<String> aproveitamentoTimeCasa, int idTimeVisitante, int posicaoTimeVisitante, int placarTimeVisitante, ArrayList<String> aproveitamentoTimeVisitante, String urlConfronto, String urlTransmissao, boolean valida){
+    public ApiPartidas_Partida(long idPartida, String dataPartida, String local, int idTimeCasa, int posicaoTimeCasa, Integer placarTimeCasa, ArrayList<String> aproveitamentoTimeCasa, int idTimeVisitante, int posicaoTimeVisitante, Integer placarTimeVisitante, ArrayList<String> aproveitamentoTimeVisitante, String urlConfronto, String urlTransmissao, boolean valida){
         this.idPartida = idPartida;
         this.dataPartida = dataPartida;
         this.local = local;
@@ -107,10 +107,10 @@ public class ApiPartidas_Partida {
     public void setPosicaoTimeCasa(int posicaoTimeCasa){
         this.posicaoTimeCasa = posicaoTimeCasa;
     }
-    public int getPlacarTimeCasa(){
+    public Integer getPlacarTimeCasa(){
         return placarTimeCasa;
     }
-    public void setPlacarTimeCasa(int placarTimeCasa){
+    public void setPlacarTimeCasa(Integer placarTimeCasa){
         this.placarTimeCasa = placarTimeCasa;
     }
     public ArrayList<String> getAproveitamentoTimeCasa(){
@@ -131,10 +131,10 @@ public class ApiPartidas_Partida {
     public void setPosicaoTimeVisitante(int posicaoTimeVisitante){
         this.posicaoTimeVisitante = posicaoTimeVisitante;
     }
-    public int getPlacarTimeVisitante(){
+    public Integer getPlacarTimeVisitante(){
         return placarTimeVisitante;
     }
-    public void setPlacarTimeVisitante(int placarTimeVisitante){
+    public void setPlacarTimeVisitante(Integer placarTimeVisitante){
         this.placarTimeVisitante = placarTimeVisitante;
     }
     public ArrayList<String> getAproveitamentoTimeVisitante(){
