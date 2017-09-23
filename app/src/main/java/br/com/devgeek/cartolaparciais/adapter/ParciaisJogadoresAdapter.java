@@ -1,7 +1,6 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -40,13 +39,12 @@ import static br.com.devgeek.cartolaparciais.model.Scouts.getLegendaDosScouts;
 public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogadoresAdapter.ViewHolder> {
 
     private static final String TAG = "ParciaisJogadoresAdapte";
-
+    private static Toast toast = null;
     private Context context;
     private boolean userGloboIsLogged;
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
     private RealmResults<AtletasPontuados> atletasPontuados;
-    private static Toast toast = null;
 
     public ParciaisJogadoresAdapter(Context context, RealmResults<AtletasPontuados> atletasPontuados, boolean userGloboIsLogged){
         this.context = context;
@@ -146,8 +144,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
                     }
 
                     SpannableStringBuilder separador = new SpannableStringBuilder(" \u2022 ");
-                    separador.setSpan(new RelativeSizeSpan(0.85f), 0, separador.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    separador.setSpan(new ForegroundColorSpan(Color.BLACK), 0, separador.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    separador.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.textDark)), 0, separador.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
                     concatenated = (Spanned) TextUtils.concat(cartoletasFormatada,separador,pontuacaoFormatada);
 
@@ -175,11 +172,10 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
                         scoutText.setSpan(new SuperscriptSpan(), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         scoutText.setSpan(new RelativeSizeSpan(0.85f), 0, scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        scoutText.setSpan(new RelativeSizeSpan(0.8f), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        scoutText.setSpan(new RelativeSizeSpan(0.75f), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     } else {
                         scoutText = new SpannableStringBuilder(scout.getScout());
-                        scoutText.setSpan(new SuperscriptSpan(), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         scoutText.setSpan(new RelativeSizeSpan(0.85f), 0, scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 

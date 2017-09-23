@@ -1,7 +1,6 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -40,13 +39,12 @@ import static br.com.devgeek.cartolaparciais.model.Scouts.getLegendaDosScouts;
 public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<ParciaisAtletasDoTimeFavoritoAdapter.ViewHolder> {
 
     private static final String TAG = "ParciaisAtletasDoTimeFa";
-
+    private static Toast toast = null;
     private Context context;
     private boolean userGloboIsLogged;
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
     private List<AtletasPontuados> atletasPontuados;
-    private static Toast toast = null;
 
     public ParciaisAtletasDoTimeFavoritoAdapter(Context context, List<AtletasPontuados> atletasPontuados, boolean userGloboIsLogged){
         this.context = context;
@@ -105,8 +103,14 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                 Picasso.with( context ).load( R.drawable.atleta ).noFade().into( fotoDoAtleta );
             }
 
-            nomeDoAtleta.setText(atleta.getApelido());
-            atletaPosicao.setText(PosicoesJogadoresUtil.getPosicaoNome(atleta.getPosicaoId()));
+            SpannableStringBuilder nomeAtleta = new SpannableStringBuilder(atleta.getApelido());
+            nomeAtleta.setSpan(new RelativeSizeSpan(0.9f), 0, nomeAtleta.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            nomeDoAtleta.setText(nomeAtleta);
+
+            SpannableStringBuilder posicaoNome = new SpannableStringBuilder(PosicoesJogadoresUtil.getPosicaoNome(atleta.getPosicaoId()));
+            posicaoNome.setSpan(new RelativeSizeSpan(0.95f), 0, posicaoNome.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            atletaPosicao.setText(posicaoNome);
+
             escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId()));
 
             pontuacao.setText("-.--");
@@ -137,8 +141,7 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
                     }
 
                     SpannableStringBuilder separador = new SpannableStringBuilder(" \u2022 ");
-                    separador.setSpan(new RelativeSizeSpan(0.85f), 0, separador.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    separador.setSpan(new ForegroundColorSpan(Color.BLACK), 0, separador.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    separador.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.textDark)), 0, separador.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
                     concatenated = (Spanned) TextUtils.concat(cartoletasFormatada,separador,pontuacaoFormatada);
 
@@ -166,11 +169,10 @@ public class ParciaisAtletasDoTimeFavoritoAdapter extends RecyclerView.Adapter<P
 
                         scoutText.setSpan(new SuperscriptSpan(), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         scoutText.setSpan(new RelativeSizeSpan(0.85f), 0, scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        scoutText.setSpan(new RelativeSizeSpan(0.8f), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        scoutText.setSpan(new RelativeSizeSpan(0.75f), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     } else {
                         scoutText = new SpannableStringBuilder(scout.getScout());
-                        scoutText.setSpan(new SuperscriptSpan(), scout.getScout().length(), scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         scoutText.setSpan(new RelativeSizeSpan(0.85f), 0, scoutText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 

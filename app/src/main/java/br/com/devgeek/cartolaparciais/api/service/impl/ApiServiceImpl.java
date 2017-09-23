@@ -5,7 +5,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -319,7 +322,7 @@ public class ApiServiceImpl {
 
                                 try {
 
-                                    timeFavorito.setAtletas(new RealmList<>());
+                                    List<AtletasPontuados> atletas = new ArrayList<>();
 
                                     for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
 
@@ -328,22 +331,22 @@ public class ApiServiceImpl {
                                             if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
 
                                                 pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
-                                                timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+                                                atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
 
                                             } else {
 
-                                                timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                             }
 
                                         } else {
 
                                             pontuacao += atleta.getPontos_num();
                                             variacaoCartoletas += atleta.getVariacao_num();
-                                            timeFavorito.getAtletas().add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                            atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                         }
                                     }
 
-
+                                    timeFavorito.setAtletas(new Gson().toJson(atletas));
                                     timeFavorito.setPontuacao(pontuacao);
                                     timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
 

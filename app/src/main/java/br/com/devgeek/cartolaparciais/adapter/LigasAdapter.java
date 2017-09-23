@@ -3,6 +3,9 @@ package br.com.devgeek.cartolaparciais.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,7 +100,7 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
 
                 tipo_liga.setText(liga.getTipoLiga());
 
-                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, resources.getDisplayMetrics());
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, resources.getDisplayMetrics());
                 params.height = height;
                 holderView.setLayoutParams(params);
 
@@ -107,24 +110,37 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
                 ligas_title.setVisibility(View.INVISIBLE);
                 ligas_background.setVisibility(View.VISIBLE);
 
+                SpannableStringBuilder nomeDaLiga = new SpannableStringBuilder(liga.getNomeDaLiga());
+                nomeDaLiga.setSpan(new RelativeSizeSpan(0.9f), 0, nomeDaLiga.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                nome_liga.setText(nomeDaLiga);
+
+                SpannableStringBuilder descricaoDaLiga = new SpannableStringBuilder(liga.getDescricaoDaLiga());
+                descricaoDaLiga.setSpan(new RelativeSizeSpan(0.95f), 0, descricaoDaLiga.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                descricao_liga.setText(descricaoDaLiga);
+
                 Picasso.with( context ).load( liga.getUrlFlamulaPng() ).noFade().into( flamula );
-                nome_liga.setText( liga.getNomeDaLiga() );
-                descricao_liga.setText( liga.getDescricaoDaLiga() );
 
                 if (liga.getRanking() != null){
-                    ranking.setText( liga.getRanking()+"°" );
+
+                    SpannableStringBuilder rankingNaLiga = new SpannableStringBuilder( liga.getRanking()+"°" );
+                    rankingNaLiga.setSpan(new RelativeSizeSpan(0.9f), 0, rankingNaLiga.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ranking.setText( rankingNaLiga );
+
                 } else {
                     ranking.setText( "" );
                 }
 
                 if (liga.getTotalTimesLiga() != null){
-                    total_times_liga.setText( String.valueOf(liga.getTotalTimesLiga()) );
+
+                    SpannableStringBuilder totalTimesLiga = new SpannableStringBuilder( String.valueOf(liga.getTotalTimesLiga()) );
+                    totalTimesLiga.setSpan(new RelativeSizeSpan(0.95f), 0, totalTimesLiga.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    total_times_liga.setText( totalTimesLiga );
+
                 } else {
                     total_times_liga.setText( "" );
                 }
 
-
-                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, resources.getDisplayMetrics());
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 52, resources.getDisplayMetrics());
                 params.height = height;
                 holderView.setLayoutParams(params);
             }

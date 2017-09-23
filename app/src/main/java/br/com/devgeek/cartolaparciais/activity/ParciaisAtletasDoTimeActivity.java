@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -141,7 +143,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
 
             if (timeFavorito != null){
 
-                atletasPontuados = timeFavorito.getAtletas();
+                atletasPontuados = new Gson().fromJson(timeFavorito.getAtletas(), new TypeToken<List<AtletasPontuados>>(){}.getType());
 
                 Collections.sort(atletasPontuados, (AtletasPontuados t1, AtletasPontuados t2) -> {
 
