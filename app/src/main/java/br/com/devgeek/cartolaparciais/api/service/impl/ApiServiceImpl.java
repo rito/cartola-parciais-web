@@ -1,9 +1,7 @@
 package br.com.devgeek.cartolaparciais.api.service.impl;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 
 import com.google.gson.Gson;
 
@@ -77,10 +75,6 @@ public class ApiServiceImpl {
             if (isTimeToAtualizarMercado()){
                 verificarMercadoStatus();
             }
-
-        } else {
-            Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
-            logErrorOnConsole(TAG, "Sem conexão com a internet", null);
         }
     }
 
@@ -95,10 +89,6 @@ public class ApiServiceImpl {
             } else {
                 buscarPartidas(null);
             }
-
-        } else {
-            Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
-            logErrorOnConsole(TAG, "Sem conexão com a internet", null);
         }
     }
 
@@ -113,10 +103,6 @@ public class ApiServiceImpl {
             } else {
                 buscarAtletasPontuados();
             }
-
-        } else {
-            Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
-            logErrorOnConsole(TAG, "Sem conexão com a internet", null);
         }
     }
 
@@ -134,10 +120,6 @@ public class ApiServiceImpl {
                     buscarLigasDoTimeLogado(token);
                 }
             }
-
-        } else {
-            Snackbar.make( ((Activity) context).getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
-            logErrorOnConsole(TAG, "Sem conexão com a internet", null);
         }
     }
 

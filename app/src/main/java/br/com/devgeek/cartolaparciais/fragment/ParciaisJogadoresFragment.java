@@ -3,6 +3,7 @@ package br.com.devgeek.cartolaparciais.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,6 +22,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 /**
@@ -59,7 +61,7 @@ public class ParciaisJogadoresFragment extends Fragment {
 
 
         refreshListaTimesFavoritos = (SwipeRefreshLayout) view.findViewById(R.id.refreshListaParciaisJogadores);
-        refreshListaTimesFavoritos.setOnRefreshListener(() -> atualizarDados());
+        refreshListaTimesFavoritos.setOnRefreshListener(() -> atualizarDadosSeHouverInternet());
 
 
 
@@ -84,7 +86,7 @@ public class ParciaisJogadoresFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        atualizarDados();
+        atualizarDados(true);
         listaAtletasPontuados.addChangeListener(listaAtletasPontuadosListener);
     }
 
@@ -94,11 +96,20 @@ public class ParciaisJogadoresFragment extends Fragment {
         listaAtletasPontuados.removeChangeListener(listaAtletasPontuadosListener);
     }
 
-    private void atualizarDados(){
+    private void atualizarDados(boolean checkTime){
 
-        apiService.atualizarParciais(   getContext(), true);
-        apiService.atualizarLigas(      getContext(), true);
-        apiService.atualizarPartidas(   getContext(), true);
-        new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 850);
+        apiService.atualizarParciais(   getContext(), checkTime);
+        apiService.atualizarLigas(      getContext(), checkTime);
+        apiService.atualizarPartidas(   getContext(), checkTime);
+        new Handler().postDelayed(() -> refreshListaTimesFavoritos.setRefreshing(false), 750);
+    }
+
+    private void atualizarDadosSeHouverInternet(){
+        if (isNetworkAvailable(getActivity().getApplicationContext())){
+            atualizarDados(false);
+        } else {
+            refreshListaTimesFavoritos.setRefreshing(false);
+            Snackbar.make( getActivity().getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
+        }
     }
 }

@@ -3,6 +3,7 @@ package br.com.devgeek.cartolaparciais.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,6 +21,8 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
+
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 
 /**
  * Created by geovannefduarte on 18/09/17.
@@ -61,7 +64,7 @@ public class PartidasFragment extends Fragment {
 
 
         refreshPartidas = (SwipeRefreshLayout) view.findViewById(R.id.refreshPartidas);
-        refreshPartidas.setOnRefreshListener(() -> atualizarDados());
+        refreshPartidas.setOnRefreshListener(() -> atualizarDadosSeHouverInternet());
 
 
         // Configurar recyclerView
@@ -83,7 +86,7 @@ public class PartidasFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        atualizarDados();
+        atualizarDados(true);
         partidas.addChangeListener(partidasListener);
     }
 
@@ -93,12 +96,20 @@ public class PartidasFragment extends Fragment {
         partidas.removeChangeListener(partidasListener);
     }
 
+    private void atualizarDados(boolean checkTime){
 
-    private void atualizarDados(){
+        apiService.atualizarParciais(   getContext(), checkTime);
+        apiService.atualizarLigas(      getContext(), checkTime);
+        apiService.atualizarPartidas(   getContext(), checkTime);
+        new Handler().postDelayed(() -> refreshPartidas.setRefreshing(false), 750);
+    }
 
-        apiService.atualizarParciais(   getContext(), true);
-        apiService.atualizarLigas(      getContext(), true);
-        apiService.atualizarPartidas(   getContext(), true);
-        new Handler().postDelayed(() -> refreshPartidas.setRefreshing(false), 850);
+    private void atualizarDadosSeHouverInternet(){
+        if (isNetworkAvailable(getActivity().getApplicationContext())){
+            atualizarDados(false);
+        } else {
+            refreshPartidas.setRefreshing(false);
+            Snackbar.make( getActivity().getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
+        }
     }
 }

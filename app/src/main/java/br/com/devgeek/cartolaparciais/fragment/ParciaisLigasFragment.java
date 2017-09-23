@@ -25,6 +25,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 /**
@@ -68,7 +69,7 @@ public class ParciaisLigasFragment extends Fragment {
 
 
         refreshLigas = (SwipeRefreshLayout) view.findViewById(R.id.refreshLigas);
-        refreshLigas.setOnRefreshListener(() -> atualizarDados());
+        refreshLigas.setOnRefreshListener(() -> atualizarDadosSeHouverInternet());
 
 
         fazerLogin = (Button) view.findViewById(R.id.fazerLogin);
@@ -109,7 +110,7 @@ public class ParciaisLigasFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        atualizarDados();
+        atualizarDados(true);
         ligas.addChangeListener(ligasListener);
     }
 
@@ -120,12 +121,21 @@ public class ParciaisLigasFragment extends Fragment {
     }
 
 
-    private void atualizarDados(){
+    private void atualizarDados(boolean checkTime){
 
-        apiService.atualizarParciais(   getContext(), true);
-        apiService.atualizarLigas(      getContext(), true);
-        apiService.atualizarPartidas(   getContext(), true);
-        new Handler().postDelayed(() -> refreshLigas.setRefreshing(false), 850);
+        apiService.atualizarParciais(   getContext(), checkTime);
+        apiService.atualizarLigas(      getContext(), checkTime);
+        apiService.atualizarPartidas(   getContext(), checkTime);
+        new Handler().postDelayed(() -> refreshLigas.setRefreshing(false), 750);
+    }
+
+    private void atualizarDadosSeHouverInternet(){
+        if (isNetworkAvailable(getActivity().getApplicationContext())){
+            atualizarDados(false);
+        } else {
+            refreshLigas.setRefreshing(false);
+            Snackbar.make( getActivity().getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
+        }
     }
 
     private void setupLigasFragment(){
