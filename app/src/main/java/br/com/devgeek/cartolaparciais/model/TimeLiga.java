@@ -1,18 +1,20 @@
 package br.com.devgeek.cartolaparciais.model;
 
-import br.com.devgeek.cartolaparciais.api.model.ApiTime;
+import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigaSlug_Time;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by geovannefduarte
  */
-public class TimeFavorito extends RealmObject {
+public class TimeLiga extends RealmObject {
 
     public static String FORMATO_PONTUACAO = "#0.00";
     public static String FORMATO_CARTOLETAS = "#0.00";
 
     @PrimaryKey
+    private String id;
+    private Long ligaId;
     private Long timeId;
 
     private String nomeDoTime;
@@ -23,18 +25,24 @@ public class TimeFavorito extends RealmObject {
     private String urlEscudoPlaceholderPng;
     private String fotoPerfil;
     private Boolean assinante;
-    private boolean timeFavorito;
     private boolean timeDoUsuario;
 
-    private Double pontuacao;
-    private Double variacaoCartoletas;
+    private Double pontuacaoRodada;
+    private Double pontuacaoMes;
+    private Double pontuacaoTurno;
+    private Double pontuacaoCampeonato;
+    private Double patrimonio;
     private String atletas;
 
-    public TimeFavorito(){
+
+    public TimeLiga(){
     }
 
 
-    public TimeFavorito(ApiTime time, boolean timeFavorito, boolean timeDoUsuario){
+    public TimeLiga(Long ligaId, ApiAuthLigaSlug_Time time, Double pontuacaoRodada, boolean timeDoUsuario){
+
+        this.id = String.valueOf(ligaId+time.getTimeId());
+        this.ligaId = ligaId;
         this.timeId = time.getTimeId();
         this.nomeDoTime = time.getNomeDoTime();
         this.nomeDoCartoleiro = time.getNomeDoCartoleiro();
@@ -44,12 +52,25 @@ public class TimeFavorito extends RealmObject {
         this.urlEscudoPlaceholderPng = time.getUrlEscudoPlaceholderPng();
         this.fotoPerfil = time.getFotoPerfil();
         this.assinante = time.getAssinante();
-        this.timeFavorito = timeFavorito;
         this.timeDoUsuario = timeDoUsuario;
+        this.patrimonio = time.getPatrimonio();
+        if (time.getPontos() != null){
+            this.pontuacaoMes = time.getPontos().getMes();
+            this.pontuacaoTurno = time.getPontos().getTurno();
+            this.pontuacaoCampeonato = time.getPontos().getCampeonato();
+
+            if (pontuacaoRodada != null){
+                this.pontuacaoRodada = pontuacaoRodada;
+            } else {
+                this.pontuacaoRodada = time.getPontos().getRodada();
+            }
+        }
     }
 
 
-    public TimeFavorito(Long timeId, String nomeDoTime, String nomeDoCartoleiro, String slug, Long facebookId, String urlEscudoPng, String urlEscudoPlaceholderPng, String fotoPerfil, Boolean assinante, boolean timeFavorito, boolean timeDoUsuario){
+    public TimeLiga(String id, Long ligaId, Long timeId, String nomeDoTime, String nomeDoCartoleiro, String slug, Long facebookId, String urlEscudoPng, String urlEscudoPlaceholderPng, String fotoPerfil, Boolean assinante, boolean timeDoUsuario, Double pontuacaoRodada, Double pontuacaoMes, Double pontuacaoTurno, Double pontuacaoCampeonato, Double patrimonio, String atletas){
+        this.id = id;
+        this.ligaId = ligaId;
         this.timeId = timeId;
         this.nomeDoTime = nomeDoTime;
         this.nomeDoCartoleiro = nomeDoCartoleiro;
@@ -59,11 +80,28 @@ public class TimeFavorito extends RealmObject {
         this.urlEscudoPlaceholderPng = urlEscudoPlaceholderPng;
         this.fotoPerfil = fotoPerfil;
         this.assinante = assinante;
-        this.timeFavorito = timeFavorito;
         this.timeDoUsuario = timeDoUsuario;
+        this.pontuacaoRodada = pontuacaoRodada;
+        this.pontuacaoMes = pontuacaoMes;
+        this.pontuacaoTurno = pontuacaoTurno;
+        this.pontuacaoCampeonato = pontuacaoCampeonato;
+        this.patrimonio = patrimonio;
+        this.atletas = atletas;
     }
 
 
+    public String getId(){
+        return id;
+    }
+    public void setId(String id){
+        this.id = id;
+    }
+    public Long getLigaId(){
+        return ligaId;
+    }
+    public void setLigaId(Long ligaId){
+        this.ligaId = ligaId;
+    }
     public Long getTimeId(){
         return timeId;
     }
@@ -118,29 +156,41 @@ public class TimeFavorito extends RealmObject {
     public void setAssinante(Boolean assinante){
         this.assinante = assinante;
     }
-    public boolean isTimeFavorito(){
-        return timeFavorito;
-    }
-    public void setTimeFavorito(boolean timeFavorito){
-        this.timeFavorito = timeFavorito;
-    }
     public boolean isTimeDoUsuario(){
         return timeDoUsuario;
     }
     public void setTimeDoUsuario(boolean timeDoUsuario){
         this.timeDoUsuario = timeDoUsuario;
     }
-    public Double getPontuacao(){
-        return pontuacao;
+    public Double getPontuacaoRodada(){
+        return pontuacaoRodada;
     }
-    public void setPontuacao(Double pontuacao){
-        this.pontuacao = pontuacao;
+    public void setPontuacaoRodada(Double pontuacaoRodada){
+        this.pontuacaoRodada = pontuacaoRodada;
     }
-    public Double getVariacaoCartoletas(){
-        return variacaoCartoletas;
+    public Double getPontuacaoMes(){
+        return pontuacaoMes;
     }
-    public void setVariacaoCartoletas(Double variacaoCartoletas){
-        this.variacaoCartoletas = variacaoCartoletas;
+    public void setPontuacaoMes(Double pontuacaoMes){
+        this.pontuacaoMes = pontuacaoMes;
+    }
+    public Double getPontuacaoTurno(){
+        return pontuacaoTurno;
+    }
+    public void setPontuacaoTurno(Double pontuacaoTurno){
+        this.pontuacaoTurno = pontuacaoTurno;
+    }
+    public Double getPontuacaoCampeonato(){
+        return pontuacaoCampeonato;
+    }
+    public void setPontuacaoCampeonato(Double pontuacaoCampeonato){
+        this.pontuacaoCampeonato = pontuacaoCampeonato;
+    }
+    public Double getPatrimonio(){
+        return patrimonio;
+    }
+    public void setPatrimonio(Double patrimonio){
+        this.patrimonio = patrimonio;
     }
     public String getAtletas(){
         return atletas;

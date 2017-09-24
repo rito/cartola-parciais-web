@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado_PontuacaoAtleta;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtleta;
+import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigaSlug;
+import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigaSlug_Time;
 import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas;
 import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas_liga;
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
@@ -27,6 +30,7 @@ import br.com.devgeek.cartolaparciais.model.Liga;
 import br.com.devgeek.cartolaparciais.model.MercadoStatus;
 import br.com.devgeek.cartolaparciais.model.Partida;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
+import br.com.devgeek.cartolaparciais.model.TimeLiga;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -485,6 +489,9 @@ public class ApiServiceImpl {
 
                                         realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(ligasDoCartoleiro));
                                     }
+
+                                    atualizarTimesDasLigas(token);
+
                                 } catch (Exception e){
 
                                     logErrorOnConsole(TAG, e.getMessage(), e);
@@ -511,6 +518,112 @@ public class ApiServiceImpl {
                             });
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao buscarLigasDoTimeLogado() -> "+e.getMessage(), e);
+            atualizarParciaisTimesFavoritos(null);
+        }
+    }
+
+    private void atualizarTimesDasLigas(String token){
+
+        Realm realm = null;
+        List<Liga> ligas = null;
+
+        try {
+
+            realm = Realm.getDefaultInstance();
+            ligas = realm.copyFromRealm(realm.where(Liga.class).isNotNull("slug").findAll());
+
+        } catch (Exception e){
+
+            logErrorOnConsole(TAG, e.getMessage(), e);
+
+        } finally {
+            if (realm != null) realm.close();
+        }
+
+        if (ligas != null && ligas.size() > 0){
+
+            for (Liga liga : ligas){
+
+                buscarTimesDaLiga(liga, token);
+            }
+        }
+    }
+
+    private void buscarTimesDaLiga(Liga liga, String token){
+
+        try {
+
+            Observable<ApiAuthLigaSlug> buscarTimesDaLiga = apiService.buscarTimesDaLiga(token, liga.getSlug());
+
+            buscarTimesDaLiga.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn((Throwable throwable) -> {
+                        logErrorOnConsole(TAG, "buscarTimesDaLiga.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        return null;
+                    })
+                    .subscribe(
+                            times -> {
+
+                                Realm realm = null;
+
+                                try {
+
+                                    realm = Realm.getDefaultInstance();
+                                    Map<String, String> chaveDeTimesDaApi = new HashMap<>();
+
+                                    RealmList<TimeLiga> timesDaLiga = new RealmList<>();
+                                    TimeFavorito timeFavorito = realm.where(TimeFavorito.class).equalTo("timeDoUsuario", true).findFirst();
+
+                                    for (ApiAuthLigaSlug_Time time : times.getTimes()){
+
+                                        boolean timeDoUsuario = false;
+                                        if (timeFavorito != null && timeFavorito.getTimeId().equals(time.getTimeId())) timeDoUsuario = true;
+
+                                        timesDaLiga.add(new TimeLiga(times.getLiga().getLigaId(), time, null, timeDoUsuario));
+                                        chaveDeTimesDaApi.put(String.valueOf(times.getLiga().getLigaId()+time.getTimeId()), time.getSlug());
+                                    }
+
+                                    final RealmResults<TimeLiga> timesDaLigaOnRealm = realm.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAll();
+                                    if (timesDaLigaOnRealm != null && timesDaLigaOnRealm.size() > 0){
+
+                                        for (TimeLiga timeDaLiga : timesDaLigaOnRealm){
+                                            if (chaveDeTimesDaApi.get(timeDaLiga.getId()) == null)
+                                                realm.executeTransaction(realmTransaction -> timeDaLiga.deleteFromRealm() );
+                                        }
+                                    }
+
+                                    if (timesDaLiga.size() > 0){
+
+                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timesDaLiga));
+                                    }
+
+                                } catch (Exception e){
+
+                                    logErrorOnConsole(TAG, e.getMessage(), e);
+
+                                } finally {
+                                    if (realm != null) realm.close();
+                                }
+                            },
+                            error -> {
+                                try {
+                                    if (error instanceof NullPointerException){
+                                        buscarAtletasMercado();
+                                        atualizarParciaisTimesFavoritos(null);
+                                    } else if (error instanceof HttpException){ // We had non-200 http error
+                                        logErrorOnConsole(TAG, "ApiAuthLigaSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof IOException){ // A network error happened
+                                        logErrorOnConsole(TAG, "ApiAuthLigaSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else {
+                                        logErrorOnConsole(TAG, "ApiAuthLigaSlug -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    }
+                                } catch (Exception e){
+                                    logErrorOnConsole(TAG, "ApiAuthLigaSlug -> " + error.getMessage() + " / " + error.getClass(), error);
+                                }
+                            });
+
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "Falha ao buscarTimesDaLiga() -> "+e.getMessage(), e);
             atualizarParciaisTimesFavoritos(null);
         }
     }

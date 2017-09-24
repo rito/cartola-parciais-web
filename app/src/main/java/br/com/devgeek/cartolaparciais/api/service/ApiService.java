@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados;
+import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigaSlug;
 import br.com.devgeek.cartolaparciais.api.model.ApiAuthLigas;
 import br.com.devgeek.cartolaparciais.api.model.ApiAuthTime;
 import br.com.devgeek.cartolaparciais.api.model.ApiLogin;
@@ -56,4 +57,7 @@ public interface ApiService {
 
     @GET("auth/ligas")
     Observable<ApiAuthLigas> buscarLigasDoTimeLogado(@Header("X-GLB-Token") String token);
+
+    @GET("auth/liga/{slug}")
+    Observable<ApiAuthLigaSlug> buscarTimesDaLiga(@Header("X-GLB-Token") String token, @Path("slug") String slugDaLiga);
 }

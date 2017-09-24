@@ -44,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         // setup the ViewPager
-        mViewPager = (NonSwipeableViewPager) findViewById(R.id.containter);
+        mViewPager = (NonSwipeableViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
 
-
-
+        // trocar bottom navigation por esta =D
+        // https://android-arsenal.com/details/1/4817
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 

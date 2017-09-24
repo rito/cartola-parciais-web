@@ -109,7 +109,7 @@ public class CartolaParciais extends Application {
 
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(10)               // Must be bumped when the schema changes
+                .schemaVersion(11)               // Must be bumped when the schema changes
                 .migration(realmMigration())    // Migration to run instead of throwing an exception
                 //.deleteRealmIfMigrationNeeded()
                 .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
@@ -214,6 +214,29 @@ public class CartolaParciais extends Application {
                 if (listaPartidas != null && listaPartidas.size() > 0){
                     listaPartidas.deleteAllFromRealm();
                 } oldVersion++;
+            }
+
+            if (oldVersion == 10){
+                schema.create("TimeLiga")
+                        .addField("id", String.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("ligaId", Long.class)
+                        .addField("timeId", Long.class)
+                        .addField("nomeDoTime", String.class)
+                        .addField("nomeDoCartoleiro", String.class)
+                        .addField("slug", String.class)
+                        .addField("facebookId", Long.class)
+                        .addField("urlEscudoPng", String.class)
+                        .addField("urlEscudoPlaceholderPng", String.class)
+                        .addField("fotoPerfil", String.class)
+                        .addField("assinante", Boolean.class)
+                        .addField("timeDoUsuario", boolean.class)
+                        .addField("pontuacaoRodada", Double.class)
+                        .addField("pontuacaoMes", Double.class)
+                        .addField("pontuacaoTurno", Double.class)
+                        .addField("pontuacaoCampeonato", Double.class)
+                        .addField("patrimonio", Double.class)
+                        .addField("atletas", String.class);
+                oldVersion++;
             }
         };
     }

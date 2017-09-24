@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/parciais_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/bgColorOdd"
+        android:paddingRight="8dp">
+
+        <ImageView
+            android:id="@+id/atleta"
+            android:layout_width="44dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginRight="-4dp"
+            android:layout_marginTop="6dp"
+            android:scaleType="fitEnd"
+            tools:src="@drawable/arkenstone_fc" />
+
+        <TextView
+            android:id="@+id/posicao"
+            android:layout_width="14dp"
+            android:layout_height="40dp"
+            android:layout_alignTop="@+id/atleta"
+            android:layout_toEndOf="@+id/atleta"
+            android:layout_toRightOf="@+id/atleta"
+            android:ellipsize="end"
+            android:gravity="right|center_vertical"
+            android:maxLines="1"
+            android:text="1"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/nome_time"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="64dp"
+            android:layout_toRightOf="@+id/posicao"
+            android:ellipsize="end"
+            android:gravity="bottom|left"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:paddingLeft="4dp"
+            android:scrollHorizontally="true"
+            android:text="Arkenstone Futebol Clube FC"
+            android:textColor="@color/textDark"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/nome_cartoleiro"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/posicao"
+            android:layout_alignLeft="@+id/nome_time"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@+id/nome_time"
+            android:layout_below="@+id/nome_time"
+            android:layout_marginRight="72dp"
+            android:layout_marginTop="-7dp"
+            android:ellipsize="end"
+            android:gravity="top|left"
+            android:maxLines="1"
+            android:paddingLeft="4dp"
+            android:paddingTop="4dp"
+            android:text="Geovanne Fernandes Duarte Fernandes Duarte" />
+
+        <TextView
+            android:id="@+id/pontuacao"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="64dp"
+            android:layout_height="29dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="bottom|right"
+            android:text="999.00"
+            android:textColor="@color/textDark"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/diferenca"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/nome_cartoleiro"
+            android:layout_alignLeft="@+id/pontuacao"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@+id/pontuacao"
+            android:layout_below="@+id/pontuacao"
+            android:layout_marginTop="-7dp"
+            android:gravity="top|right"
+            android:paddingTop="6dp"
+            android:text="12.23"
+            android:textColor="@color/cartoletaNegativa"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

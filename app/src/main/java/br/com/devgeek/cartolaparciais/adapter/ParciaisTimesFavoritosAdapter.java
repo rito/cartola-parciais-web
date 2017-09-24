@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,6 @@ import io.realm.RealmResults;
 /**
  * Created by geovannefduarte
  */
-
 public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<ParciaisTimesFavoritosAdapter.ViewHolder> {
 
     private static String TAG = "ParciaisTimesFavoritos";
@@ -75,9 +73,6 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
         holder.setData( listaTimesFavoritos.get( position ), backgroundColor, position );
 
         holder.itemView.setOnClickListener((View v) -> {
-
-            Log.i(TAG, "width: "+holder.escudo.getWidth()+" | height: "+holder.escudo.getHeight());
-            Log.i(TAG, "measuredWidth: "+holder.escudo.getMeasuredWidth()+" | measuredHeight: "+holder.escudo.getMeasuredHeight());
 
             Intent intent = new Intent();
             Bundle bundle = new Bundle();

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/tab_rodada"
+        android:enabled="true"
+        android:title="Rodada"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/tab_mes"
+        android:enabled="true"
+        android:title="Mês"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/tab_turno"
+        android:enabled="true"
+        android:title="Turno"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/tab_campeonato"
+        android:enabled="true"
+        android:title="Camp."
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/tab_cartoletas"
+        android:enabled="true"
+        android:title="C$"
+        app:showAsAction="ifRoom" />
+</menu>

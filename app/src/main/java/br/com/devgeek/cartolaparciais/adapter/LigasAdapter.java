@@ -1,7 +1,10 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -17,7 +20,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import br.com.devgeek.cartolaparciais.R;
+import br.com.devgeek.cartolaparciais.activity.LigasActivity;
 import br.com.devgeek.cartolaparciais.model.Liga;
+import br.com.devgeek.cartolaparciais.parcelable.LigasParcelable;
 import io.realm.RealmResults;
 
 /**
@@ -53,6 +58,27 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
     public void onBindViewHolder(LigasAdapter.ViewHolder holder, int position){
 
         holder.setData( holder.itemView, ligas.get( position ) );
+
+        if (ligas.get( position ).getLigaId() < 0){
+
+            holder.itemView.setOnClickListener(null);
+
+        } else {
+
+            holder.itemView.setOnClickListener((View v) -> {
+
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+
+                LigasParcelable dadosDaLiga = new LigasParcelable(ligas.get( position ).getLigaId(), ligas.get( position ).getSlug(), ligas.get( position ).getNomeDaLiga(), ligas.get( position ).getUrlFlamulaPng());
+
+                bundle.putParcelable("dadosDaLiga", dadosDaLiga);
+                intent.putExtras(bundle);
+                intent.setClass(context, LigasActivity.class);
+                context.startActivity(intent);
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_right_to_left,R.anim.slide_in_left_to_right);
+            });
+        }
     }
 
     @Override
