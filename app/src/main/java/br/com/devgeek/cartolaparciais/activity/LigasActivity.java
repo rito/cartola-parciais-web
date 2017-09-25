@@ -18,9 +18,10 @@ import com.squareup.picasso.Picasso;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.LigasActivityViewPagerAdapter;
+import br.com.devgeek.cartolaparciais.fragment.LigasMesFragment;
 import br.com.devgeek.cartolaparciais.fragment.LigasRodadaFragment;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
-import br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager;
+import br.com.devgeek.cartolaparciais.helper.ZoomOutPageTransformer;
 import br.com.devgeek.cartolaparciais.parcelable.LigasParcelable;
 
 public class LigasActivity extends AppCompatActivity {
@@ -29,7 +30,9 @@ public class LigasActivity extends AppCompatActivity {
     private LigasParcelable dadosDaLiga = null;
 
     private LigasActivityViewPagerAdapter mPagerAdapter;
-    private NonSwipeableViewPager mViewPager;
+    private BottomNavigationView tabs;
+    private ViewPager mViewPager;
+    //private NonSwipeableViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -61,11 +64,11 @@ public class LigasActivity extends AppCompatActivity {
 
 
         // setup the ViewPager
-        mViewPager = (NonSwipeableViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
 
 
-        BottomNavigationView tabs = (BottomNavigationView) findViewById(R.id.ligas_navigation);
+        tabs = (BottomNavigationView) findViewById(R.id.ligas_navigation);
         BottomNavigationViewHelper.disableShiftMode(tabs);
 
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -114,11 +117,38 @@ public class LigasActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager){
         mPagerAdapter = new LigasActivityViewPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Rodada");
-        mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Mês");
+        mPagerAdapter.addFragment(   LigasMesFragment.newInstance(dadosDaLiga.getLigaId()), "Mês");
         mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Turno");
         mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Campeonato");
         mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Cartoletas");
-        viewPager.setAdapter(mPagerAdapter);
+
+        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+            @Override
+            public void onPageScrolled(final int i, final float v, final int i2){}
+            @Override
+            public void onPageSelected(final int i){
+                switch (i){
+                    case 0:
+                        tabs.setSelectedItemId(R.id.tab_rodada);
+                        break;
+                    case 1:
+                        tabs.setSelectedItemId(R.id.tab_mes);
+                        break;
+                    case 2:
+                        tabs.setSelectedItemId(R.id.tab_turno);
+                        break;
+                    case 3:
+                        tabs.setSelectedItemId(R.id.tab_campeonato);
+                        break;
+                    case 4:
+                        tabs.setSelectedItemId(R.id.tab_cartoletas);
+                        break;
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(final int i){}
+        }); viewPager.setAdapter(mPagerAdapter);
     }
 
     public void setViewPager(int fragmentNumber){

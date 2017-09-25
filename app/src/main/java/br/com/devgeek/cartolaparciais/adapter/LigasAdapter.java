@@ -126,7 +126,7 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
 
                 tipo_liga.setText(liga.getTipoLiga());
 
-                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, resources.getDisplayMetrics());
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, resources.getDisplayMetrics());
                 params.height = height;
                 holderView.setLayoutParams(params);
 

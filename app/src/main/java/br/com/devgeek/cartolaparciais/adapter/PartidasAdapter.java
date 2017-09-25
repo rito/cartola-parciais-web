@@ -120,7 +120,7 @@ public class PartidasAdapter extends RecyclerView.Adapter<PartidasAdapter.ViewHo
 
                 rodada.setText(partida.getTituloRodada());
 
-                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, resources.getDisplayMetrics());
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, resources.getDisplayMetrics());
                 params.height = height;
                 holderView.setLayoutParams(params);
 

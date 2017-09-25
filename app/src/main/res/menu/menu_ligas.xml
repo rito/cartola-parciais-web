@@ -20,7 +20,7 @@
     <item
         android:id="@+id/tab_campeonato"
         android:enabled="true"
-        android:title="Camp."
+        android:title="Camp"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/tab_cartoletas"

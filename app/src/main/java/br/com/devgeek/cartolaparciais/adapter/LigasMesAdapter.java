@@ -22,18 +22,18 @@ import br.com.devgeek.cartolaparciais.model.TimeLiga;
 import io.realm.RealmResults;
 
 /**
- * Created by geovannefduarte
+ * Created by geovannefduarte on 24/09/17.
  */
-public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.ViewHolder> {
+public class LigasMesAdapter extends RecyclerView.Adapter<LigasMesAdapter.ViewHolder> {
 
-    private static final String TAG = "LigasRodadaAdapter";
+    private static final String TAG = "LigasMesAdapter";
 
     private Context context;
     private DecimalFormat formatoPontuacao;
     private RealmResults<TimeLiga> listaTimesDaLiga;
 
 
-    public LigasRodadaAdapter(Context context, RealmResults<TimeLiga> listaTimesDaLiga){
+    public LigasMesAdapter(Context context, RealmResults<TimeLiga> listaTimesDaLiga){
         this.context = context;
         update(listaTimesDaLiga);
         this.formatoPontuacao = new DecimalFormat(TimeLiga.FORMATO_PONTUACAO);
@@ -44,15 +44,15 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
     }
 
     @Override
-    public LigasRodadaAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public LigasMesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
 
         View view = LayoutInflater.from(context).inflate(R.layout.adapter_ligas_rodada, parent, false);
 
-        return new LigasRodadaAdapter.ViewHolder(view);
+        return new LigasMesAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(LigasRodadaAdapter.ViewHolder holder, int position){
+    public void onBindViewHolder(LigasMesAdapter.ViewHolder holder, int position){
 
         int backgroundColor = ContextCompat.getColor(context, R.color.bgColorUser);
 
@@ -64,7 +64,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             }
         }
 
-        holder.setData( listaTimesDaLiga.get( position ), backgroundColor, position, listaTimesDaLiga.get( 0 ).getPontuacaoRodada());
+        holder.setData( listaTimesDaLiga.get( position ), backgroundColor, position, listaTimesDaLiga.get( 0 ).getPontuacaoMes());
     }
 
     @Override
@@ -119,7 +119,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             if (time.getPontuacaoRodada() == null){
                 pontuacao.setText("");
             } else {
-                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(time.getPontuacaoRodada()));
+                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(time.getPontuacaoMes()));
                 pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 pontuacao.setText(pontuacaoFormatada);
             }
@@ -127,7 +127,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             if (position == 0){
                 diferenca.setText("");
             } else {
-                String diferencaCalculada = "-"+formatoPontuacao.format(pontuacaoPrimeiroTime-time.getPontuacaoRodada());
+                String diferencaCalculada = "-"+formatoPontuacao.format(pontuacaoPrimeiroTime-time.getPontuacaoMes());
                 SpannableStringBuilder diferencaFormatada = new SpannableStringBuilder(diferencaCalculada.replaceAll("--","-"));
                 diferencaFormatada.setSpan(new RelativeSizeSpan(0.8f), 0, diferencaFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 diferenca.setText(diferencaFormatada);

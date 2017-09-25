@@ -14,10 +14,10 @@
         android:id="@+id/appBarLayout_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -25,23 +25,23 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
 
-            android:contentInsetLeft="0dp"
-            android:contentInsetStart="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            android:contentInsetRight="0dp"
             android:contentInsetEnd="0dp"
-            app:contentInsetRight="0dp"
-            app:contentInsetEnd="0dp"
-
+            android:contentInsetLeft="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetStart="0dp"
             android:padding="0dp"
             android:paddingBottom="0dp"
             android:paddingEnd="0dp"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
+
             android:paddingStart="0dp"
             android:paddingTop="0dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <RelativeLayout
@@ -52,11 +52,11 @@
                     android:id="@+id/back_button"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginRight="-12dp"
+                    android:background="?attr/colorPrimary"
                     android:scaleType="center"
                     app:srcCompat="@drawable/ic_back_material" />
 
@@ -64,8 +64,8 @@
                     android:id="@+id/flamula"
                     android:layout_width="40dp"
                     android:layout_height="?attr/actionBarSize"
-                    android:layout_toRightOf="@+id/back_button"
                     android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/back_button"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/arkenstone_fc" />
 
@@ -84,6 +84,7 @@
                     android:maxEms="10"
                     android:maxLines="1"
                     android:paddingLeft="4dp"
+                    android:paddingRight="8dp"
                     android:scrollHorizontally="true"
                     android:text="Família Duarte no Cartola FC"
                     android:textColor="@color/white" />
@@ -92,15 +93,15 @@
                     android:id="@+id/ligas_navigation"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_gravity="start"
-                    android:theme="@style/AppTheme.AppBarOverlay"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/flamula"
+                    android:layout_gravity="start"
                     android:background="@color/colorPrimary"
+                    android:theme="@style/AppTheme.AppBarOverlay"
+                    app:elevation="16dp"
                     app:itemIconTint="@drawable/ligas_tabs"
                     app:itemTextColor="@drawable/ligas_tabs"
-                    app:elevation="16dp"
                     app:menu="@menu/menu_ligas" />
 
             </RelativeLayout>
@@ -109,7 +110,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager
+    <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -117,6 +118,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/appBarLayout_toolbar" >
 
-    </br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager>
+    </android.support.v4.view.ViewPager>
 
 </RelativeLayout>

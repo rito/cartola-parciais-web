@@ -1,6 +1,7 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -10,11 +11,13 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +70,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
 
     @Override
     public void onBindViewHolder(ParciaisJogadoresAdapter.ViewHolder holder, int position){
-        holder.setData( atletasPontuados.get( position ) );
+        holder.setData( atletasPontuados.get( position ), position );
     }
 
     @Override
@@ -83,6 +86,10 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
         ImageView fotoDoAtleta;
         ImageView escudoDoAtleta;
         LinearLayout scoutsContent;
+        RelativeLayout background;
+
+        Resources resources;
+        int margin1dp;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -93,9 +100,18 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
             pontuacao = (TextView) itemView.findViewById(R.id.atleta_pontuacao);
             nomeDoAtleta = (TextView) itemView.findViewById(R.id.nome_atleta);
             scoutsContent = (LinearLayout) itemView.findViewById(R.id.atleta_scouts_content);
+            background = (RelativeLayout) itemView.findViewById(R.id.parciais_background);
+
+            resources = context.getResources();
+            margin1dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, resources.getDisplayMetrics());
         }
 
-        private void setData(AtletasPontuados atleta){
+        private void setData(AtletasPontuados atleta, int position){
+
+            ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) background.getLayoutParams();
+            if (position == 0){ margins.setMargins(margin1dp, margin1dp, margin1dp, margin1dp); }
+            else { margins.setMargins(margin1dp, 0, margin1dp, margin1dp); }
+            background.requestLayout();
 
             if (userGloboIsLogged && atleta.getFoto() != null){
 

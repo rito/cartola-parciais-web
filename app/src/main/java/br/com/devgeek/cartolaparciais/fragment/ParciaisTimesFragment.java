@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,9 +67,6 @@ public class ParciaisTimesFragment extends Fragment {
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager(mLayoutManager);
-
-        DividerItemDecoration divider = new DividerItemDecoration( getActivity() , mLayoutManager.getOrientation() );
-        recyclerView.addItemDecoration( divider );
 
         adapter = new ParciaisTimesFavoritosAdapter( getActivity() , listaTimesFavoritos );
         recyclerView.setAdapter( adapter );

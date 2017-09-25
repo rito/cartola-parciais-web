@@ -17,7 +17,7 @@ import br.com.devgeek.cartolaparciais.fragment.ParciaisLigasFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisTimesFragment;
 import br.com.devgeek.cartolaparciais.fragment.PartidasFragment;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
-import br.com.devgeek.cartolaparciais.helper.NonSwipeableViewPager;
+import br.com.devgeek.cartolaparciais.helper.ZoomOutPageTransformer;
 
 import static br.com.devgeek.cartolaparciais.R.id.action_adicionartimes;
 
@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
 
     private MainActivityViewPagerAdapter mPagerAdapter;
-    private NonSwipeableViewPager mViewPager;
+    private BottomNavigationView bottomNavigationView;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -44,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         // setup the ViewPager
-        mViewPager = (NonSwipeableViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
 
         // trocar bottom navigation por esta =D
         // https://android-arsenal.com/details/1/4817
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
         // http://blog.iamsuleiman.com/quick-return-pattern-with-android-design-support-library/
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.tab_jogos:
                     setViewPager(3);
                     setToolbarTitle("Jogos");
-                    // https://api.cartolafc.globo.com/partidas
                     break;
             }
             return true;
@@ -89,7 +89,31 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter.addFragment(new ParciaisLigasFragment(), "Ligas");
         mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
         mPagerAdapter.addFragment(new PartidasFragment(), "Jogos");
-        viewPager.setAdapter(mPagerAdapter);
+
+        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+            @Override
+            public void onPageScrolled(final int i, final float v, final int i2){}
+            @Override
+            public void onPageSelected(final int i){
+                switch (i){
+                    case 0:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_parciais);
+                        break;
+                    case 1:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_ligas);
+                        break;
+                    case 2:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
+                        break;
+                    case 3:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_jogos);
+                        break;
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(final int i){}
+        }); viewPager.setAdapter(mPagerAdapter);
     }
 
     public void setViewPager(int fragmentNumber){

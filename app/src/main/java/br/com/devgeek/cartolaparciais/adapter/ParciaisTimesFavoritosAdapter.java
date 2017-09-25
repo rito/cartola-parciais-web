@@ -3,12 +3,14 @@ package br.com.devgeek.cartolaparciais.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,6 +108,9 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
         TextView nomeCartoleiro;
         RelativeLayout background;
 
+        Resources resources;
+        int margin1dp;
+
         public ViewHolder(View itemView){
             super(itemView);
 
@@ -116,6 +121,9 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
             cartoletas = (TextView) itemView.findViewById(R.id.cartoletas);
             nomeCartoleiro = (TextView) itemView.findViewById(R.id.nome_cartoleiro);
             background = (RelativeLayout) itemView.findViewById(R.id.parciais_background);
+
+            resources = context.getResources();
+            margin1dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, resources.getDisplayMetrics());
         }
 
         private void setData( TimeFavorito timeFavorito , int backgroundColor, int position){
@@ -134,7 +142,14 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
             nomeDoCartoleiro.setSpan(new RelativeSizeSpan(0.95f), 0, nomeDoCartoleiro.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             nomeCartoleiro.setText(nomeDoCartoleiro);
 
+
             background.setBackgroundColor(backgroundColor);
+
+            ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) background.getLayoutParams();
+            if (position == 0){ margins.setMargins(margin1dp, margin1dp, margin1dp, margin1dp); }
+            else { margins.setMargins(margin1dp, 0, margin1dp, margin1dp); }
+            background.requestLayout();
+
             posicao.setText(String.valueOf(position+1));
 
             if (timeFavorito.getPontuacao() == null){

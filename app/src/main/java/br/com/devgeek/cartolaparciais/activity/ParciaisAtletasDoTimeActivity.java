@@ -1,17 +1,13 @@
 package br.com.devgeek.cartolaparciais.activity;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,16 +50,10 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(dadosParciaisAtletasDoTime.getNomeDoTime());
-            getSupportActionBar().setSubtitle(dadosParciaisAtletasDoTime.getNomeDoCartoleiro());
-            toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
 
-            // Add the following code to make the up arrow white:
-            final Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_back_material);
-            upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+            ImageButton backButton = (ImageButton) findViewById(R.id.back_button);
+            backButton.setOnClickListener((View v) -> finishActivityWithAnimation());
 
 
             ImageView escudo = (ImageView) findViewById(R.id.escudo);
@@ -71,26 +61,10 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
             TextView pontuacao = (TextView) findViewById(R.id.atleta_pontuacao);
             TextView nomeCartoleiro = (TextView) findViewById(R.id.nome_cartoleiro);
 
-
-
             nomeTime.setText(dadosParciaisAtletasDoTime.getNomeDoTime());
             pontuacao.setText(dadosParciaisAtletasDoTime.getParciaisDoTime());
             nomeCartoleiro.setText(dadosParciaisAtletasDoTime.getNomeDoCartoleiro());
-//            Picasso.with( getApplicationContext() )
-//                   .load( dadosParciaisAtletasDoTime.getUrlEscudoPng() )
-//                   .into(new Target(){
-//                        @Override
-//                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from){
-//                            Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-//                            escudo.setImageDrawable(drawable);
-//                        }
-//                        @Override
-//                        public void onBitmapFailed(Drawable errorDrawable){
-//                        }
-//                        @Override
-//                        public void onPrepareLoad(Drawable placeHolderDrawable){
-//                        }
-//                    });
+
             Picasso.with( getApplicationContext() )
                    .load( dadosParciaisAtletasDoTime.getUrlEscudoPng() )
                    .resize(140,140).centerCrop().noFade()
@@ -98,39 +72,22 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
                    .into( escudo );
 
 
-
             buscarAtletas(dadosParciaisAtletasDoTime.getTimeId());
-
-            // Configurar recyclerView
-            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listaAtletasTimesFavoritos);
-            recyclerView.setHasFixedSize(true);
-
-            LinearLayoutManager mLayoutManager = new LinearLayoutManager( this );
-            recyclerView.setLayoutManager(mLayoutManager);
-
-            DividerItemDecoration divider = new DividerItemDecoration( this, mLayoutManager.getOrientation() );
-            recyclerView.addItemDecoration( divider );
-
-            adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados, userGloboIsLogged() );
-            recyclerView.setAdapter( adapter );
         }
+
+        // Configurar recyclerView
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listaAtletasTimesFavoritos);
+        recyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager( this );
+        recyclerView.setLayoutManager(mLayoutManager);
+
+        DividerItemDecoration divider = new DividerItemDecoration( this, mLayoutManager.getOrientation() );
+        recyclerView.addItemDecoration( divider );
+
+        adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados, userGloboIsLogged() );
+        recyclerView.setAdapter( adapter );
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu){
-//        getMenuInflater().inflate(R.menu.menu_parciais_atletas_do_time, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu){
-//
-//        MenuItem parciaisDoTime = menu.findItem(R.id.menu_parciaisDoTime);
-//        parciaisDoTime.setTitle("123.45");
-//        // parciaisDoTime.setEnabled(false);
-//
-//        return true;
-//    }
 
     private void buscarAtletas(Long timeId){
 
@@ -164,22 +121,6 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
         } finally {
             if (realm != null) realm.close();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finishActivityWithAnimation();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu){
-        return true;
     }
 
     @Override
