@@ -32,8 +32,11 @@ public class ParciaisJogadoresFragment extends Fragment {
     private static final String TAG = "ParciaisJogadoresFragme";
 
     private Realm realm;
-    private RealmResults<AtletasPontuados> listaAtletasPontuados;
     private ApiServiceImpl apiService;
+
+    private RealmResults<AtletasPontuados> listaAtletasPontuados;
+    private SwipeRefreshLayout refreshListaTimesFavoritos;
+
     private ParciaisJogadoresAdapter adapter;
     private RealmChangeListener listaAtletasPontuadosListener = new RealmChangeListener(){
         @Override
@@ -42,7 +45,7 @@ public class ParciaisJogadoresFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     };
-    private SwipeRefreshLayout refreshListaTimesFavoritos;
+
 
     @Nullable
     @Override

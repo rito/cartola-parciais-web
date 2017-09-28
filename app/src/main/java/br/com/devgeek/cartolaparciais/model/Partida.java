@@ -89,6 +89,25 @@ public class Partida extends RealmObject {
     }
 
 
+    public static void mergePartidas(Partida master, Partida slave){
+        master.setRodada(slave.getRodada());
+        master.setTituloRodada(slave.getTituloRodada());
+        master.setDataPartida(slave.getDataPartida());
+        master.setLocal(slave.getLocal());
+        master.setIdTimeCasa(slave.getIdTimeCasa());
+        master.setPosicaoTimeCasa(slave.getPosicaoTimeCasa());
+        master.setPlacarTimeCasa(slave.getPlacarTimeCasa());
+        master.setAproveitamentoTimeCasa(slave.getAproveitamentoTimeCasa());
+        master.setIdTimeVisitante(slave.getIdTimeVisitante());
+        master.setPosicaoTimeVisitante(slave.getPosicaoTimeVisitante());
+        master.setPlacarTimeVisitante(slave.getPlacarTimeVisitante());
+        master.setAproveitamentoTimeVisitante(slave.getAproveitamentoTimeVisitante());
+        master.setUrlConfronto(slave.getUrlConfronto());
+        master.setUrlTransmissao(slave.getUrlTransmissao());
+        master.setValida(slave.isValida());
+    }
+
+
     public long getIdPartida(){
         return idPartida;
     }

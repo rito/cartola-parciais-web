@@ -37,7 +37,6 @@ public class PartidasFragment extends Fragment {
     private SwipeRefreshLayout refreshPartidas;
 
     private PartidasAdapter adapter;
-    private RecyclerView recyclerView;
     private RealmChangeListener partidasListener = new RealmChangeListener(){
         @Override
         public void onChange(Object object){
@@ -52,14 +51,13 @@ public class PartidasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 
         apiService = new ApiServiceImpl();
-        realm = Realm.getDefaultInstance();
         View view = inflater.inflate(R.layout.fragment_partidas, container, false);
 
 
+        realm = Realm.getDefaultInstance();
         Sort[] sortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING, Sort.ASCENDING };
         String[] sortColumns = { "rodada", "tituloRodada", "dataPartida", "local" };
         partidas = realm.where(Partida.class).findAllSortedAsync(sortColumns, sortOrder);
-//        partidas = realm.where(Partida.class).isNotNull( "tituloRodada" ).findAllAsync();
 
 
         refreshPartidas = (SwipeRefreshLayout) view.findViewById(R.id.refreshPartidas);
@@ -67,7 +65,7 @@ public class PartidasFragment extends Fragment {
 
 
         // Configurar recyclerView
-        recyclerView = (RecyclerView) view.findViewById(R.id.listaDePartidas);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listaDePartidas);
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager( getActivity() );

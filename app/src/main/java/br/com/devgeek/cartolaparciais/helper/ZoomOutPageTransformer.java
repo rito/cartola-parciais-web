@@ -45,4 +45,17 @@ public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
             view.setAlpha(0);
         }
     }
+//    private static final float scaleMax = 0.8f;
+//    @Override
+//    public void transformPage(View view, float position){
+//        if (position<=0){
+//            float scale = scaleMax + (1+position)*0.2f;
+//            ViewCompat.setScaleX(view, scale);
+//            ViewCompat.setScaleY(view, scale);
+//        } else {
+//            float scale = scaleMax + (1-position)*0.2f;
+//            ViewCompat.setScaleX(view, scale);
+//            ViewCompat.setScaleY(view, scale);
+//        }
+//    }
 }

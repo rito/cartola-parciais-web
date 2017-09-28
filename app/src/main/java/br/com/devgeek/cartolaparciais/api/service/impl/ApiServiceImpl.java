@@ -46,6 +46,7 @@ import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToAtualizarMe
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdateLigas;
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdateParciais;
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdatePartidas;
+import static br.com.devgeek.cartolaparciais.model.Partida.mergePartidas;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.getX_GLB_Token;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
@@ -203,9 +204,15 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiAtletasPontuados();
                         }
-                        if (!throwable.getMessage().toString().equals("Null is not a valid element")){
-                            logErrorOnConsole(TAG, "buscarAtletasPontuados.onErrorReturn()  -> "+throwable.getMessage(), throwable);
-                        } return null;
+
+                        if (throwable.getMessage().toString().equals("Null is not a valid element")){
+                            buscarAtletasMercado();
+                            atualizarParciaisTimesFavoritos(null);
+                            return new ApiAtletasPontuados();
+                        }
+
+                        logErrorOnConsole(TAG, "buscarAtletasPontuados.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        return null;
                     })
                     .subscribe(
                             apiAtletasPontuados -> {
@@ -250,8 +257,6 @@ public class ApiServiceImpl {
                             error -> {
                                 try {
                                     if (error instanceof NullPointerException){
-                                        buscarAtletasMercado();
-                                        atualizarParciaisTimesFavoritos(null);
                                         logErrorOnConsole(TAG, "ApiAtletasPontuados [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
                                     } else if (error instanceof HttpException){ // We had non-200 http error
                                         logErrorOnConsole(TAG, "ApiAtletasPontuados [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
@@ -683,7 +688,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiPartidas();
                         }
-                        logErrorOnConsole(TAG, "buscarPartidas.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "buscarPartidas("+buscarRodada+").onErrorReturn()  -> "+throwable.getMessage(), throwable);
                         return null;
                     })
                     .subscribe(
@@ -696,32 +701,45 @@ public class ApiServiceImpl {
                                     try {
 
                                         realm = Realm.getDefaultInstance();
-                                        RealmList<Partida> listaPartidas = new RealmList<>();
+                                        final int rodada = partidas.getRodada();
 
-                                        if (partidas != null){
+                                        RealmList<Partida> partidasDaRodada = new RealmList<>();
+                                        Map<String, Partida> chaveDePartidasDaApi = new HashMap<>();
 
-                                            final int rodada = partidas.getRodada();
-                                            listaPartidas.add(new Partida((-rodada), rodada, rodada+"ª rodada"));
+                                        partidasDaRodada.add(new Partida((-rodada), rodada, rodada+"ª rodada"));
 
-                                            AsyncTask.execute(() -> verificarRodadasAnteriores(rodada-1) );
+                                        for (ApiPartidas_Partida partidaApi : partidas.getPartidas()){
 
-                                            if (partidas != null && partidas.getPartidas() != null && partidas.getPartidas().size() > 0){
+                                            Partida partida = new Partida(rodada, null, partidaApi);
+                                            partidasDaRodada.add(partida);
 
-                                                for (ApiPartidas_Partida partida : partidas.getPartidas()){
+                                            chaveDePartidasDaApi.put(String.valueOf(partidaApi.getIdPartida()),partida);
+                                        }
 
-                                                    listaPartidas.add(new Partida(rodada, null, partida));
+                                        final RealmResults<Partida> partidasDaRodadaOnRealm = realm.where(Partida.class).equalTo("rodada", rodada).findAll();
+                                        if (partidasDaRodadaOnRealm != null && partidasDaRodadaOnRealm.size() > 0){
+
+                                            for (Partida partida : partidasDaRodadaOnRealm){
+
+                                                if (chaveDePartidasDaApi.get(String.valueOf(partida.getIdPartida())) == null){
+
+                                                    realm.executeTransaction(realmTransaction -> partida.deleteFromRealm() );
+
+                                                } else {
+
+                                                    realm.executeTransaction(realmTransaction -> mergePartidas(partida, chaveDePartidasDaApi.get(String.valueOf(partida.getIdPartida()))));
                                                 }
                                             }
+                                        } else if (partidasDaRodada.size() > 0){
+
+                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(partidasDaRodada));
                                         }
 
-                                        if (listaPartidas.size() > 0){
-
-                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(listaPartidas));
-                                        }
+                                        AsyncTask.execute(() -> verificarRodadasAnteriores(rodada-1) );
 
                                     } catch (Exception e){
 
-                                        logErrorOnConsole(TAG, e.getMessage(), e);
+                                        logErrorOnConsole(TAG, "buscarPartidas("+buscarRodada+") -> "+e.getMessage(), e);
 
                                     } finally {
                                         if (realm != null) realm.close();
@@ -745,7 +763,7 @@ public class ApiServiceImpl {
                                 }
                             });
         } catch (Exception e){
-            logErrorOnConsole(TAG, "Falha ao buscarPartidas() -> "+e.getMessage(), e);
+            logErrorOnConsole(TAG, "Falha ao buscarPartidas("+buscarRodada+") -> "+e.getMessage(), e);
             atualizarParciaisTimesFavoritos(null);
         }
     }

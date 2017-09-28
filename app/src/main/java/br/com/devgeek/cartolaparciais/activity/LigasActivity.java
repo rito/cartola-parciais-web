@@ -18,8 +18,11 @@ import com.squareup.picasso.Picasso;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.LigasActivityViewPagerAdapter;
+import br.com.devgeek.cartolaparciais.fragment.LigasCampeonatoFragment;
+import br.com.devgeek.cartolaparciais.fragment.LigasCartoletasFragment;
 import br.com.devgeek.cartolaparciais.fragment.LigasMesFragment;
 import br.com.devgeek.cartolaparciais.fragment.LigasRodadaFragment;
+import br.com.devgeek.cartolaparciais.fragment.LigasTurnoFragment;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.helper.ZoomOutPageTransformer;
 import br.com.devgeek.cartolaparciais.parcelable.LigasParcelable;
@@ -116,12 +119,14 @@ public class LigasActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager){
         mPagerAdapter = new LigasActivityViewPagerAdapter(getSupportFragmentManager());
-        mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Rodada");
-        mPagerAdapter.addFragment(   LigasMesFragment.newInstance(dadosDaLiga.getLigaId()), "Mês");
-        mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Turno");
-        mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Campeonato");
-        mPagerAdapter.addFragment(LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Cartoletas");
+        mPagerAdapter.addFragment(    LigasRodadaFragment.newInstance(dadosDaLiga.getLigaId()), "Rodada");
+        mPagerAdapter.addFragment(       LigasMesFragment.newInstance(dadosDaLiga.getLigaId()), "Mês");
+        mPagerAdapter.addFragment(     LigasTurnoFragment.newInstance(dadosDaLiga.getLigaId()), "Turno");
+        mPagerAdapter.addFragment(LigasCampeonatoFragment.newInstance(dadosDaLiga.getLigaId()), "Campeonato");
+        mPagerAdapter.addFragment(LigasCartoletasFragment.newInstance(dadosDaLiga.getLigaId()), "Cartoletas");
+        viewPager.setAdapter(mPagerAdapter);
 
+        viewPager.setOffscreenPageLimit(4);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
@@ -148,7 +153,7 @@ public class LigasActivity extends AppCompatActivity {
             }
             @Override
             public void onPageScrollStateChanged(final int i){}
-        }); viewPager.setAdapter(mPagerAdapter);
+        });
     }
 
     public void setViewPager(int fragmentNumber){
@@ -157,8 +162,12 @@ public class LigasActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        super.onBackPressed();
-        finishActivityWithAnimation();
+        if (mViewPager.getCurrentItem() == 0){
+            super.onBackPressed();
+            finishActivityWithAnimation();
+        } else {
+            setViewPager(0);
+        }
     }
 
     private void finishActivityWithAnimation(){

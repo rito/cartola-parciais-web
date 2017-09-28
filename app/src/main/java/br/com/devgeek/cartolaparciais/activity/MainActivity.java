@@ -89,9 +89,11 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter.addFragment(new ParciaisLigasFragment(), "Ligas");
         mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
         mPagerAdapter.addFragment(new PartidasFragment(), "Jogos");
+        viewPager.setAdapter(mPagerAdapter);
 
-        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+        viewPager.setOffscreenPageLimit(3);
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
             public void onPageScrolled(final int i, final float v, final int i2){}
             @Override
@@ -113,11 +115,21 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onPageScrollStateChanged(final int i){}
-        }); viewPager.setAdapter(mPagerAdapter);
+        });
     }
 
     public void setViewPager(int fragmentNumber){
         mViewPager.setCurrentItem(fragmentNumber, false);
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (mViewPager.getCurrentItem() == 0){
+            super.onBackPressed();
+            //finish();
+        } else {
+            setViewPager(0);
+        }
     }
 
     @Override

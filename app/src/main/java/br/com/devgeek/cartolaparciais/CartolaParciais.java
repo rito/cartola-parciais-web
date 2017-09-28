@@ -170,45 +170,45 @@ public class CartolaParciais extends Application {
 
             if (oldVersion == 7){
                 schema.create("Partida")
-                        .addField("idPartida", long.class, FieldAttribute.PRIMARY_KEY)
-                        .addField("rodada", int.class)
-                        .addField("tituloRodada", String.class)
-                        .addField("dataPartida", String.class)
-                        .addField("local", String.class)
+                      .addField("idPartida", long.class, FieldAttribute.PRIMARY_KEY)
+                      .addField("rodada", int.class)
+                      .addField("tituloRodada", String.class)
+                      .addField("dataPartida", String.class)
+                      .addField("local", String.class)
 
-                        .addField("idTimeCasa", int.class)
-                        .addField("posicaoTimeCasa", int.class)
-                        .addField("placarTimeCasa", int.class)
-                        .addField("aproveitamentoTimeCasa", String.class)
+                      .addField("idTimeCasa", int.class)
+                      .addField("posicaoTimeCasa", int.class)
+                      .addField("placarTimeCasa", int.class)
+                      .addField("aproveitamentoTimeCasa", String.class)
 
-                        .addField("idTimeVisitante", int.class)
-                        .addField("posicaoTimeVisitante", int.class)
-                        .addField("placarTimeVisitante", int.class)
-                        .addField("aproveitamentoTimeVisitante", String.class)
+                      .addField("idTimeVisitante", int.class)
+                      .addField("posicaoTimeVisitante", int.class)
+                      .addField("placarTimeVisitante", int.class)
+                      .addField("aproveitamentoTimeVisitante", String.class)
 
-                        .addField("urlConfronto", String.class)
-                        .addField("urlTransmissao", String.class)
-                        .addField("valida", boolean.class);
+                      .addField("urlConfronto", String.class)
+                      .addField("urlTransmissao", String.class)
+                      .addField("valida", boolean.class);
                 oldVersion++;
             }
 
             if (oldVersion == 8){
                 schema.get("TimeFavorito")
-                        .removeField("atletas");
+                      .removeField("atletas");
 
                 schema.get("TimeFavorito")
-                        .addField("atletas", String.class);
+                      .addField("atletas", String.class);
                 oldVersion++;
             }
 
             if (oldVersion == 9){
                 schema.get("Partida")
-                        .removeField("placarTimeCasa")
-                        .removeField("placarTimeVisitante");
+                      .removeField("placarTimeCasa")
+                      .removeField("placarTimeVisitante");
 
                 schema.get("Partida")
-                        .addField("placarTimeCasa", Integer.class)
-                        .addField("placarTimeVisitante", Integer.class);
+                      .addField("placarTimeCasa", Integer.class)
+                      .addField("placarTimeVisitante", Integer.class);
 
                 RealmResults<DynamicRealmObject> listaPartidas = realm.where("Partida").findAll();
                 if (listaPartidas != null && listaPartidas.size() > 0){
@@ -218,24 +218,24 @@ public class CartolaParciais extends Application {
 
             if (oldVersion == 10){
                 schema.create("TimeLiga")
-                        .addField("id", String.class, FieldAttribute.PRIMARY_KEY)
-                        .addField("ligaId", Long.class)
-                        .addField("timeId", Long.class)
-                        .addField("nomeDoTime", String.class)
-                        .addField("nomeDoCartoleiro", String.class)
-                        .addField("slug", String.class)
-                        .addField("facebookId", Long.class)
-                        .addField("urlEscudoPng", String.class)
-                        .addField("urlEscudoPlaceholderPng", String.class)
-                        .addField("fotoPerfil", String.class)
-                        .addField("assinante", Boolean.class)
-                        .addField("timeDoUsuario", boolean.class)
-                        .addField("pontuacaoRodada", Double.class)
-                        .addField("pontuacaoMes", Double.class)
-                        .addField("pontuacaoTurno", Double.class)
-                        .addField("pontuacaoCampeonato", Double.class)
-                        .addField("patrimonio", Double.class)
-                        .addField("atletas", String.class);
+                      .addField("id", String.class, FieldAttribute.PRIMARY_KEY)
+                      .addField("ligaId", Long.class)
+                      .addField("timeId", Long.class)
+                      .addField("nomeDoTime", String.class)
+                      .addField("nomeDoCartoleiro", String.class)
+                      .addField("slug", String.class)
+                      .addField("facebookId", Long.class)
+                      .addField("urlEscudoPng", String.class)
+                      .addField("urlEscudoPlaceholderPng", String.class)
+                      .addField("fotoPerfil", String.class)
+                      .addField("assinante", Boolean.class)
+                      .addField("timeDoUsuario", boolean.class)
+                      .addField("pontuacaoRodada", Double.class)
+                      .addField("pontuacaoMes", Double.class)
+                      .addField("pontuacaoTurno", Double.class)
+                      .addField("pontuacaoCampeonato", Double.class)
+                      .addField("patrimonio", Double.class)
+                      .addField("atletas", String.class);
                 oldVersion++;
             }
         };
