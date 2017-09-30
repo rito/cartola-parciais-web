@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -67,16 +68,23 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
 
             holder.itemView.setOnClickListener((View v) -> {
 
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
+                if (ligas.get( position ).getTipoLiga().equals( "Mata-Mata" ) ){
 
-                LigasParcelable dadosDaLiga = new LigasParcelable(ligas.get( position ).getLigaId(), ligas.get( position ).getSlug(), ligas.get( position ).getNomeDaLiga(), ligas.get( position ).getUrlFlamulaPng());
+                    Snackbar.make(v, "Ligas Mata-Mata em breve", Snackbar.LENGTH_LONG).show();
 
-                bundle.putParcelable("dadosDaLiga", dadosDaLiga);
-                intent.putExtras(bundle);
-                intent.setClass(context, LigasActivity.class);
-                context.startActivity(intent);
-                ((Activity) context).overridePendingTransition(R.anim.slide_in_right_to_left,R.anim.slide_in_left_to_right);
+                } else {
+
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+
+                    LigasParcelable dadosDaLiga = new LigasParcelable(ligas.get( position ).getLigaId(), ligas.get( position ).getSlug(), ligas.get( position ).getNomeDaLiga(), ligas.get( position ).getUrlFlamulaPng());
+
+                    bundle.putParcelable("dadosDaLiga", dadosDaLiga);
+                    intent.putExtras(bundle);
+                    intent.setClass(context, LigasActivity.class);
+                    context.startActivity(intent);
+                    ((Activity) context).overridePendingTransition(R.anim.slide_in_right_to_left,R.anim.slide_in_left_to_right);
+                }
             });
         }
     }

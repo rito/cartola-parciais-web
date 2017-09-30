@@ -2,7 +2,6 @@ package br.com.devgeek.cartolaparciais.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,11 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import br.com.devgeek.cartolaparciais.R;
@@ -27,6 +24,7 @@ import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
 import io.realm.Realm;
 
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.parseAndSortAtletasPontuados;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
@@ -35,7 +33,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
     private ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = null;
 
     private ParciaisAtletasDoTimeFavoritoAdapter adapter;
-    private List<AtletasPontuados> atletasPontuados = new ArrayList<AtletasPontuados>();
+    private List<AtletasPontuados> atletasPontuados = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -82,9 +80,6 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager( this );
         recyclerView.setLayoutManager(mLayoutManager);
 
-        DividerItemDecoration divider = new DividerItemDecoration( this, mLayoutManager.getOrientation() );
-        recyclerView.addItemDecoration( divider );
-
         adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados, userGloboIsLogged() );
         recyclerView.setAdapter( adapter );
     }
@@ -101,17 +96,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
 
             if (timeFavorito != null){
 
-                atletasPontuados = new Gson().fromJson(timeFavorito.getAtletas(), new TypeToken<List<AtletasPontuados>>(){}.getType());
-
-                Collections.sort(atletasPontuados, (AtletasPontuados t1, AtletasPontuados t2) -> {
-
-                    if (t1.getPosicaoId() != null && t2.getPosicaoId() != null){
-                        if (t1.getPosicaoId() < t2.getPosicaoId()) return -1;
-                        if (t1.getPosicaoId() > t2.getPosicaoId()) return 1;
-                    }
-
-                    return t1.getApelido().compareTo(t2.getApelido());
-                });
+                atletasPontuados = parseAndSortAtletasPontuados(new Gson(), timeFavorito.getAtletas());
             }
         } catch (Exception e){
 

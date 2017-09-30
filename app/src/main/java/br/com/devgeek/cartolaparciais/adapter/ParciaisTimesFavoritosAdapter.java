@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +22,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.activity.ParciaisAtletasDoTimeActivity;
+import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
 import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
+import br.com.devgeek.cartolaparciais.util.PosicoesJogadoresUtil;
 import io.realm.RealmResults;
+
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.padLeft;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.parseAndSortAtletasPontuados;
 
 /**
  * Created by geovannefduarte
@@ -35,6 +45,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
 
     private static String TAG = "ParciaisTimesFavoritos";
 
+    private Gson gson;
     private Context context;
     private DecimalFormat formatoPontuacao;
     private DecimalFormat formatoCartoletas;
@@ -45,6 +56,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
         update(listaTimesFavoritos);
         this.formatoPontuacao = new DecimalFormat(TimeFavorito.FORMATO_PONTUACAO);
         this.formatoCartoletas = new DecimalFormat(TimeFavorito.FORMATO_CARTOLETAS);
+        gson = new Gson();
     }
 
     public void update(RealmResults<TimeFavorito> listaTimesFavoritos){
@@ -109,7 +121,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
         RelativeLayout background;
 
         Resources resources;
-        int margin1dp;
+        int margin1dp, jogadoresPontuados;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -152,17 +164,17 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
 
             posicao.setText(String.valueOf(position+1));
 
-            if (timeFavorito.getPontuacao() == null){
-                pontuacao.setText("");
-            } else {
-                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(timeFavorito.getPontuacao()));
-                pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                pontuacao.setText(pontuacaoFormatada);
-            }
-
             if (timeFavorito.getVariacaoCartoletas() == null || timeFavorito.getVariacaoCartoletas() == 0){
                 cartoletas.setText("");
+
+                jogadoresPontuados = 0;
+                for (AtletasPontuados atleta : parseAndSortAtletasPontuados(gson, timeFavorito.getAtletas())){
+                    if (atleta.getPontuacao() != null && (atleta.getPosicaoId() != PosicoesJogadoresUtil.TECNICO || (atleta.getPosicaoId() == PosicoesJogadoresUtil.TECNICO && atleta.getPontuacao() != 0))){
+                        jogadoresPontuados++;
+                    }
+                }
             } else {
+
                 SpannableStringBuilder cartoletasFormatada = new SpannableStringBuilder("C$ "+formatoCartoletas.format(timeFavorito.getVariacaoCartoletas()));
                 cartoletasFormatada.setSpan(new RelativeSizeSpan(0.65f), 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 cartoletasFormatada.setSpan(new RelativeSizeSpan(0.90f), 3, cartoletasFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -172,6 +184,30 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
                 } else {
                     cartoletas.setTextColor(ContextCompat.getColor(context, R.color.cartoletaNegativa));
                 }
+            }
+
+            if (timeFavorito.getPontuacao() == null){
+                pontuacao.setText("");
+            } else {
+
+                Spanned concatenated;
+                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(padLeft(formatoPontuacao.format(timeFavorito.getPontuacao()),8));
+                pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                // https://stackoverflow.com/q/6612316
+
+                if (timeFavorito.getVariacaoCartoletas() == null || timeFavorito.getVariacaoCartoletas() == 0){
+
+                    SpannableStringBuilder jogadores = new SpannableStringBuilder(jogadoresPontuados+"/12");
+                    jogadores.setSpan(new RelativeSizeSpan(0.45f), 0, jogadores.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    jogadores.setSpan(new StyleSpan(Typeface.NORMAL), 0, jogadores.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    concatenated = (Spanned) TextUtils.concat(jogadores,pontuacaoFormatada);
+
+                } else {
+                    concatenated = (Spanned) TextUtils.concat(pontuacaoFormatada);
+                }
+
+                SpannableStringBuilder result = new SpannableStringBuilder(concatenated);
+                pontuacao.setText(result, TextView.BufferType.SPANNABLE);
             }
         }
     }
