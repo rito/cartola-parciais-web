@@ -58,7 +58,8 @@ public class ParciaisJogadoresFragment extends Fragment {
         realm = Realm.getDefaultInstance();
         Sort[] sortOrder = { Sort.DESCENDING, Sort.ASCENDING };
         String[] sortColumns = { "pontuacao", "apelido" };
-        listaAtletasPontuados = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAllSortedAsync(sortColumns, sortOrder);
+        listaAtletasPontuados = realm.where(AtletasPontuados.class).findAllSortedAsync(sortColumns, sortOrder);
+        //listaAtletasPontuados = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAllSortedAsync(sortColumns, sortOrder);
 
 
 

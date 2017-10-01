@@ -90,6 +90,25 @@ public class TimeLiga extends RealmObject {
     }
 
 
+    public static void mergeTimesDaLiga(TimeLiga master, TimeLiga slave){
+        master.setNomeDoTime(slave.getNomeDoTime());
+        master.setNomeDoCartoleiro(slave.getNomeDoCartoleiro());
+        master.setSlug(slave.getSlug());
+        master.setFacebookId(slave.getFacebookId());
+        master.setUrlEscudoPng(slave.getUrlEscudoPng());
+        master.setUrlEscudoPlaceholderPng(slave.getUrlEscudoPlaceholderPng());
+        master.setFotoPerfil(slave.getFotoPerfil());
+        master.setAssinante(slave.getAssinante());
+        master.setTimeDoUsuario(slave.isTimeDoUsuario());
+        master.setPontuacaoRodada(slave.getPontuacaoRodada());
+        master.setPontuacaoMes(slave.getPontuacaoMes());
+        master.setPontuacaoTurno(slave.getPontuacaoTurno());
+        master.setPontuacaoCampeonato(slave.getPontuacaoCampeonato());
+        master.setPatrimonio(slave.getPatrimonio());
+        master.setAtletas(slave.getAtletas());
+    }
+
+
     public String getId(){
         return id;
     }

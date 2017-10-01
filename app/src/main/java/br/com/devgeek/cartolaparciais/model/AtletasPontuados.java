@@ -132,6 +132,17 @@ public class AtletasPontuados extends RealmObject {
     }
 
 
+    public static void mergeAtletasPontuados(AtletasPontuados master, AtletasPontuados slave){
+        master.setApelido(slave.getApelido());
+        master.setPontuacao(slave.getPontuacao());
+        master.setCartoletas(slave.getCartoletas());
+        master.setFoto(slave.getFoto());
+        master.setPosicaoId(slave.getPosicaoId());
+        master.setClubeId(slave.getClubeId());
+        master.setScouts(slave.getScouts());
+    }
+
+
     public String getAtletaId(){
         return atletaId;
     }

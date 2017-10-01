@@ -69,6 +69,18 @@ public class Liga extends RealmObject {
     }
 
 
+    public static void mergeLigas(Liga master, Liga slave){
+        master.setTimeDonoId(slave.getTimeDonoId());
+        master.setNomeDaLiga(slave.getNomeDaLiga());
+        master.setDescricaoDaLiga(slave.getDescricaoDaLiga());
+        master.setSlug(slave.getSlug());
+        master.setUrlFlamulaPng(slave.getUrlFlamulaPng());
+        master.setTotalTimesLiga(slave.getTotalTimesLiga());
+        master.setRanking(slave.getRanking());
+        master.setTipoLiga(slave.getTipoLiga());
+    }
+
+
     public long getLigaId(){
         return ligaId;
     }

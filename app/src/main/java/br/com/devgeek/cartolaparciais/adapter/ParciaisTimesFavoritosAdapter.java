@@ -14,6 +14,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -192,14 +193,16 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
 
                 Spanned concatenated;
                 SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(padLeft(formatoPontuacao.format(timeFavorito.getPontuacao()),8));
+                pontuacaoFormatada.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, pontuacaoFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 // https://stackoverflow.com/q/6612316
 
                 if (timeFavorito.getVariacaoCartoletas() == null || timeFavorito.getVariacaoCartoletas() == 0){
 
                     SpannableStringBuilder jogadores = new SpannableStringBuilder(jogadoresPontuados+"/12");
-                    jogadores.setSpan(new RelativeSizeSpan(0.45f), 0, jogadores.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    jogadores.setSpan(new TextAppearanceSpan(context, android.R.style.TextAppearance_DeviceDefault_Small), 0, jogadores.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     jogadores.setSpan(new StyleSpan(Typeface.NORMAL), 0, jogadores.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    jogadores.setSpan(new RelativeSizeSpan(0.65f), 0, jogadores.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     concatenated = (Spanned) TextUtils.concat(jogadores,pontuacaoFormatada);
 
                 } else {

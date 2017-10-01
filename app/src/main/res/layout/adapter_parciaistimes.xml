@@ -92,8 +92,7 @@
             android:layout_alignParentTop="true"
             android:gravity="bottom|right"
             android:text="999.00"
-            android:textColor="@color/textDark"
-            android:textStyle="bold" />
+            android:textColor="@color/textDark" />
 
         <TextView
             android:id="@+id/cartoletas"

@@ -154,7 +154,7 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
 
                 Picasso.with( context ).load( liga.getUrlFlamulaPng() ).noFade().into( flamula );
 
-                if (liga.getRanking() != null){
+                if (liga.getRanking() != null && liga.getRanking() > 0){
 
                     SpannableStringBuilder rankingNaLiga = new SpannableStringBuilder( liga.getRanking()+"°" );
                     rankingNaLiga.setSpan(new RelativeSizeSpan(0.9f), 0, rankingNaLiga.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -164,7 +164,7 @@ public class LigasAdapter extends RecyclerView.Adapter<LigasAdapter.ViewHolder> 
                     ranking.setText( "" );
                 }
 
-                if (liga.getTotalTimesLiga() != null){
+                if (liga.getTotalTimesLiga() != null && liga.getTotalTimesLiga() > 0){
 
                     SpannableStringBuilder totalTimesLiga = new SpannableStringBuilder( String.valueOf(liga.getTotalTimesLiga()) );
                     totalTimesLiga.setSpan(new RelativeSizeSpan(0.95f), 0, totalTimesLiga.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
