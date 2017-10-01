@@ -48,6 +48,7 @@ import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdateParci
 import static br.com.devgeek.cartolaparciais.CartolaParciais.isTimeToUpdatePartidas;
 import static br.com.devgeek.cartolaparciais.model.AtletasPontuados.mergeAtletasPontuados;
 import static br.com.devgeek.cartolaparciais.model.Liga.mergeLigas;
+import static br.com.devgeek.cartolaparciais.model.MercadoStatus.mergeMercadoStatus;
 import static br.com.devgeek.cartolaparciais.model.Partida.mergePartidas;
 import static br.com.devgeek.cartolaparciais.model.TimeLiga.mergeTimesDaLiga;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.getX_GLB_Token;
@@ -155,18 +156,17 @@ public class ApiServiceImpl {
                             try {
 
                                 realm = Realm.getDefaultInstance();
-                                realm.executeTransaction(realmTransaction -> {
 
-                                    MercadoStatus mercadoStatus = new MercadoStatus(apiMercadoStatus);
-                                    MercadoStatus mercadoStatusOnRealm = realmTransaction.where(MercadoStatus.class).findFirst();
+                                MercadoStatus mercadoStatus = new MercadoStatus(apiMercadoStatus);
+                                final MercadoStatus mercadoStatusOnRealm = realm.where(MercadoStatus.class).equalTo("temporada", mercadoStatus.getTemporada()).findFirst();
 
-                                    if (mercadoStatusOnRealm == null || !mercadoStatusOnRealm.equals(mercadoStatus)){
+                                if (mercadoStatusOnRealm != null){
 
-                                        if (mercadoStatusOnRealm != null) mercadoStatusOnRealm.deleteFromRealm();
-                                        realmTransaction.copyToRealm(mercadoStatus);
-                                    }
-                                });
+                                    realm.executeTransaction(realmTransaction -> mergeMercadoStatus(mercadoStatusOnRealm, mercadoStatus));
 
+                                } else {
+                                    realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(mercadoStatus));
+                                }
                             } catch (Exception e){
 
                                 logErrorOnConsole(TAG, e.getMessage(), e);
@@ -229,19 +229,46 @@ public class ApiServiceImpl {
                                         try {
 
                                             realm = Realm.getDefaultInstance();
-                                            final RealmResults<AtletasPontuados> atletasPontuados = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAll();
-                                            if (atletasPontuados.size() > 0)  realm.executeTransaction(realmTransaction -> atletasPontuados.deleteAllFromRealm() );
-
+                                            int rodada = apiAtletasPontuados.getRodada();
                                             RealmList<AtletasPontuados> listaAtletasPontuados = new RealmList<>();
+                                            Map<String, AtletasPontuados> chaveDeAtletasPontuados = new HashMap<>();
 
                                             for (Map.Entry<String, ApiAtletasPontuados_PontuacaoAtleta> entry : apiAtletasPontuados.getAtletas().entrySet()){
 
                                                 String atletaId = entry.getKey();
                                                 ApiAtletasPontuados_PontuacaoAtleta atleta = entry.getValue();
-                                                listaAtletasPontuados.add(new AtletasPontuados(atletaId, apiAtletasPontuados.getRodada(), atleta));
+
+                                                AtletasPontuados atletasPontuados = new AtletasPontuados(atletaId, rodada, atleta);
+
+                                                listaAtletasPontuados.add(atletasPontuados);
+                                                chaveDeAtletasPontuados.put(String.valueOf(rodada+atletasPontuados.getAtletaId()), atletasPontuados);
                                             }
 
-                                            if (listaAtletasPontuados.size() > 0){
+                                            //final RealmResults<AtletasPontuados> atletasPontuados = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAll();
+                                            final RealmResults<AtletasPontuados> atletasPontuadosOnRealm = realm.where(AtletasPontuados.class).findAll();
+                                            if (atletasPontuadosOnRealm != null && atletasPontuadosOnRealm.size() > 0){
+
+                                                for (AtletasPontuados atletaPontuado : atletasPontuadosOnRealm){
+
+                                                    if (chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId())) == null){
+
+                                                        realm.executeTransaction(realmTransaction -> atletaPontuado.deleteFromRealm() );
+
+                                                    } else {
+
+                                                        realm.executeTransaction(realmTransaction -> mergeAtletasPontuados(atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId()))));
+                                                        chaveDeAtletasPontuados.remove(String.valueOf(rodada+atletaPontuado.getAtletaId()));
+                                                    }
+                                                }
+
+                                                if (chaveDeAtletasPontuados.size() > 0){
+
+                                                    for (Map.Entry<String, AtletasPontuados> entry : chaveDeAtletasPontuados.entrySet()){
+
+                                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(entry.getValue()));
+                                                    }
+                                                }
+                                            } else if (listaAtletasPontuados.size() > 0){
 
                                                 realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(listaAtletasPontuados));
                                             }
@@ -327,10 +354,11 @@ public class ApiServiceImpl {
                                 if (timeSlug != null && timeSlug.getAtletas() != null && timeSlug.getAtletas().size() > 0){
 
                                     Realm realm = null;
-                                    double pontuacao = 0.0, variacaoCartoletas = 0.0;
 
                                     try {
 
+                                        realm = Realm.getDefaultInstance();
+                                        double pontuacao = 0.0, variacaoCartoletas = 0.0;
                                         List<AtletasPontuados> atletas = new ArrayList<>();
 
                                         for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){

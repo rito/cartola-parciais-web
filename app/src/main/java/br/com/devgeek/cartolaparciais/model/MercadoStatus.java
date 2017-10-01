@@ -2,6 +2,7 @@ package br.com.devgeek.cartolaparciais.model;
 
 import br.com.devgeek.cartolaparciais.api.model.ApiMercadoStatus;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by geovannefduarte
@@ -13,6 +14,7 @@ public class MercadoStatus extends RealmObject {
     public static final int FECHADO     = 2;
     public static final int MANUTENCAO  = 4;
 
+    @PrimaryKey
     private int temporada;
     private int rodadaAtual;
     private int statusDoMercado;
@@ -38,28 +40,6 @@ public class MercadoStatus extends RealmObject {
 
 
     public MercadoStatus(){
-    }
-
-
-    public boolean equals(MercadoStatus mercadoStatus){
-        return  this.temporada == mercadoStatus.getTemporada() &&
-                this.rodadaAtual == mercadoStatus.getRodadaAtual() &&
-                this.statusDoMercado == mercadoStatus.getStatusDoMercado() &&
-                this.timesEscalados == mercadoStatus.getTimesEscalados() &&
-                this.esquemaDefaultId == mercadoStatus.getEsquemaDefaultId() &&
-                this.cartoletaInicial == mercadoStatus.getCartoletaInicial() &&
-                this.gameOver == mercadoStatus.isGameOver() &&
-                this.reativar == mercadoStatus.isReativar() &&
-                this.mercadoPosRodada == mercadoStatus.isMercadoPosRodada() &&
-
-                this.aviso.equals(mercadoStatus.getAviso()) &&
-
-                this.dia == mercadoStatus.getDia() &&
-                this.mes == mercadoStatus.getMes() &&
-                this.ano == mercadoStatus.getAno() &&
-                this.hora == mercadoStatus.getHora() &&
-                this.minuto == mercadoStatus.getMinuto() &&
-                this.timestamp == mercadoStatus.getTimestamp();
     }
 
 
@@ -103,6 +83,44 @@ public class MercadoStatus extends RealmObject {
         this.timestamp = timestamp;
     }
 
+    public static void mergeMercadoStatus(MercadoStatus master, MercadoStatus slave){
+        master.setRodadaAtual(slave.getRodadaAtual());
+        master.setStatusDoMercado(slave.getStatusDoMercado());
+        master.setTimesEscalados(slave.getTimesEscalados());
+        master.setEsquemaDefaultId(slave.getEsquemaDefaultId());
+        master.setCartoletaInicial(slave.getCartoletaInicial());
+        master.setGameOver(slave.isGameOver());
+        master.setReativar(slave.isReativar());
+        master.setMercadoPosRodada(slave.isMercadoPosRodada());
+        master.setAviso(slave.getAviso());
+        master.setDia(slave.getDia());
+        master.setMes(slave.getMes());
+        master.setAno(slave.getAno());
+        master.setHora(slave.getHora());
+        master.setMinuto(slave.getMinuto());
+        master.setTimestamp(slave.getTimestamp());
+    }
+
+    public boolean equals(MercadoStatus mercadoStatus){
+        return  this.temporada == mercadoStatus.getTemporada() &&
+                this.rodadaAtual == mercadoStatus.getRodadaAtual() &&
+                this.statusDoMercado == mercadoStatus.getStatusDoMercado() &&
+                this.timesEscalados == mercadoStatus.getTimesEscalados() &&
+                this.esquemaDefaultId == mercadoStatus.getEsquemaDefaultId() &&
+                this.cartoletaInicial == mercadoStatus.getCartoletaInicial() &&
+                this.gameOver == mercadoStatus.isGameOver() &&
+                this.reativar == mercadoStatus.isReativar() &&
+                this.mercadoPosRodada == mercadoStatus.isMercadoPosRodada() &&
+
+                this.aviso.equals(mercadoStatus.getAviso()) &&
+
+                this.dia == mercadoStatus.getDia() &&
+                this.mes == mercadoStatus.getMes() &&
+                this.ano == mercadoStatus.getAno() &&
+                this.hora == mercadoStatus.getHora() &&
+                this.minuto == mercadoStatus.getMinuto() &&
+                this.timestamp == mercadoStatus.getTimestamp();
+    }
 
     public int getTemporada(){
         return temporada;
