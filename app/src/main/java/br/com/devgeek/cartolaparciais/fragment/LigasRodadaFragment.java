@@ -72,8 +72,8 @@ public class LigasRodadaFragment extends Fragment {
         View view  = inflater.inflate(R.layout.fragment_ligastimes, container, false);
 
 
-        Sort[] sortOrder = { Sort.DESCENDING, Sort.ASCENDING };
-        String[] sortColumns = { "pontuacaoRodada", "nomeDoTime" };
+        Sort[] sortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING };
+        String[] sortColumns = { "pontuacao", "pontuacaoRodada", "nomeDoTime" };
         listaTimesDaLiga = realm.where(TimeLiga.class).equalTo("ligaId", ligaId).findAllSortedAsync(sortColumns, sortOrder);
 
 

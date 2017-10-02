@@ -20,26 +20,25 @@ import java.util.List;
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.ParciaisAtletasDoTimeFavoritoAdapter;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
-import br.com.devgeek.cartolaparciais.model.TimeFavorito;
+import br.com.devgeek.cartolaparciais.model.TimeLiga;
 import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
 import io.realm.Realm;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.parseAndSortAtletasPontuados;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
-public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
+public class ParciaisAtletasDoTimeNaLigaActivity extends AppCompatActivity {
 
-    private static String TAG = "ParciaisAtletasDoTime";
+    private static final String TAG = "ParciaisAtletasDoTimeNa";
     private ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = null;
 
     private ParciaisAtletasDoTimeFavoritoAdapter adapter;
     private List<AtletasPontuados> atletasPontuados = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_parciais_atletas_do_time);
+        setContentView(R.layout.activity_parciais_atletas_do_time_na_liga);
 
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) dadosParciaisAtletasDoTime = bundle.getParcelable("dadosParciaisAtletasDoTime");
@@ -64,13 +63,13 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
             nomeCartoleiro.setText(dadosParciaisAtletasDoTime.getNomeDoCartoleiro());
 
             Picasso.with( getApplicationContext() )
-                   .load( dadosParciaisAtletasDoTime.getUrlEscudoPng() )
-                   .resize(140,140).centerCrop().noFade()
-                   .error( R.drawable.arkenstone_fc )
-                   .into( escudo );
+                    .load( dadosParciaisAtletasDoTime.getUrlEscudoPng() )
+                    .resize(140,140).centerCrop().noFade()
+                    .error( R.drawable.arkenstone_fc )
+                    .into( escudo );
 
 
-            buscarAtletas(dadosParciaisAtletasDoTime.getTimeId());
+            buscarAtletas(dadosParciaisAtletasDoTime.getTimeId(), dadosParciaisAtletasDoTime.getTimeId());
         }
 
         // Configurar recyclerView
@@ -84,7 +83,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
         recyclerView.setAdapter( adapter );
     }
 
-    private void buscarAtletas(Long timeId){
+    private void buscarAtletas(Long ligaId, Long timeId){
 
         Realm realm = null;
 
@@ -92,11 +91,11 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
 
             realm = Realm.getDefaultInstance();
 
-            TimeFavorito timeFavorito = realm.copyFromRealm(realm.where(TimeFavorito.class).equalTo("timeId", timeId).findFirst());
+            TimeLiga timeDaLiga = realm.copyFromRealm(realm.where(TimeLiga.class).equalTo("ligaId", ligaId).equalTo("timeId", timeId).findFirst());
 
-            if (timeFavorito != null){
+            if (timeDaLiga != null){
 
-                atletasPontuados = parseAndSortAtletasPontuados(new Gson(), timeFavorito.getAtletas());
+                atletasPontuados = parseAndSortAtletasPontuados(new Gson(), timeDaLiga.getAtletas());
             }
         } catch (Exception e){
 

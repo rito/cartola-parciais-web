@@ -96,7 +96,7 @@ public class ParciaisTimesFavoritosAdapter extends RecyclerView.Adapter<Parciais
             if (listaTimesFavoritos.get( position ).getPontuacao() != null){
                 pontuacaoFormatada = formatoPontuacao.format(listaTimesFavoritos.get( position ).getPontuacao());
             }
-            ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(listaTimesFavoritos.get( position ).getTimeId(), listaTimesFavoritos.get( position ).getNomeDoTime(), listaTimesFavoritos.get( position ).getUrlEscudoPng(), listaTimesFavoritos.get( position ).getNomeDoCartoleiro(), pontuacaoFormatada);
+            ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(Long.valueOf(0), listaTimesFavoritos.get( position ).getTimeId(), listaTimesFavoritos.get( position ).getNomeDoTime(), listaTimesFavoritos.get( position ).getUrlEscudoPng(), listaTimesFavoritos.get( position ).getNomeDoCartoleiro(), pontuacaoFormatada);
 
             bundle.putParcelable("dadosParciaisAtletasDoTime", dadosParciaisAtletasDoTime);
             intent.putExtras(bundle);

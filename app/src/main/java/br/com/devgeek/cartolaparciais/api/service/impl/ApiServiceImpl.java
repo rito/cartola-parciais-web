@@ -37,6 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -282,6 +283,7 @@ public class ApiServiceImpl {
                                     });
 
                                     atualizarParciaisTimesFavoritos(apiAtletasPontuados);
+                                    atualizarParciaisTimesDaLigas(apiAtletasPontuados);
                                 }
                             },
                             error -> {
@@ -393,6 +395,135 @@ public class ApiServiceImpl {
                                     } catch (Exception e){
 
                                         logErrorOnConsole(TAG, e.getMessage(), e);
+
+                                    } finally {
+                                        if (realm != null) realm.close();
+                                    }
+                                }
+
+                            },
+                            error -> {
+                                try {
+                                    if (error instanceof NullPointerException){
+                                        logErrorOnConsole(TAG, "ApiTimeSlug [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof HttpException){ // We had non-200 http error
+                                        logErrorOnConsole(TAG, "ApiTimeSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else if (error instanceof IOException){ // A network error happened
+                                        logErrorOnConsole(TAG, "ApiTimeSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    } else {
+                                        logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
+                                    }
+                                } catch (Exception e){
+                                    logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
+                                }
+                            }
+                    );
+
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "Falha ao atualizarParciaisDeCadaTimeFavorito() -> "+e.getMessage(), e);
+        }
+    }
+
+    private void atualizarParciaisTimesDaLigas(ApiAtletasPontuados atletasPontuadosEncontrados){
+
+        Realm realm = null;
+
+        try {
+
+            realm = Realm.getDefaultInstance();
+
+            Sort[] ligasSortOrder = { Sort.DESCENDING, Sort.ASCENDING, Sort.ASCENDING };
+            String[] ligasSortColumns = { "tipoLiga", "nomeDaLiga", "descricaoDaLiga" };
+            List<Liga> ligas = realm.copyFromRealm(realm.where(Liga.class).findAllSorted(ligasSortColumns, ligasSortOrder));
+
+            for (Liga liga : ligas){
+
+                if (liga.getLigaId() > 0){
+
+                    Sort[] timesSortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING };
+                    String[] timesSortColumns = { "pontuacao", "pontuacaoRodada", "nomeDoTime" };
+                    List<TimeLiga> timesDaLigas = realm.copyFromRealm(realm.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAllSorted(timesSortColumns, timesSortOrder));
+
+                    if (timesDaLigas != null && timesDaLigas.size() > 0){
+
+                        for (TimeLiga timeDaLiga : timesDaLigas){
+
+                            atualizarParciaisDeCadaTimeDaLiga(atletasPontuadosEncontrados, timeDaLiga);
+                            //new Handler().postDelayed(() -> atualizarParciaisDeCadaTimeDaLiga(atletasPontuadosEncontrados, timeDaLiga), 250);
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e){
+
+            logErrorOnConsole(TAG, "atualizarParciaisTimesDaLigas() -> "+e.getMessage(), e);
+
+        } finally {
+            if (realm != null) realm.close();
+        }
+    }
+
+    private void atualizarParciaisDeCadaTimeDaLiga(ApiAtletasPontuados atletasPontuadosEncontrados, TimeLiga timeDaLiga){
+
+        try {
+
+            Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeDaLiga.getTimeId());
+
+            buscarTimeId.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorReturn((Throwable throwable) -> {
+                        if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
+                            return new ApiTimeSlug();
+                        }
+                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        return null; //empty object of the datatype
+                    })
+                    .subscribe(
+                            timeSlug -> {
+
+                                if (timeSlug != null && timeSlug.getAtletas() != null && timeSlug.getAtletas().size() > 0){
+
+                                    Realm realm = null;
+
+                                    try {
+
+                                        realm = Realm.getDefaultInstance();
+                                        double pontuacao = 0.0, variacaoCartoletas = 0.0;
+                                        List<AtletasPontuados> atletas = new ArrayList<>();
+
+                                        for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
+
+                                            if (atletasPontuadosEncontrados != null){
+
+                                                if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
+
+                                                    pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
+                                                    atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+
+                                                } else {
+
+                                                    atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                }
+
+                                            } else {
+
+                                                pontuacao += atleta.getPontos_num();
+                                                variacaoCartoletas += atleta.getVariacao_num();
+                                                atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                            }
+                                        }
+
+                                        timeDaLiga.setAtletas(new Gson().toJson(atletas));
+                                        timeDaLiga.setPontuacao(pontuacao);
+                                        timeDaLiga.setVariacaoCartoletas(variacaoCartoletas);
+
+                                        realm = Realm.getDefaultInstance();
+                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeDaLiga));
+
+                                    } catch (Exception e){
+
+                                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeDaLiga()[subscribe] -> "+e.getMessage(), e);
 
                                     } finally {
                                         if (realm != null) realm.close();

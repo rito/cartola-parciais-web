@@ -1,11 +1,19 @@
 package br.com.devgeek.cartolaparciais.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +21,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 
 import br.com.devgeek.cartolaparciais.R;
+import br.com.devgeek.cartolaparciais.activity.ParciaisAtletasDoTimeNaLigaActivity;
+import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
 import br.com.devgeek.cartolaparciais.model.TimeLiga;
+import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable;
+import br.com.devgeek.cartolaparciais.util.PosicoesJogadoresUtil;
 import io.realm.RealmResults;
+
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.padLeft;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.parseAndSortAtletasPontuados;
 
 /**
  * Created by geovannefduarte
@@ -28,6 +44,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
 
     private static final String TAG = "LigasRodadaAdapter";
 
+    private Gson gson;
     private Context context;
     private DecimalFormat formatoPontuacao;
     private RealmResults<TimeLiga> listaTimesDaLiga;
@@ -37,6 +54,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
         this.context = context;
         update(listaTimesDaLiga);
         this.formatoPontuacao = new DecimalFormat(TimeLiga.FORMATO_PONTUACAO);
+        gson = new Gson();
     }
 
     public void update(RealmResults<TimeLiga> listaTimesDaLiga){
@@ -64,7 +82,25 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             }
         }
 
-        holder.setData( listaTimesDaLiga.get( position ), backgroundColor, position, listaTimesDaLiga.get( 0 ).getPontuacaoRodada());
+        holder.setData( listaTimesDaLiga.get( position ), backgroundColor, position, listaTimesDaLiga.get( 0 ).getPontuacaoRodada(), listaTimesDaLiga.get( 0 ).getPontuacao());
+
+        holder.itemView.setOnClickListener((View v) -> {
+
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+
+            String pontuacaoFormatada = "";
+            if (listaTimesDaLiga.get( position ).getPontuacao() != null){
+                pontuacaoFormatada = formatoPontuacao.format(listaTimesDaLiga.get( position ).getPontuacao());
+            }
+            ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(listaTimesDaLiga.get( position ).getLigaId(), listaTimesDaLiga.get( position ).getTimeId(), listaTimesDaLiga.get( position ).getNomeDoTime(), listaTimesDaLiga.get( position ).getUrlEscudoPng(), listaTimesDaLiga.get( position ).getNomeDoCartoleiro(), pontuacaoFormatada);
+
+            bundle.putParcelable("dadosParciaisAtletasDoTime", dadosParciaisAtletasDoTime);
+            intent.putExtras(bundle);
+            intent.setClass(context, ParciaisAtletasDoTimeNaLigaActivity.class);
+            context.startActivity(intent);
+            ((Activity) context).overridePendingTransition(R.anim.slide_in_right_to_left,R.anim.slide_in_left_to_right);
+        });
     }
 
     @Override
@@ -82,6 +118,8 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
         TextView nomeCartoleiro;
         RelativeLayout background;
 
+        int margin1dp, jogadoresPontuados;
+
         public ViewHolder(View itemView){
             super(itemView);
 
@@ -94,7 +132,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             background = (RelativeLayout) itemView.findViewById(R.id.parciais_background);
         }
 
-        private void setData(TimeLiga time , int backgroundColor, int position, double pontuacaoPrimeiroTime){
+        private void setData(TimeLiga time , int backgroundColor, int position, double pontuacaoPrimeiroTime, double pontuacaoParciaisPrimeiroTime){
 
             Picasso.with( context )
                     .load( time.getUrlEscudoPng() )
@@ -116,21 +154,63 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             posicaoDoTime.setSpan(new RelativeSizeSpan(0.85f), 0, posicaoDoTime.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             posicao.setText(posicaoDoTime);
 
-            if (time.getPontuacaoRodada() == null){
-                pontuacao.setText("");
-            } else {
-                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(time.getPontuacaoRodada()));
-                pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                pontuacao.setText(pontuacaoFormatada);
-            }
+            if (time.getVariacaoCartoletas() == null || time.getVariacaoCartoletas() == 0){
 
-            if (position == 0){
-                diferenca.setText("");
+                jogadoresPontuados = 0;
+                for (AtletasPontuados atleta : parseAndSortAtletasPontuados(gson, time.getAtletas())){
+                    if (atleta.getPontuacao() != null && (atleta.getPosicaoId() != PosicoesJogadoresUtil.TECNICO || (atleta.getPosicaoId() == PosicoesJogadoresUtil.TECNICO && atleta.getPontuacao() != 0))){
+                        jogadoresPontuados++;
+                    }
+                }
+
+                Spanned concatenated;
+                SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(padLeft(formatoPontuacao.format(time.getPontuacao()),8));
+                pontuacaoFormatada.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, pontuacaoFormatada.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                // https://stackoverflow.com/q/6612316
+
+                if (time.getVariacaoCartoletas() == null || time.getVariacaoCartoletas() == 0){
+
+                    SpannableStringBuilder jogadores = new SpannableStringBuilder(jogadoresPontuados+"/12");
+                    jogadores.setSpan(new TextAppearanceSpan(context, android.R.style.TextAppearance_DeviceDefault_Small), 0, jogadores.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    jogadores.setSpan(new StyleSpan(Typeface.NORMAL), 0, jogadores.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    jogadores.setSpan(new RelativeSizeSpan(0.65f), 0, jogadores.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    concatenated = (Spanned) TextUtils.concat(jogadores,pontuacaoFormatada);
+
+                } else {
+                    concatenated = (Spanned) TextUtils.concat(pontuacaoFormatada);
+                }
+
+                SpannableStringBuilder result = new SpannableStringBuilder(concatenated);
+                pontuacao.setText(result, TextView.BufferType.SPANNABLE);
+
+                if (position == 0){
+                    diferenca.setText("");
+                } else {
+                    String diferencaCalculada = "-"+formatoPontuacao.format(pontuacaoParciaisPrimeiroTime-time.getPontuacao());
+                    SpannableStringBuilder diferencaFormatada = new SpannableStringBuilder(diferencaCalculada.replaceAll("--","-"));
+                    diferencaFormatada.setSpan(new RelativeSizeSpan(0.8f), 0, diferencaFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    diferenca.setText(diferencaFormatada);
+                }
+
             } else {
-                String diferencaCalculada = "-"+formatoPontuacao.format(pontuacaoPrimeiroTime-time.getPontuacaoRodada());
-                SpannableStringBuilder diferencaFormatada = new SpannableStringBuilder(diferencaCalculada.replaceAll("--","-"));
-                diferencaFormatada.setSpan(new RelativeSizeSpan(0.8f), 0, diferencaFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                diferenca.setText(diferencaFormatada);
+
+                if (time.getPontuacaoRodada() == null){
+                    pontuacao.setText("");
+                } else {
+                    SpannableStringBuilder pontuacaoFormatada = new SpannableStringBuilder(formatoPontuacao.format(time.getPontuacaoRodada()));
+                    pontuacaoFormatada.setSpan(new RelativeSizeSpan(0.9f), 0, pontuacaoFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    pontuacao.setText(pontuacaoFormatada);
+                }
+
+                if (position == 0){
+                    diferenca.setText("");
+                } else {
+                    String diferencaCalculada = "-"+formatoPontuacao.format(pontuacaoPrimeiroTime-time.getPontuacaoRodada());
+                    SpannableStringBuilder diferencaFormatada = new SpannableStringBuilder(diferencaCalculada.replaceAll("--","-"));
+                    diferencaFormatada.setSpan(new RelativeSizeSpan(0.8f), 0, diferencaFormatada.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    diferenca.setText(diferencaFormatada);
+                }
             }
         }
     }

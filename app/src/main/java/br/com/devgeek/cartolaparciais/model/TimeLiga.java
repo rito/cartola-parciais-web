@@ -27,12 +27,15 @@ public class TimeLiga extends RealmObject {
     private Boolean assinante;
     private boolean timeDoUsuario;
 
+    private Double pontuacao;
+    private Double variacaoCartoletas;
+    private String atletas;
+
     private Double pontuacaoRodada;
     private Double pontuacaoMes;
     private Double pontuacaoTurno;
     private Double pontuacaoCampeonato;
     private Double patrimonio;
-    private String atletas;
 
 
     public TimeLiga(){
@@ -68,7 +71,7 @@ public class TimeLiga extends RealmObject {
     }
 
 
-    public TimeLiga(String id, Long ligaId, Long timeId, String nomeDoTime, String nomeDoCartoleiro, String slug, Long facebookId, String urlEscudoPng, String urlEscudoPlaceholderPng, String fotoPerfil, Boolean assinante, boolean timeDoUsuario, Double pontuacaoRodada, Double pontuacaoMes, Double pontuacaoTurno, Double pontuacaoCampeonato, Double patrimonio, String atletas){
+    public TimeLiga(String id, Long ligaId, Long timeId, String nomeDoTime, String nomeDoCartoleiro, String slug, Long facebookId, String urlEscudoPng, String urlEscudoPlaceholderPng, String fotoPerfil, Boolean assinante, boolean timeDoUsuario, Double pontuacao, Double variacaoCartoletas, String atletas, Double pontuacaoRodada, Double pontuacaoMes, Double pontuacaoTurno, Double pontuacaoCampeonato, Double patrimonio){
         this.id = id;
         this.ligaId = ligaId;
         this.timeId = timeId;
@@ -81,12 +84,16 @@ public class TimeLiga extends RealmObject {
         this.fotoPerfil = fotoPerfil;
         this.assinante = assinante;
         this.timeDoUsuario = timeDoUsuario;
+
+        this.pontuacao = pontuacao;
+        this.variacaoCartoletas = variacaoCartoletas;
+        this.atletas = atletas;
+
         this.pontuacaoRodada = pontuacaoRodada;
         this.pontuacaoMes = pontuacaoMes;
         this.pontuacaoTurno = pontuacaoTurno;
         this.pontuacaoCampeonato = pontuacaoCampeonato;
         this.patrimonio = patrimonio;
-        this.atletas = atletas;
     }
 
 
@@ -105,7 +112,6 @@ public class TimeLiga extends RealmObject {
         master.setPontuacaoTurno(slave.getPontuacaoTurno());
         master.setPontuacaoCampeonato(slave.getPontuacaoCampeonato());
         master.setPatrimonio(slave.getPatrimonio());
-        master.setAtletas(slave.getAtletas());
     }
 
 
@@ -181,6 +187,24 @@ public class TimeLiga extends RealmObject {
     public void setTimeDoUsuario(boolean timeDoUsuario){
         this.timeDoUsuario = timeDoUsuario;
     }
+    public Double getPontuacao(){
+        return pontuacao;
+    }
+    public void setPontuacao(Double pontuacao){
+        this.pontuacao = pontuacao;
+    }
+    public Double getVariacaoCartoletas(){
+        return variacaoCartoletas;
+    }
+    public void setVariacaoCartoletas(Double variacaoCartoletas){
+        this.variacaoCartoletas = variacaoCartoletas;
+    }
+    public String getAtletas(){
+        return atletas;
+    }
+    public void setAtletas(String atletas){
+        this.atletas = atletas;
+    }
     public Double getPontuacaoRodada(){
         return pontuacaoRodada;
     }
@@ -210,11 +234,5 @@ public class TimeLiga extends RealmObject {
     }
     public void setPatrimonio(Double patrimonio){
         this.patrimonio = patrimonio;
-    }
-    public String getAtletas(){
-        return atletas;
-    }
-    public void setAtletas(String atletas){
-        this.atletas = atletas;
     }
 }

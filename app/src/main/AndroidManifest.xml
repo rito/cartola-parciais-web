@@ -33,7 +33,11 @@
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.LigasActivity"
+        <activity
+            android:name=".activity.LigasActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ParciaisAtletasDoTimeNaLigaActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

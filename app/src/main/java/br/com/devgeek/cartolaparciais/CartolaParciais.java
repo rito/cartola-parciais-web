@@ -109,7 +109,7 @@ public class CartolaParciais extends Application {
 
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(12)               // Must be bumped when the schema changes
+                .schemaVersion(13)               // Must be bumped when the schema changes
                 .migration(realmMigration())    // Migration to run instead of throwing an exception
                 //.deleteRealmIfMigrationNeeded()
                 .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
@@ -245,6 +245,14 @@ public class CartolaParciais extends Application {
 
                 schema.get("MercadoStatus")
                         .addField("temporada", int.class, FieldAttribute.PRIMARY_KEY);
+
+                oldVersion++;
+            }
+
+            if (oldVersion == 12){
+                schema.get("TimeLiga")
+                      .addField("pontuacao", Double.class)
+                      .addField("variacaoCartoletas", Double.class);
 
                 oldVersion++;
             }
