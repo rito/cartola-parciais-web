@@ -2,6 +2,7 @@ package br.com.devgeek.cartolaparciais.api.service.impl;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -145,7 +146,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiMercadoStatus();
                         }
-                        logErrorOnConsole(TAG, "verificarMercadoStatus.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "verificarMercadoStatus.onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null; //empty object of the datatype
                     })
                     .subscribe(apiMercadoStatus -> {
@@ -170,7 +171,7 @@ public class ApiServiceImpl {
                                 }
                             } catch (Exception e){
 
-                                logErrorOnConsole(TAG, e.getMessage(), e);
+                                logErrorOnConsole(TAG, "verificarMercadoStatus.subscribe() -> "+e.getMessage(), e);
 
                             } finally {
                                 if (realm != null) realm.close();
@@ -215,7 +216,7 @@ public class ApiServiceImpl {
                             return new ApiAtletasPontuados();
                         }
 
-                        logErrorOnConsole(TAG, "buscarAtletasPontuados.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "buscarAtletasPontuados.onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null;
                     })
                     .subscribe(
@@ -266,7 +267,8 @@ public class ApiServiceImpl {
 
                                                     for (Map.Entry<String, AtletasPontuados> entry : chaveDeAtletasPontuados.entrySet()){
 
-                                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(entry.getValue()));
+                                                        AtletasPontuados atleta = entry.getValue();
+                                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(atleta));
                                                     }
                                                 }
                                             } else if (listaAtletasPontuados.size() > 0){
@@ -275,7 +277,7 @@ public class ApiServiceImpl {
                                             }
                                         } catch (Exception e){
 
-                                            logErrorOnConsole(TAG, e.getMessage(), e);
+                                            logErrorOnConsole(TAG, "buscarAtletasPontuados.subscribe() -> "+e.getMessage(), e);
 
                                         } finally {
                                             if (realm != null) realm.close();
@@ -320,7 +322,7 @@ public class ApiServiceImpl {
 
         } catch (Exception e){
 
-            logErrorOnConsole(TAG, e.getMessage(), e);
+            logErrorOnConsole(TAG, "atualizarParciaisTimesFavoritos() -> "+e.getMessage(), e);
 
         } finally {
             if (realm != null) realm.close();
@@ -347,7 +349,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiTimeSlug();
                         }
-                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null; //empty object of the datatype
                     })
                     .subscribe(
@@ -394,7 +396,7 @@ public class ApiServiceImpl {
 
                                     } catch (Exception e){
 
-                                        logErrorOnConsole(TAG, e.getMessage(), e);
+                                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.subscribe() -> "+e.getMessage(), e);
 
                                     } finally {
                                         if (realm != null) realm.close();
@@ -438,12 +440,13 @@ public class ApiServiceImpl {
 
             for (Liga liga : ligas){
 
-                if (liga.getLigaId() > 0){
+                if (liga.getLigaId() > 0 && liga.getTipoLiga().equals("Minhas ligas")){
 
                     Sort[] timesSortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING };
                     String[] timesSortColumns = { "pontuacao", "pontuacaoRodada", "nomeDoTime" };
                     List<TimeLiga> timesDaLigas = realm.copyFromRealm(realm.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAllSorted(timesSortColumns, timesSortOrder));
 
+                    Log.e(TAG, "atualizarParciaisTimesDaLigas() " + liga.getNomeDaLiga()+" - "+liga.getTipoLiga());
                     if (timesDaLigas != null && timesDaLigas.size() > 0){
 
                         for (TimeLiga timeDaLiga : timesDaLigas){
@@ -476,7 +479,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiTimeSlug();
                         }
-                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null; //empty object of the datatype
                     })
                     .subscribe(
@@ -488,7 +491,6 @@ public class ApiServiceImpl {
 
                                     try {
 
-                                        realm = Realm.getDefaultInstance();
                                         double pontuacao = 0.0, variacaoCartoletas = 0.0;
                                         List<AtletasPontuados> atletas = new ArrayList<>();
 
@@ -519,7 +521,7 @@ public class ApiServiceImpl {
                                         timeDaLiga.setVariacaoCartoletas(variacaoCartoletas);
 
                                         realm = Realm.getDefaultInstance();
-                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeDaLiga));
+                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeDaLiga) );
 
                                     } catch (Exception e){
 
@@ -565,7 +567,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiAtletasMercado();
                         }
-                        logErrorOnConsole(TAG, "buscarAtletasMercado.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "buscarAtletasMercado.onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null; //empty object of the datatype
                     })
                     .subscribe(apiAtletasMercado -> {
@@ -621,7 +623,7 @@ public class ApiServiceImpl {
 
                             } catch (Exception e){
 
-                                logErrorOnConsole(TAG, e.getMessage(), e);
+                                logErrorOnConsole(TAG, "buscarAtletasMercado.subscribe() -> "+e.getMessage(), e);
 
                             } finally {
                                 if (realm != null) realm.close();
@@ -659,7 +661,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiAuthLigas();
                         }
-                        logErrorOnConsole(TAG, "buscarLigasDoTimeLogado.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "buscarLigasDoTimeLogado.onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null;
                     })
                     .subscribe(
@@ -752,7 +754,7 @@ public class ApiServiceImpl {
 
                                     } catch (Exception e){
 
-                                        logErrorOnConsole(TAG, e.getMessage(), e);
+                                        logErrorOnConsole(TAG, "buscarLigasDoTimeLogado.subscribe() -> "+e.getMessage(), e);
 
                                     } finally {
                                         if (realm != null) realm.close();
@@ -793,7 +795,7 @@ public class ApiServiceImpl {
 
         } catch (Exception e){
 
-            logErrorOnConsole(TAG, e.getMessage(), e);
+            logErrorOnConsole(TAG, "atualizarTimesDasLigas() -> "+e.getMessage(), e);
 
         } finally {
             if (realm != null) realm.close();
@@ -820,7 +822,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiAuthLigaSlug();
                         }
-                        logErrorOnConsole(TAG, "buscarTimesDaLiga.onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "buscarTimesDaLiga.onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null;
                     })
                     .subscribe(
@@ -880,7 +882,7 @@ public class ApiServiceImpl {
 
                                     } catch (Exception e){
 
-                                        logErrorOnConsole(TAG, e.getMessage(), e);
+                                        logErrorOnConsole(TAG, "buscarTimesDaLiga.subscribe() -> "+e.getMessage(), e);
 
                                     } finally {
                                         if (realm != null) realm.close();
@@ -931,7 +933,7 @@ public class ApiServiceImpl {
                         if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
                             return new ApiPartidas();
                         }
-                        logErrorOnConsole(TAG, "buscarPartidas("+buscarRodada+").onErrorReturn()  -> "+throwable.getMessage(), throwable);
+                        logErrorOnConsole(TAG, "buscarPartidas("+buscarRodada+").onErrorReturn() -> "+throwable.getMessage(), throwable);
                         return null;
                     })
                     .subscribe(
@@ -1044,7 +1046,7 @@ public class ApiServiceImpl {
 
             } catch (Exception e){
 
-                logErrorOnConsole(TAG, e.getMessage(), e);
+                logErrorOnConsole(TAG, "verificarRodadasAnteriores() -> "+e.getMessage(), e);
 
             } finally {
                 if (realm != null) realm.close();
