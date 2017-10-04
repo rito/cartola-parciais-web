@@ -7,14 +7,19 @@ import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasMercado_PontuacaoAtleta;
 import br.com.devgeek.cartolaparciais.api.model.ApiAtletasPontuados_PontuacaoAtleta;
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
 
 /**
  * Created by geovannefduarte
  */
 public class AtletasPontuados extends RealmObject {
+
+    private static final String TAG = "AtletasPontuados";
 
     @PrimaryKey
     private String atletaId;
@@ -132,14 +137,38 @@ public class AtletasPontuados extends RealmObject {
     }
 
 
-    public static void mergeAtletasPontuados(AtletasPontuados master, AtletasPontuados slave){
-        master.setApelido(slave.getApelido());
-        master.setPontuacao(slave.getPontuacao());
-        master.setCartoletas(slave.getCartoletas());
-        master.setFoto(slave.getFoto());
-        master.setPosicaoId(slave.getPosicaoId());
-        master.setClubeId(slave.getClubeId());
-        master.setScouts(slave.getScouts());
+    public static void mergeAtletasPontuados(Realm realm, AtletasPontuados master, AtletasPontuados slave){
+
+        try {
+            master.setApelido(slave.getApelido());
+            master.setPontuacao(slave.getPontuacao());
+            master.setCartoletas(slave.getCartoletas());
+            master.setFoto(slave.getFoto());
+            master.setPosicaoId(slave.getPosicaoId());
+            master.setClubeId(slave.getClubeId());
+
+            RealmList<Scouts> scouts = new RealmList<>();
+
+            if (slave.getScouts() != null){
+                scouts = slave.getScouts();
+
+                if (!scouts.isManaged()){ // if the 'list' is managed, all items in it is also managed
+                    RealmList<Scouts> managedImageList = new RealmList<>();
+                    for (Scouts scout : scouts) {
+                        if (scout.isManaged()) {
+                            managedImageList.add(scout);
+                        } else {
+                            managedImageList.add(realm.copyToRealm(scout));
+                        }
+                    }
+                    scouts = managedImageList;
+                }
+            }
+
+            master.setScouts(scouts);
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "mergeAtletasPontuados() -> "+e.getMessage(), e);
+        }
     }
 
 

@@ -69,7 +69,7 @@ public class ParciaisAtletasDoTimeNaLigaActivity extends AppCompatActivity {
                     .into( escudo );
 
 
-            buscarAtletas(dadosParciaisAtletasDoTime.getTimeId(), dadosParciaisAtletasDoTime.getTimeId());
+            buscarAtletas(dadosParciaisAtletasDoTime.getLigaId(), dadosParciaisAtletasDoTime.getTimeId());
         }
 
         // Configurar recyclerView

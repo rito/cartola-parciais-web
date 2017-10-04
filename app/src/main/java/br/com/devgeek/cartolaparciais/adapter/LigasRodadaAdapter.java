@@ -93,6 +93,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             if (listaTimesDaLiga.get( position ).getPontuacao() != null){
                 pontuacaoFormatada = formatoPontuacao.format(listaTimesDaLiga.get( position ).getPontuacao());
             }
+
             ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = new ParciaisAtletasDoTimeParcelable(listaTimesDaLiga.get( position ).getLigaId(), listaTimesDaLiga.get( position ).getTimeId(), listaTimesDaLiga.get( position ).getNomeDoTime(), listaTimesDaLiga.get( position ).getUrlEscudoPng(), listaTimesDaLiga.get( position ).getNomeDoCartoleiro(), pontuacaoFormatada);
 
             bundle.putParcelable("dadosParciaisAtletasDoTime", dadosParciaisAtletasDoTime);

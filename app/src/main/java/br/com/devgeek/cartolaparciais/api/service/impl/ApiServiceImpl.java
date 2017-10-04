@@ -2,7 +2,6 @@ package br.com.devgeek.cartolaparciais.api.service.impl;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -107,13 +106,15 @@ public class ApiServiceImpl {
 
         if (isNetworkAvailable(context)){
 
-            if (checkTime){
-                if (isTimeToUpdateParciais()){
+            AsyncTask.execute(() -> {
+                if (checkTime){
+                    if (isTimeToUpdateParciais()){
+                        buscarAtletasPontuados();
+                    }
+                } else {
                     buscarAtletasPontuados();
                 }
-            } else {
-                buscarAtletasPontuados();
-            }
+            });
         }
     }
 
@@ -122,15 +123,17 @@ public class ApiServiceImpl {
         String token = getX_GLB_Token();
         if (isNetworkAvailable(context)){
 
-            if (token != null){
-                if (checkTime){
-                    if (isTimeToUpdateLigas()){
+            AsyncTask.execute(() -> {
+                if (token != null){
+                    if (checkTime){
+                        if (isTimeToUpdateLigas()){
+                            buscarLigasDoTimeLogado(token);
+                        }
+                    } else {
                         buscarLigasDoTimeLogado(token);
                     }
-                } else {
-                    buscarLigasDoTimeLogado(token);
                 }
-            }
+            });
         }
     }
 
@@ -258,7 +261,7 @@ public class ApiServiceImpl {
 
                                                     } else {
 
-                                                        realm.executeTransaction(realmTransaction -> mergeAtletasPontuados(atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId()))));
+                                                        realm.executeTransaction(realmTransaction -> mergeAtletasPontuados(realmTransaction, atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId()))));
                                                         chaveDeAtletasPontuados.remove(String.valueOf(rodada+atletaPontuado.getAtletaId()));
                                                     }
                                                 }
@@ -446,7 +449,6 @@ public class ApiServiceImpl {
                     String[] timesSortColumns = { "pontuacao", "pontuacaoRodada", "nomeDoTime" };
                     List<TimeLiga> timesDaLigas = realm.copyFromRealm(realm.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAllSorted(timesSortColumns, timesSortOrder));
 
-                    Log.e(TAG, "atualizarParciaisTimesDaLigas() " + liga.getNomeDaLiga()+" - "+liga.getTipoLiga());
                     if (timesDaLigas != null && timesDaLigas.size() > 0){
 
                         for (TimeLiga timeDaLiga : timesDaLigas){
@@ -604,7 +606,7 @@ public class ApiServiceImpl {
 
                                         } else {
 
-                                            realm.executeTransaction(realmTransaction -> mergeAtletasPontuados(atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId()))));
+                                            realm.executeTransaction(realmTransaction -> mergeAtletasPontuados(realmTransaction, atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId()))));
                                             chaveDeAtletasPontuados.remove(String.valueOf(rodada+atletaPontuado.getAtletaId()));
                                         }
                                     }
