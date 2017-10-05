@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
 import br.com.devgeek.cartolaparciais.model.UsuarioGlobo;
 import io.realm.Realm;
@@ -21,6 +22,13 @@ import static android.content.ContentValues.TAG;
  * Created by geovannefduarte
  */
 public class CartolaParciaisUtil {
+
+    public static void atualizarMercadoAndLigasAndPartidas(ApiServiceImpl apiService, Context context, boolean checkTime){
+
+        apiService.atualizarMercado(context);
+        apiService.atualizarLigas(context, checkTime);
+        apiService.atualizarPartidas(context, checkTime);
+    }
 
     public static boolean isNetworkAvailable(Context context){
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

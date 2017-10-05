@@ -29,6 +29,7 @@ public class TimeFavorito extends RealmObject {
     private Double pontuacao;
     private Double variacaoCartoletas;
     private String atletas;
+    private String atletasIds;
 
     public TimeFavorito(){
     }
@@ -147,5 +148,11 @@ public class TimeFavorito extends RealmObject {
     }
     public void setAtletas(String atletas){
         this.atletas = atletas;
+    }
+    public String getAtletasIds(){
+        return atletasIds;
+    }
+    public void setAtletasIds(String atletasIds){
+        this.atletasIds = atletasIds;
     }
 }

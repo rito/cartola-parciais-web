@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +168,14 @@ public class ApiServiceImpl {
 
                                 if (mercadoStatusOnRealm != null){
 
-                                    realm.executeTransaction(realmTransaction -> mergeMercadoStatus(mercadoStatusOnRealm, mercadoStatus));
+                                    realm.executeTransaction(realmTransaction -> {
+
+                                        if (mergeMercadoStatus(mercadoStatusOnRealm, mercadoStatus)){
+                                            // dd..;;
+                                        }
+
+                                        buscarAtletasPontuados();
+                                    });
 
                                 } else {
                                     realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(mercadoStatus));
@@ -288,7 +296,7 @@ public class ApiServiceImpl {
                                     });
 
                                     atualizarParciaisTimesFavoritos(apiAtletasPontuados);
-                                    atualizarParciaisTimesDaLigas(apiAtletasPontuados);
+                                    //atualizarParciaisTimesDaLigas(apiAtletasPontuados); dd..;;
                                 }
                             },
                             error -> {
@@ -343,6 +351,13 @@ public class ApiServiceImpl {
     private void atualizarParciaisDeCadaTimeFavorito(ApiAtletasPontuados atletasPontuadosEncontrados, TimeFavorito timeFavorito){
 
         try {
+
+            List<String> atletasIds = new ArrayList<>();
+
+            if (timeFavorito.getAtletasIds() != null){
+
+                atletasIds = Arrays.asList(timeFavorito.getAtletasIds().split("=#="));
+            }
 
             Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
 

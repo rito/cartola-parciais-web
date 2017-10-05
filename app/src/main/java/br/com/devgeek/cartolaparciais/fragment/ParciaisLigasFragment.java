@@ -24,6 +24,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.atualizarMercadoAndLigasAndPartidas;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
@@ -119,9 +120,7 @@ public class ParciaisLigasFragment extends Fragment {
 
     private void atualizarDados(boolean checkTime){
 
-        apiService.atualizarParciais(   getContext(), checkTime);
-        apiService.atualizarLigas(      getContext(), checkTime);
-        apiService.atualizarPartidas(   getContext(), checkTime);
+        atualizarMercadoAndLigasAndPartidas(apiService, getContext(), checkTime);
         new Handler().postDelayed(() -> refreshLigas.setRefreshing(false), 750);
     }
 

@@ -7,7 +7,6 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by geovannefduarte
  */
-
 public class MercadoStatus extends RealmObject {
 
     public static final int ABERTO      = 1;
@@ -83,22 +82,27 @@ public class MercadoStatus extends RealmObject {
         this.timestamp = timestamp;
     }
 
-    public static void mergeMercadoStatus(MercadoStatus master, MercadoStatus slave){
-        master.setRodadaAtual(slave.getRodadaAtual());
-        master.setStatusDoMercado(slave.getStatusDoMercado());
-        master.setTimesEscalados(slave.getTimesEscalados());
-        master.setEsquemaDefaultId(slave.getEsquemaDefaultId());
-        master.setCartoletaInicial(slave.getCartoletaInicial());
-        master.setGameOver(slave.isGameOver());
-        master.setReativar(slave.isReativar());
-        master.setMercadoPosRodada(slave.isMercadoPosRodada());
-        master.setAviso(slave.getAviso());
-        master.setDia(slave.getDia());
-        master.setMes(slave.getMes());
-        master.setAno(slave.getAno());
-        master.setHora(slave.getHora());
-        master.setMinuto(slave.getMinuto());
-        master.setTimestamp(slave.getTimestamp());
+    public static boolean mergeMercadoStatus(MercadoStatus master, MercadoStatus slave){
+
+        boolean hasChanges = false;
+
+        if (slave.getRodadaAtual()      != slave.getRodadaAtual()){      master.setRodadaAtual(slave.getRodadaAtual());           hasChanges = true; }
+        if (slave.getStatusDoMercado()  != slave.getStatusDoMercado()){  master.setStatusDoMercado(slave.getStatusDoMercado());   hasChanges = true; }
+        if (slave.getTimesEscalados()   != slave.getTimesEscalados()){   master.setTimesEscalados(slave.getTimesEscalados());     hasChanges = true; }
+        if (slave.getEsquemaDefaultId() != slave.getEsquemaDefaultId()){ master.setEsquemaDefaultId(slave.getEsquemaDefaultId()); hasChanges = true; }
+        if (slave.getCartoletaInicial() != slave.getCartoletaInicial()){ master.setCartoletaInicial(slave.getCartoletaInicial()); hasChanges = true; }
+        if (slave.isGameOver()          != slave.isGameOver()){          master.setGameOver(slave.isGameOver());                  hasChanges = true; }
+        if (slave.isReativar()          != slave.isReativar()){          master.setReativar(slave.isReativar());                  hasChanges = true; }
+        if (slave.isMercadoPosRodada()  != slave.isMercadoPosRodada()){  master.setMercadoPosRodada(slave.isMercadoPosRodada());  hasChanges = true; }
+        if (slave.getAviso()            != slave.getAviso()){            master.setAviso(slave.getAviso());                       hasChanges = true; }
+        if (slave.getDia()              != slave.getDia()){              master.setDia(slave.getDia());                           hasChanges = true; }
+        if (slave.getMes()              != slave.getMes()){              master.setMes(slave.getMes());                           hasChanges = true; }
+        if (slave.getAno()              != slave.getAno()){              master.setAno(slave.getAno());                           hasChanges = true; }
+        if (slave.getHora()             != slave.getHora()){             master.setHora(slave.getHora());                         hasChanges = true; }
+        if (slave.getMinuto()           != slave.getMinuto()){           master.setMinuto(slave.getMinuto());                     hasChanges = true; }
+        if (slave.getTimestamp()        != slave.getTimestamp()){        master.setTimestamp(slave.getTimestamp());               hasChanges = true; }
+
+        return hasChanges;
     }
 
     public boolean equals(MercadoStatus mercadoStatus){
