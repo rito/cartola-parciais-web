@@ -107,15 +107,13 @@ public class ApiServiceImpl {
 
         if (isNetworkAvailable(context)){
 
-            AsyncTask.execute(() -> {
-                if (checkTime){
-                    if (isTimeToUpdateParciais()){
-                        buscarAtletasPontuados();
-                    }
-                } else {
+            if (checkTime){
+                if (isTimeToUpdateParciais()){
                     buscarAtletasPontuados();
                 }
-            });
+            } else {
+                buscarAtletasPontuados();
+            }
         }
     }
 
@@ -124,17 +122,15 @@ public class ApiServiceImpl {
         String token = getX_GLB_Token();
         if (isNetworkAvailable(context)){
 
-            AsyncTask.execute(() -> {
-                if (token != null){
-                    if (checkTime){
-                        if (isTimeToUpdateLigas()){
-                            buscarLigasDoTimeLogado(token);
-                        }
-                    } else {
+            if (token != null){
+                if (checkTime){
+                    if (isTimeToUpdateLigas()){
                         buscarLigasDoTimeLogado(token);
                     }
+                } else {
+                    buscarLigasDoTimeLogado(token);
                 }
-            });
+            }
         }
     }
 
@@ -357,88 +353,90 @@ public class ApiServiceImpl {
             if (timeFavorito.getAtletasIds() != null){
 
                 atletasIds = Arrays.asList(timeFavorito.getAtletasIds().split("=#="));
-            }
 
-            Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
+            } else {
 
-            buscarTimeId.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .onErrorReturn((Throwable throwable) -> {
-                        if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
-                            return new ApiTimeSlug();
-                        }
-                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn() -> "+throwable.getMessage(), throwable);
-                        return null; //empty object of the datatype
-                    })
-                    .subscribe(
-                            timeSlug -> {
+                Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
 
-                                if (timeSlug != null && timeSlug.getAtletas() != null && timeSlug.getAtletas().size() > 0){
+                buscarTimeId.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .onErrorReturn((Throwable throwable) -> {
+                            if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
+                                return new ApiTimeSlug();
+                            }
+                            logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn() -> "+throwable.getMessage(), throwable);
+                            return null; //empty object of the datatype
+                        })
+                        .subscribe(
+                                timeSlug -> {
 
-                                    Realm realm = null;
+                                    if (timeSlug != null && timeSlug.getAtletas() != null && timeSlug.getAtletas().size() > 0){
 
-                                    try {
+                                        Realm realm = null;
 
-                                        realm = Realm.getDefaultInstance();
-                                        double pontuacao = 0.0, variacaoCartoletas = 0.0;
-                                        List<AtletasPontuados> atletas = new ArrayList<>();
+                                        try {
 
-                                        for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
+                                            realm = Realm.getDefaultInstance();
+                                            double pontuacao = 0.0, variacaoCartoletas = 0.0;
+                                            List<AtletasPontuados> atletas = new ArrayList<>();
 
-                                            if (atletasPontuadosEncontrados != null){
+                                            for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
 
-                                                if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
+                                                if (atletasPontuadosEncontrados != null){
 
-                                                    pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
-                                                    atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+                                                    if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
+
+                                                        pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
+                                                        atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+
+                                                    } else {
+
+                                                        atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                    }
 
                                                 } else {
 
-                                                    atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                    pontuacao += atleta.getPontos_num();
+                                                    variacaoCartoletas += atleta.getVariacao_num();
+                                                    atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                                 }
-
-                                            } else {
-
-                                                pontuacao += atleta.getPontos_num();
-                                                variacaoCartoletas += atleta.getVariacao_num();
-                                                atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
                                             }
+
+                                            timeFavorito.setAtletas(new Gson().toJson(atletas));
+                                            timeFavorito.setPontuacao(pontuacao);
+                                            timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
+
+                                            realm = Realm.getDefaultInstance();
+                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
+
+                                        } catch (Exception e){
+
+                                            logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.subscribe() -> "+e.getMessage(), e);
+
+                                        } finally {
+                                            if (realm != null) realm.close();
                                         }
-
-                                        timeFavorito.setAtletas(new Gson().toJson(atletas));
-                                        timeFavorito.setPontuacao(pontuacao);
-                                        timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
-
-                                        realm = Realm.getDefaultInstance();
-                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
-
-                                    } catch (Exception e){
-
-                                        logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.subscribe() -> "+e.getMessage(), e);
-
-                                    } finally {
-                                        if (realm != null) realm.close();
                                     }
-                                }
 
-                            },
-                            error -> {
-                                try {
-                                    if (error instanceof NullPointerException){
-                                        logErrorOnConsole(TAG, "ApiTimeSlug [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                    } else if (error instanceof HttpException){ // We had non-200 http error
-                                        logErrorOnConsole(TAG, "ApiTimeSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                    } else if (error instanceof IOException){ // A network error happened
-                                        logErrorOnConsole(TAG, "ApiTimeSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                    } else {
+                                },
+                                error -> {
+                                    try {
+                                        if (error instanceof NullPointerException){
+                                            logErrorOnConsole(TAG, "ApiTimeSlug [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                        } else if (error instanceof HttpException){ // We had non-200 http error
+                                            logErrorOnConsole(TAG, "ApiTimeSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                        } else if (error instanceof IOException){ // A network error happened
+                                            logErrorOnConsole(TAG, "ApiTimeSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                        } else {
+                                            logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
+                                        }
+                                    } catch (Exception e){
                                         logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
                                     }
-                                } catch (Exception e){
-                                    logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
                                 }
-                            }
-                    );
+                        );
 
+            }
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao atualizarParciaisDeCadaTimeFavorito() -> "+e.getMessage(), e);
         }
