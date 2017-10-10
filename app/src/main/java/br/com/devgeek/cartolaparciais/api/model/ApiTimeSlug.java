@@ -29,7 +29,7 @@ public class ApiTimeSlug implements Serializable {
 
     private double valor_time;
 
-    private double rodada_atual;
+    private int rodada_atual;
 
 
     public ApiTimeSlug(){
@@ -38,7 +38,7 @@ public class ApiTimeSlug implements Serializable {
 
 
     public ApiTimeSlug(List<ApiTimeSlug_Atleta> atletas, double patrimonio,
-                       Double pontos, double valor_time, double rodada_atual){
+                       Double pontos, double valor_time, int rodada_atual){
         super();
         this.atletas = atletas;
         this.patrimonio = patrimonio;
@@ -105,10 +105,10 @@ public class ApiTimeSlug implements Serializable {
     public void setValor_time(double valor_time){
         this.valor_time = valor_time;
     }
-    public double getRodada_atual(){
+    public int getRodada_atual(){
         return rodada_atual;
     }
-    public void setRodada_atual(double rodada_atual){
+    public void setRodada_atual(int rodada_atual){
         this.rodada_atual = rodada_atual;
     }
 }

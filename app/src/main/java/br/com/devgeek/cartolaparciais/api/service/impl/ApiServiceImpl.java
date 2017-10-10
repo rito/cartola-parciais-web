@@ -2,6 +2,7 @@ package br.com.devgeek.cartolaparciais.api.service.impl;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -238,50 +239,54 @@ public class ApiServiceImpl {
                                         try {
 
                                             realm = Realm.getDefaultInstance();
-                                            int rodada = apiAtletasPontuados.getRodada();
-                                            RealmList<AtletasPontuados> listaAtletasPontuados = new RealmList<>();
-                                            Map<String, AtletasPontuados> chaveDeAtletasPontuados = new HashMap<>();
+                                            realm.executeTransaction(realmTransaction -> {
 
-                                            for (Map.Entry<String, ApiAtletasPontuados_PontuacaoAtleta> entry : apiAtletasPontuados.getAtletas().entrySet()){
+                                                int rodada = apiAtletasPontuados.getRodada();
+                                                RealmList<AtletasPontuados> listaAtletasPontuados = new RealmList<>();
+                                                Map<String, AtletasPontuados> chaveDeAtletasPontuados = new HashMap<>();
 
-                                                String atletaId = entry.getKey();
-                                                ApiAtletasPontuados_PontuacaoAtleta atleta = entry.getValue();
+                                                for (Map.Entry<String, ApiAtletasPontuados_PontuacaoAtleta> entry : apiAtletasPontuados.getAtletas().entrySet()){
 
-                                                AtletasPontuados atletasPontuados = new AtletasPontuados(atletaId, rodada, atleta);
+                                                    String atletaId = entry.getKey();
+                                                    ApiAtletasPontuados_PontuacaoAtleta atleta = entry.getValue();
 
-                                                listaAtletasPontuados.add(atletasPontuados);
-                                                chaveDeAtletasPontuados.put(String.valueOf(rodada+atletasPontuados.getAtletaId()), atletasPontuados);
-                                            }
+                                                    AtletasPontuados atletasPontuados = new AtletasPontuados(atletaId, rodada, atleta);
 
-                                            //final RealmResults<AtletasPontuados> atletasPontuados = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAll();
-                                            final RealmResults<AtletasPontuados> atletasPontuadosOnRealm = realm.where(AtletasPontuados.class).findAll();
-                                            if (atletasPontuadosOnRealm != null && atletasPontuadosOnRealm.size() > 0){
-
-                                                for (AtletasPontuados atletaPontuado : atletasPontuadosOnRealm){
-
-                                                    if (chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId())) == null){
-
-                                                        realm.executeTransaction(realmTransaction -> atletaPontuado.deleteFromRealm() );
-
-                                                    } else {
-
-                                                        realm.executeTransaction(realmTransaction -> mergeAtletasPontuados(realmTransaction, atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId()))));
-                                                        chaveDeAtletasPontuados.remove(String.valueOf(rodada+atletaPontuado.getAtletaId()));
-                                                    }
+                                                    listaAtletasPontuados.add(atletasPontuados);
+                                                    chaveDeAtletasPontuados.put(String.valueOf(rodada+atletasPontuados.getAtletaId()), atletasPontuados);
                                                 }
 
-                                                if (chaveDeAtletasPontuados.size() > 0){
+                                                //final RealmResults<AtletasPontuados> atletasPontuados = realmTransaction.where(AtletasPontuados.class).isNotNull( "rodada" ).findAll();
+                                                final RealmResults<AtletasPontuados> atletasPontuadosOnRealm = realmTransaction.where(AtletasPontuados.class).findAll();
+                                                if (atletasPontuadosOnRealm != null && atletasPontuadosOnRealm.size() > 0){
 
-                                                    for (Map.Entry<String, AtletasPontuados> entry : chaveDeAtletasPontuados.entrySet()){
+                                                    for (AtletasPontuados atletaPontuado : atletasPontuadosOnRealm){
 
-                                                        AtletasPontuados atleta = entry.getValue();
-                                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(atleta));
+                                                        if (chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId())) == null){
+
+                                                            atletaPontuado.deleteFromRealm();
+
+                                                        } else {
+
+                                                            mergeAtletasPontuados(realmTransaction, atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId())));
+                                                            chaveDeAtletasPontuados.remove(String.valueOf(rodada+atletaPontuado.getAtletaId()));
+                                                        }
                                                     }
-                                                }
-                                            } else if (listaAtletasPontuados.size() > 0){
 
-                                                realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(listaAtletasPontuados));
-                                            }
+                                                    if (chaveDeAtletasPontuados.size() > 0){
+
+                                                        for (Map.Entry<String, AtletasPontuados> entry : chaveDeAtletasPontuados.entrySet()){
+
+                                                            AtletasPontuados atleta = entry.getValue();
+                                                            realmTransaction.copyToRealmOrUpdate(atleta);
+                                                        }
+                                                    }
+                                                } else if (listaAtletasPontuados.size() > 0){
+
+                                                    realmTransaction.copyToRealmOrUpdate(listaAtletasPontuados);
+                                                }
+
+                                            });
                                         } catch (Exception e){
 
                                             logErrorOnConsole(TAG, "buscarAtletasPontuados.subscribe() -> "+e.getMessage(), e);
@@ -319,13 +324,16 @@ public class ApiServiceImpl {
     private void atualizarParciaisTimesFavoritos(ApiAtletasPontuados atletasPontuadosEncontrados){
 
         Realm realm = null;
+        MercadoStatus mercadoStatus = null;
         List<TimeFavorito> timesFavoritos = null;
+        Map<String, TimeFavorito> mapDeTimesFavoritos = null;
 
         try {
 
             realm = Realm.getDefaultInstance();
 
             timesFavoritos = realm.copyFromRealm(realm.where(TimeFavorito.class).findAll());
+            mercadoStatus = realm.copyFromRealm(realm.where(MercadoStatus.class).findFirst());
 
         } catch (Exception e){
 
@@ -337,105 +345,159 @@ public class ApiServiceImpl {
 
         if (timesFavoritos != null && timesFavoritos.size() > 0){
 
+            mapDeTimesFavoritos = new HashMap<>();
             for (TimeFavorito timeFavorito : timesFavoritos){
 
-                atualizarParciaisDeCadaTimeFavorito(atletasPontuadosEncontrados, timeFavorito);
+                mapDeTimesFavoritos.put(String.valueOf(timeFavorito.getTimeId()), timeFavorito);
             }
+
+            atualizarParciaisDeCadaTimeFavorito(atletasPontuadosEncontrados, mapDeTimesFavoritos, mercadoStatus);
         }
     }
 
-    private void atualizarParciaisDeCadaTimeFavorito(ApiAtletasPontuados atletasPontuadosEncontrados, TimeFavorito timeFavorito){
+    private void atualizarParciaisDeCadaTimeFavorito(ApiAtletasPontuados atletasPontuadosEncontrados, Map<String, TimeFavorito> mapDeTimesFavoritos, MercadoStatus mercadoStatus){
 
         try {
 
-            List<String> atletasIds = new ArrayList<>();
+            if (mapDeTimesFavoritos.size() > 0){
 
-            if (timeFavorito.getAtletasIds() != null){
+                TimeFavorito timeFavorito = mapDeTimesFavoritos.entrySet().iterator().next().getValue();
+                Log.w(TAG, "atualizarParciaisDeCadaTimeFavorito() -> "+timeFavorito.getSlug());
 
-                atletasIds = Arrays.asList(timeFavorito.getAtletasIds().split("=#="));
+                if (timeFavorito.getAtletasIds() != null && (
+                   (mercadoStatus.getStatusDoMercado() == MercadoStatus.ABERTO && mercadoStatus.getRodadaAtual() == timeFavorito.getAtletasIds_rodada()+1) ||
+                   (mercadoStatus.getStatusDoMercado() == MercadoStatus.FECHADO && mercadoStatus.getRodadaAtual() == timeFavorito.getAtletasIds_rodada()))){
 
-            } else {
+                    if (atletasPontuadosEncontrados != null){
 
-                Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
+                        Realm realm = null;
 
-                buscarTimeId.subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .onErrorReturn((Throwable throwable) -> {
-                            if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
-                                return new ApiTimeSlug();
+                        try {
+
+                            realm = Realm.getDefaultInstance();
+                            double pontuacao = 0.0, variacaoCartoletas = 0.0;
+                            List<AtletasPontuados> atletas = new ArrayList<>();
+
+                            List<String> atletasIds = Arrays.asList(timeFavorito.getAtletasIds().split("=#="));
+
+                            for (String atletaId : atletasIds){
+
+                                if (atletasPontuadosEncontrados.getAtletas().get(atletaId) != null){
+
+                                    pontuacao += atletasPontuadosEncontrados.getAtletas().get(atletaId).getPontuacao();
+                                    atletas.add(new AtletasPontuados(atletaId, null, atletasPontuadosEncontrados.getAtletas().get(atletaId)));
+                                }
                             }
-                            logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn() -> "+throwable.getMessage(), throwable);
-                            return null; //empty object of the datatype
-                        })
-                        .subscribe(
-                                timeSlug -> {
 
-                                    if (timeSlug != null && timeSlug.getAtletas() != null && timeSlug.getAtletas().size() > 0){
+                            timeFavorito.setAtletas(new Gson().toJson(atletas));
+                            timeFavorito.setPontuacao(pontuacao);
+                            timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
 
-                                        Realm realm = null;
+                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
 
-                                        try {
+                            mapDeTimesFavoritos.remove(String.valueOf(timeFavorito.getTimeId()));
+                            atualizarParciaisDeCadaTimeFavorito(atletasPontuadosEncontrados, mapDeTimesFavoritos, mercadoStatus);
 
-                                            realm = Realm.getDefaultInstance();
-                                            double pontuacao = 0.0, variacaoCartoletas = 0.0;
-                                            List<AtletasPontuados> atletas = new ArrayList<>();
+                        } catch (Exception e){
 
-                                            for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
+                            logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.atletasPontuadosEncontrados != null -> "+e.getMessage(), e);
 
-                                                if (atletasPontuadosEncontrados != null){
+                        } finally {
+                            if (realm != null) realm.close();
+                        }
+                    }
+                } else {
 
-                                                    if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
+                    Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
 
-                                                        pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
-                                                        atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+                    buscarTimeId.subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .onErrorReturn((Throwable throwable) -> {
+                                if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
+                                    return new ApiTimeSlug();
+                                }
+                                logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.onErrorReturn() -> "+throwable.getMessage(), throwable);
+                                return null; //empty object of the datatype
+                            })
+                            .subscribe(
+                                    timeSlug -> AsyncTask.execute(() -> {
 
-                                                    } else {
+                                        if (timeSlug != null && timeSlug.getAtletas() != null && timeSlug.getAtletas().size() > 0){
 
-                                                        atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                            new Thread(() -> {
+
+                                                Realm realm = null;
+
+                                                try {
+
+                                                    realm = Realm.getDefaultInstance();
+                                                    double pontuacao = 0.0, variacaoCartoletas = 0.0;
+                                                    List<AtletasPontuados> atletas = new ArrayList<>();
+                                                    String idsDosAtletas = "";
+
+                                                    for (ApiTimeSlug_Atleta atleta : timeSlug.getAtletas()){
+
+                                                        if (!idsDosAtletas.equals("")){ idsDosAtletas += "=#="; }
+                                                        idsDosAtletas += String.valueOf(atleta.getAtleta_id());
+
+                                                        if (atletasPontuadosEncontrados != null){
+
+                                                            if (atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())) != null){
+
+                                                                pontuacao += atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id())).getPontuacao();
+                                                                atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atletasPontuadosEncontrados.getAtletas().get(String.valueOf(atleta.getAtleta_id()))));
+
+                                                            } else {
+
+                                                                atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), null, null, atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                            }
+
+                                                        } else {
+
+                                                            pontuacao += atleta.getPontos_num();
+                                                            variacaoCartoletas += atleta.getVariacao_num();
+                                                            atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                        }
                                                     }
 
-                                                } else {
+                                                    timeFavorito.setAtletasIds_rodada(timeSlug.getRodada_atual());
+                                                    timeFavorito.setAtletasIds(idsDosAtletas);
+                                                    timeFavorito.setAtletas(new Gson().toJson(atletas));
+                                                    timeFavorito.setPontuacao(pontuacao);
+                                                    timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
 
-                                                    pontuacao += atleta.getPontos_num();
-                                                    variacaoCartoletas += atleta.getVariacao_num();
-                                                    atletas.add(new AtletasPontuados(String.valueOf(atleta.getAtleta_id()), null, atleta.getApelido(), atleta.getPontos_num(), atleta.getVariacao_num(), atleta.getScout(), atleta.getFoto(), atleta.getPosicao_id(), atleta.getClube_id()));
+                                                    realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
+
+                                                    mapDeTimesFavoritos.remove(String.valueOf(timeFavorito.getTimeId()));
+                                                    atualizarParciaisDeCadaTimeFavorito(atletasPontuadosEncontrados, mapDeTimesFavoritos, mercadoStatus);
+
+                                                } catch (Exception e){
+
+                                                    logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.subscribe() -> "+e.getMessage(), e);
+
+                                                } finally {
+                                                    if (realm != null) realm.close();
                                                 }
-                                            }
-
-                                            timeFavorito.setAtletas(new Gson().toJson(atletas));
-                                            timeFavorito.setPontuacao(pontuacao);
-                                            timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
-
-                                            realm = Realm.getDefaultInstance();
-                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeFavorito));
-
-                                        } catch (Exception e){
-
-                                            logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.subscribe() -> "+e.getMessage(), e);
-
-                                        } finally {
-                                            if (realm != null) realm.close();
+                                            }).start();
                                         }
-                                    }
-
-                                },
-                                error -> {
-                                    try {
-                                        if (error instanceof NullPointerException){
-                                            logErrorOnConsole(TAG, "ApiTimeSlug [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                        } else if (error instanceof HttpException){ // We had non-200 http error
-                                            logErrorOnConsole(TAG, "ApiTimeSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                        } else if (error instanceof IOException){ // A network error happened
-                                            logErrorOnConsole(TAG, "ApiTimeSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                        } else {
+                                    }),
+                                    error -> {
+                                        try {
+                                            if (error instanceof NullPointerException){
+                                                logErrorOnConsole(TAG, "ApiTimeSlug [ NullPointerException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                            } else if (error instanceof HttpException){ // We had non-200 http error
+                                                logErrorOnConsole(TAG, "ApiTimeSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                            } else if (error instanceof IOException){ // A network error happened
+                                                logErrorOnConsole(TAG, "ApiTimeSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                            } else {
+                                                logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
+                                            }
+                                        } catch (Exception e){
                                             logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
                                         }
-                                    } catch (Exception e){
-                                        logErrorOnConsole(TAG, "ApiTimeSlug -> " + error.getMessage() + " / " + error.getClass(), error);
                                     }
-                                }
-                        );
-
+                            );
+                }
             }
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao atualizarParciaisDeCadaTimeFavorito() -> "+e.getMessage(), e);
@@ -594,47 +656,49 @@ public class ApiServiceImpl {
                             try {
 
                                 realm = Realm.getDefaultInstance();
+                                realm.executeTransaction(realmTransaction -> {
 
-                                int rodada = apiAtletasMercado.getAtletas().get(0).getRodada_id();
-                                RealmList<AtletasPontuados> listaAtletasPontuados = new RealmList<>();
-                                Map<String, AtletasPontuados> chaveDeAtletasPontuados = new HashMap<>();
+                                    int rodada = apiAtletasMercado.getAtletas().get(0).getRodada_id();
+                                    RealmList<AtletasPontuados> listaAtletasPontuados = new RealmList<>();
+                                    Map<String, AtletasPontuados> chaveDeAtletasPontuados = new HashMap<>();
 
-                                for (ApiAtletasMercado_PontuacaoAtleta atleta : apiAtletasMercado.getAtletas()){
+                                    for (ApiAtletasMercado_PontuacaoAtleta atleta : apiAtletasMercado.getAtletas()){
 
-                                    AtletasPontuados atletasPontuados = new AtletasPontuados(rodada, atleta);
+                                        AtletasPontuados atletasPontuados = new AtletasPontuados(rodada, atleta);
 
-                                    listaAtletasPontuados.add(atletasPontuados);
-                                    chaveDeAtletasPontuados.put(String.valueOf(rodada+atletasPontuados.getAtletaId()), atletasPontuados);
-                                }
-
-                                //final RealmResults<AtletasPontuados> atletasPontuadosOnRealm = realm.where(AtletasPontuados.class).isNotNull( "rodada" ).findAll();
-                                final RealmResults<AtletasPontuados> atletasPontuadosOnRealm = realm.where(AtletasPontuados.class).findAll();
-                                if (atletasPontuadosOnRealm != null && atletasPontuadosOnRealm.size() > 0){
-
-                                    for (AtletasPontuados atletaPontuado : atletasPontuadosOnRealm){
-
-                                        if (chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId())) == null){
-
-                                            realm.executeTransaction(realmTransaction -> atletaPontuado.deleteFromRealm() );
-
-                                        } else {
-
-                                            realm.executeTransaction(realmTransaction -> mergeAtletasPontuados(realmTransaction, atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId()))));
-                                            chaveDeAtletasPontuados.remove(String.valueOf(rodada+atletaPontuado.getAtletaId()));
-                                        }
+                                        listaAtletasPontuados.add(atletasPontuados);
+                                        chaveDeAtletasPontuados.put(String.valueOf(rodada+atletasPontuados.getAtletaId()), atletasPontuados);
                                     }
 
-                                    if (chaveDeAtletasPontuados.size() > 0){
+                                    //final RealmResults<AtletasPontuados> atletasPontuadosOnRealm = realmTransaction.where(AtletasPontuados.class).isNotNull( "rodada" ).findAll();
+                                    final RealmResults<AtletasPontuados> atletasPontuadosOnRealm = realmTransaction.where(AtletasPontuados.class).findAll();
+                                    if (atletasPontuadosOnRealm != null && atletasPontuadosOnRealm.size() > 0){
 
-                                        for (Map.Entry<String, AtletasPontuados> entry : chaveDeAtletasPontuados.entrySet()){
+                                        for (AtletasPontuados atletaPontuado : atletasPontuadosOnRealm){
 
-                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(entry.getValue()));
+                                            if (chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId())) == null){
+
+                                                atletaPontuado.deleteFromRealm();
+
+                                            } else {
+
+                                                mergeAtletasPontuados(realmTransaction, atletaPontuado, chaveDeAtletasPontuados.get(String.valueOf(rodada+atletaPontuado.getAtletaId())));
+                                                chaveDeAtletasPontuados.remove(String.valueOf(rodada+atletaPontuado.getAtletaId()));
+                                            }
                                         }
-                                    }
-                                } else if (listaAtletasPontuados.size() > 0){
 
-                                    realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(listaAtletasPontuados));
-                                }
+                                        if (chaveDeAtletasPontuados.size() > 0){
+
+                                            for (Map.Entry<String, AtletasPontuados> entry : chaveDeAtletasPontuados.entrySet()){
+
+                                                realmTransaction.copyToRealmOrUpdate(entry.getValue());
+                                            }
+                                        }
+                                    } else if (listaAtletasPontuados.size() > 0){
+
+                                        realmTransaction.copyToRealmOrUpdate(listaAtletasPontuados);
+                                    }
+                                });
 
                             } catch (Exception e){
 
@@ -689,83 +753,87 @@ public class ApiServiceImpl {
                                     try {
 
                                         realm = Realm.getDefaultInstance();
+                                        realm.executeTransaction(realmTransaction -> {
 
-                                        RealmList<Liga> ligasDoCartoleiro = new RealmList<>();
-                                        Map<String, Liga> chaveDeLigasDoCartoleiro = new HashMap<>();
-                                        boolean hasEditorial = false, hasMataMata = false, hasMinhasLigas = false;
+                                            RealmList<Liga> ligasDoCartoleiro = new RealmList<>();
+                                            Map<String, Liga> chaveDeLigasDoCartoleiro = new HashMap<>();
+                                            boolean hasEditorial = false, hasMataMata = false, hasMinhasLigas = false;
 
-                                        for (ApiAuthLigas_liga liga : ligasDaApi.getLigas()){
+                                            for (ApiAuthLigas_liga liga : ligasDaApi.getLigas()){
 
-                                            String tipoLiga = "";
+                                                String tipoLiga = "";
 
-                                            if (liga.getSlug().equals("nacional")    ||
-                                                    liga.getSlug().equals("liga-do-ge")  ||
-                                                    liga.getSlug().equals("patrimonio")  ||
-                                                    liga.getSlug().equals("cartola-pro") ||
-                                                    liga.getSlug().equals("o-melhor-time-e-o-seu") ||
-                                                    liga.getClubeId() != null || liga.isEditorial() || liga.getTotalTimesLiga() == 0){
-                                                hasEditorial = true; tipoLiga = "Editorial";
-                                            } else if (liga.isMata_mata()){
-                                                hasMataMata = true; tipoLiga = "Mata-Mata";
-                                            } else {
-                                                hasMinhasLigas = true; tipoLiga = "Minhas ligas";
-                                            }
-
-                                            Liga ligaDoCartoleiro = new Liga(liga, tipoLiga);
-
-                                            ligasDoCartoleiro.add(ligaDoCartoleiro);
-                                            chaveDeLigasDoCartoleiro.put(String.valueOf(liga.getLigaId()), ligaDoCartoleiro);
-                                        }
-
-                                        if (hasEditorial){
-                                            Liga ligaDoCartoleiro = new Liga(-999, "", "", "Editorial");
-                                            ligasDoCartoleiro.add(ligaDoCartoleiro);
-                                            chaveDeLigasDoCartoleiro.put(String.valueOf(ligaDoCartoleiro.getLigaId()), ligaDoCartoleiro);
-                                        }
-
-                                        if (hasMataMata){
-                                            Liga ligaDoCartoleiro = new Liga(-555, "", "", "Mata-Mata");
-                                            ligasDoCartoleiro.add(ligaDoCartoleiro);
-                                            chaveDeLigasDoCartoleiro.put(String.valueOf(ligaDoCartoleiro.getLigaId()), ligaDoCartoleiro);
-                                        }
-
-                                        if (hasMinhasLigas){
-                                            Liga ligaDoCartoleiro = new Liga(-111, "", "", "Minhas ligas");
-                                            ligasDoCartoleiro.add(ligaDoCartoleiro);
-                                            chaveDeLigasDoCartoleiro.put(String.valueOf(ligaDoCartoleiro.getLigaId()), ligaDoCartoleiro);
-                                        }
-
-                                        final RealmResults<Liga> ligasDoCartoleiroOnRealm = realm.where(Liga.class).findAll();
-                                        if (ligasDoCartoleiroOnRealm != null && ligasDoCartoleiroOnRealm.size() > 0){
-
-                                            for (Liga liga : ligasDoCartoleiroOnRealm){
-
-                                                if (chaveDeLigasDoCartoleiro.get(String.valueOf(liga.getLigaId())) == null){
-
-                                                    if (!(liga.getLigaId() < 0 && ((hasEditorial && liga.getLigaId() == -999) || (hasMataMata && liga.getLigaId() == -555) || (hasMinhasLigas && liga.getLigaId() == -111)))){
-                                                        realm.executeTransaction(realmTransaction -> liga.deleteFromRealm() );
-                                                    }
-
+                                                if (liga.getSlug().equals("nacional")    ||
+                                                        liga.getSlug().equals("liga-do-ge")  ||
+                                                        liga.getSlug().equals("patrimonio")  ||
+                                                        liga.getSlug().equals("cartola-pro") ||
+                                                        liga.getSlug().equals("o-melhor-time-e-o-seu") ||
+                                                        liga.getClubeId() != null || liga.isEditorial() || liga.getTotalTimesLiga() == 0){
+                                                    hasEditorial = true; tipoLiga = "Editorial";
+                                                } else if (liga.isMata_mata()){
+                                                    hasMataMata = true; tipoLiga = "Mata-Mata";
                                                 } else {
-
-                                                    realm.executeTransaction(realmTransaction -> mergeLigas(liga, chaveDeLigasDoCartoleiro.get(String.valueOf(liga.getLigaId()))));
-                                                    chaveDeLigasDoCartoleiro.remove(String.valueOf(liga.getLigaId()));
+                                                    hasMinhasLigas = true; tipoLiga = "Minhas ligas";
                                                 }
+
+                                                Liga ligaDoCartoleiro = new Liga(liga, tipoLiga);
+
+                                                ligasDoCartoleiro.add(ligaDoCartoleiro);
+                                                chaveDeLigasDoCartoleiro.put(String.valueOf(liga.getLigaId()), ligaDoCartoleiro);
                                             }
 
-                                            if (chaveDeLigasDoCartoleiro.size() > 0){
-
-                                                for (Map.Entry<String, Liga> entry : chaveDeLigasDoCartoleiro.entrySet()){
-
-                                                    realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(entry.getValue()));
-                                                }
+                                            if (hasEditorial){
+                                                Liga ligaDoCartoleiro = new Liga(-999, "", "", "Editorial");
+                                                ligasDoCartoleiro.add(ligaDoCartoleiro);
+                                                chaveDeLigasDoCartoleiro.put(String.valueOf(ligaDoCartoleiro.getLigaId()), ligaDoCartoleiro);
                                             }
-                                        } else if (ligasDoCartoleiro.size() > 0){
 
-                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(ligasDoCartoleiro));
-                                        }
+                                            if (hasMataMata){
+                                                Liga ligaDoCartoleiro = new Liga(-555, "", "", "Mata-Mata");
+                                                ligasDoCartoleiro.add(ligaDoCartoleiro);
+                                                chaveDeLigasDoCartoleiro.put(String.valueOf(ligaDoCartoleiro.getLigaId()), ligaDoCartoleiro);
+                                            }
 
-                                        atualizarTimesDasLigas(token);
+                                            if (hasMinhasLigas){
+                                                Liga ligaDoCartoleiro = new Liga(-111, "", "", "Minhas ligas");
+                                                ligasDoCartoleiro.add(ligaDoCartoleiro);
+                                                chaveDeLigasDoCartoleiro.put(String.valueOf(ligaDoCartoleiro.getLigaId()), ligaDoCartoleiro);
+                                            }
+
+                                            final RealmResults<Liga> ligasDoCartoleiroOnRealm = realmTransaction.where(Liga.class).findAll();
+                                            if (ligasDoCartoleiroOnRealm != null && ligasDoCartoleiroOnRealm.size() > 0){
+
+                                                for (Liga liga : ligasDoCartoleiroOnRealm){
+
+                                                    if (chaveDeLigasDoCartoleiro.get(String.valueOf(liga.getLigaId())) == null){
+
+                                                        if (!(liga.getLigaId() < 0 && ((hasEditorial && liga.getLigaId() == -999) || (hasMataMata && liga.getLigaId() == -555) || (hasMinhasLigas && liga.getLigaId() == -111)))){
+                                                            final RealmResults<TimeLiga> listaTimesDaLiga = realmTransaction.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAll();
+                                                            listaTimesDaLiga.deleteAllFromRealm();
+                                                            liga.deleteFromRealm();
+                                                        }
+
+                                                    } else {
+
+                                                        mergeLigas(liga, chaveDeLigasDoCartoleiro.get(String.valueOf(liga.getLigaId())));
+                                                        chaveDeLigasDoCartoleiro.remove(String.valueOf(liga.getLigaId()));
+                                                    }
+                                                }
+
+                                                if (chaveDeLigasDoCartoleiro.size() > 0){
+
+                                                    for (Map.Entry<String, Liga> entry : chaveDeLigasDoCartoleiro.entrySet()){
+
+                                                        realmTransaction.copyToRealmOrUpdate(entry.getValue());
+                                                    }
+                                                }
+                                            } else if (ligasDoCartoleiro.size() > 0){
+
+                                                realmTransaction.copyToRealmOrUpdate(ligasDoCartoleiro);
+                                            }
+
+                                            atualizarTimesDasLigas(token);
+                                        });
 
                                     } catch (Exception e){
 
@@ -802,6 +870,7 @@ public class ApiServiceImpl {
 
         Realm realm = null;
         List<Liga> ligas = null;
+        Map<String, Liga> mapDeLigas = null;
 
         try {
 
@@ -818,109 +887,128 @@ public class ApiServiceImpl {
 
         if (ligas != null && ligas.size() > 0){
 
+            mapDeLigas = new HashMap<>();
             for (Liga liga : ligas){
 
-                buscarTimesDaLiga(liga, token);
+                mapDeLigas.put(liga.getSlug(), liga);
             }
+
+            buscarTimesDaLiga(mapDeLigas, token);
         }
     }
 
-    private void buscarTimesDaLiga(Liga liga, String token){
+    private void buscarTimesDaLiga(Map<String, Liga> mapDeLigas, String token){
 
         try {
 
-            Observable<ApiAuthLigaSlug> buscarTimesDaLiga = apiService.buscarTimesDaLiga(token, liga.getSlug());
+            if (mapDeLigas.size() > 0){
 
-            buscarTimesDaLiga.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .onErrorReturn((Throwable throwable) -> {
-                        if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
-                            return new ApiAuthLigaSlug();
-                        }
-                        logErrorOnConsole(TAG, "buscarTimesDaLiga.onErrorReturn() -> "+throwable.getMessage(), throwable);
-                        return null;
-                    })
-                    .subscribe(
-                            times -> {
+                Liga liga = mapDeLigas.entrySet().iterator().next().getValue();
+                Log.w(TAG, "buscarTimesDaLiga(liga) -> "+liga.getSlug());
 
-                                if (times != null && times.getTimes() != null && times.getTimes().size() > 0){
+                Observable<ApiAuthLigaSlug> buscarTimesDaLiga = apiService.buscarTimesDaLiga(token, liga.getSlug());
 
-                                    Realm realm = null;
+                buscarTimesDaLiga.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .onErrorReturn((Throwable throwable) -> {
+                            if (throwable.getMessage().toString().equals("Network is unreachable") || throwable.getMessage().toString().equals("SSL handshake timed out") || throwable.getMessage().toString().equals("timeout")){
+                                return new ApiAuthLigaSlug();
+                            }
+                            logErrorOnConsole(TAG, "buscarTimesDaLiga.onErrorReturn() -> "+throwable.getMessage(), throwable);
+                            return null;
+                        })
+                        .subscribe(
+                                times -> AsyncTask.execute(() -> {
 
-                                    try {
+                                    if (times != null && times.getTimes() != null && times.getTimes().size() > 0){
 
-                                        realm = Realm.getDefaultInstance();
+                                        new Thread(() -> {
 
-                                        RealmList<TimeLiga> timesDaLiga = new RealmList<>();
-                                        Map<String, TimeLiga> chaveDeTimesDaApi = new HashMap<>();
-                                        TimeFavorito timeFavorito = realm.where(TimeFavorito.class).equalTo("timeDoUsuario", true).findFirst();
+                                            Realm realm = null;
 
-                                        for (ApiAuthLigaSlug_Time time : times.getTimes()){
+                                            try {
 
-                                            boolean timeDoUsuario = false;
-                                            if (timeFavorito != null && timeFavorito.getTimeId().equals(time.getTimeId())) timeDoUsuario = true;
+                                                realm = Realm.getDefaultInstance();
+                                                realm.executeTransaction(realmTransaction -> {
 
-                                            TimeLiga timeDaLiga = new TimeLiga(times.getLiga().getLigaId(), time, null, timeDoUsuario);
+                                                    RealmList<TimeLiga> timesDaLiga = new RealmList<>();
+                                                    Map<String, TimeLiga> chaveDeTimesDaApi = new HashMap<>();
+                                                    TimeFavorito timeFavorito = realmTransaction.where(TimeFavorito.class).equalTo("timeDoUsuario", true).findFirst();
 
-                                            timesDaLiga.add(timeDaLiga);
-                                            chaveDeTimesDaApi.put(String.valueOf(times.getLiga().getLigaId()+time.getTimeId()), timeDaLiga);
-                                        }
+                                                    for (ApiAuthLigaSlug_Time time : times.getTimes()){
 
-                                        final RealmResults<TimeLiga> timesDaLigaOnRealm = realm.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAll();
-                                        if (timesDaLigaOnRealm != null && timesDaLigaOnRealm.size() > 0){
+                                                        boolean timeDoUsuario = false;
+                                                        if (timeFavorito != null && timeFavorito.getTimeId().equals(time.getTimeId())) timeDoUsuario = true;
 
-                                            for (TimeLiga timeDaLiga : timesDaLigaOnRealm){
+                                                        TimeLiga timeDaLiga = new TimeLiga(times.getLiga().getLigaId(), time, null, timeDoUsuario);
 
-                                                if (chaveDeTimesDaApi.get(String.valueOf(timeDaLiga.getId())) == null){
+                                                        timesDaLiga.add(timeDaLiga);
+                                                        chaveDeTimesDaApi.put(String.valueOf(times.getLiga().getLigaId()+time.getTimeId()), timeDaLiga);
+                                                    }
 
-                                                    realm.executeTransaction(realmTransaction -> timeDaLiga.deleteFromRealm() );
+                                                    final RealmResults<TimeLiga> timesDaLigaOnRealm = realmTransaction.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAll();
+                                                    if (timesDaLigaOnRealm != null && timesDaLigaOnRealm.size() > 0){
 
-                                                } else {
+                                                        for (TimeLiga timeDaLiga : timesDaLigaOnRealm){
 
-                                                    realm.executeTransaction(realmTransaction -> mergeTimesDaLiga(timeDaLiga, chaveDeTimesDaApi.get(String.valueOf(timeDaLiga.getId()))));
-                                                    chaveDeTimesDaApi.remove(String.valueOf(timeDaLiga.getId()));
-                                                }
+                                                            if (chaveDeTimesDaApi.get(String.valueOf(timeDaLiga.getId())) == null){
+
+                                                                timeDaLiga.deleteFromRealm();
+
+                                                            } else {
+
+                                                                mergeTimesDaLiga(timeDaLiga, chaveDeTimesDaApi.get(String.valueOf(timeDaLiga.getId())));
+                                                                chaveDeTimesDaApi.remove(String.valueOf(timeDaLiga.getId()));
+                                                            }
+                                                        }
+
+                                                        if (chaveDeTimesDaApi.size() > 0){
+
+                                                            for (Map.Entry<String, TimeLiga> entry : chaveDeTimesDaApi.entrySet()){
+
+                                                                realmTransaction.copyToRealmOrUpdate(entry.getValue());
+                                                            }
+                                                        }
+                                                    } else if (timesDaLiga.size() > 0){
+
+                                                        realmTransaction.copyToRealmOrUpdate(timesDaLiga);
+                                                    }
+
+                                                    mapDeLigas.remove(liga.getSlug());
+                                                    buscarTimesDaLiga(mapDeLigas, token);
+                                                });
+
+                                            } catch (Exception e){
+
+                                                logErrorOnConsole(TAG, "buscarTimesDaLiga.subscribe() -> "+e.getMessage(), e);
+
+                                            } finally {
+                                                if (realm != null) realm.close();
                                             }
-
-                                            if (chaveDeTimesDaApi.size() > 0){
-
-                                                for (Map.Entry<String, TimeLiga> entry : chaveDeTimesDaApi.entrySet()){
-
-                                                    realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(entry.getValue()));
-                                                }
-                                            }
-                                        } else if (timesDaLiga.size() > 0){
-
-                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timesDaLiga));
-                                            // buscar atletas pontuados e atualizar
-                                        }
-
-                                    } catch (Exception e){
-
-                                        logErrorOnConsole(TAG, "buscarTimesDaLiga.subscribe() -> "+e.getMessage(), e);
-
-                                    } finally {
-                                        if (realm != null) realm.close();
+                                        }).start();
                                     }
-                                }
-                            },
-                            error -> {
-                                try {
-                                    if (error instanceof NullPointerException){
-                                        buscarAtletasMercado();
-                                        atualizarParciaisTimesFavoritos(null);
-                                    } else if (error instanceof HttpException){ // We had non-200 http error
-                                        logErrorOnConsole(TAG, "ApiAuthLigaSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                    } else if (error instanceof IOException){ // A network error happened
-                                        logErrorOnConsole(TAG, "ApiAuthLigaSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
-                                    } else {
+                                }),
+                                error -> {
+                                    try {
+                                        if (error instanceof NullPointerException){
+                                            buscarAtletasMercado();
+                                            atualizarParciaisTimesFavoritos(null);
+                                        } else if (error instanceof HttpException){ // We had non-200 http error
+                                            logErrorOnConsole(TAG, "ApiAuthLigaSlug [ HttpException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                        } else if (error instanceof IOException){ // A network error happened
+                                            logErrorOnConsole(TAG, "ApiAuthLigaSlug [ IOException ] -> " + error.getMessage() + " / " + error.getClass(), error);
+                                        } else {
+                                            logErrorOnConsole(TAG, "ApiAuthLigaSlug -> " + error.getMessage() + " / " + error.getClass(), error);
+                                        }
+                                    } catch (Exception e){
                                         logErrorOnConsole(TAG, "ApiAuthLigaSlug -> " + error.getMessage() + " / " + error.getClass(), error);
                                     }
-                                } catch (Exception e){
-                                    logErrorOnConsole(TAG, "ApiAuthLigaSlug -> " + error.getMessage() + " / " + error.getClass(), error);
-                                }
-                            });
+                                });
+            } else {
 
+                Log.w(TAG, "buscarTimesDaLiga(liga) -> fim");
+                // buscar atletas pontuados e atualizar
+            }
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao buscarTimesDaLiga() -> "+e.getMessage(), e);
             atualizarParciaisTimesFavoritos(null);
@@ -961,52 +1049,55 @@ public class ApiServiceImpl {
                                     try {
 
                                         realm = Realm.getDefaultInstance();
-                                        final int rodada = partidas.getRodada();
+                                        realm.executeTransaction(realmTransaction -> {
 
-                                        RealmList<Partida> partidasDaRodada = new RealmList<>();
-                                        Map<String, Partida> chaveDePartidasDaApi = new HashMap<>();
+                                            final int rodada = partidas.getRodada();
 
-                                        realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(new Partida((-rodada), rodada, rodada+"ª rodada")));
+                                            RealmList<Partida> partidasDaRodada = new RealmList<>();
+                                            Map<String, Partida> chaveDePartidasDaApi = new HashMap<>();
 
-                                        for (ApiPartidas_Partida partidaApi : partidas.getPartidas()){
+                                            realmTransaction.copyToRealmOrUpdate(new Partida((-rodada), rodada, rodada+"ª rodada"));
 
-                                            Partida partida = new Partida(rodada, null, partidaApi);
-                                            partidasDaRodada.add(partida);
+                                            for (ApiPartidas_Partida partidaApi : partidas.getPartidas()){
 
-                                            chaveDePartidasDaApi.put(String.valueOf(partidaApi.getIdPartida()),partida);
-                                        }
+                                                Partida partida = new Partida(rodada, null, partidaApi);
+                                                partidasDaRodada.add(partida);
 
-                                        final RealmResults<Partida> partidasDaRodadaOnRealm = realm.where(Partida.class).equalTo("rodada", rodada).findAll();
-                                        if (partidasDaRodadaOnRealm != null && partidasDaRodadaOnRealm.size() > 0){
+                                                chaveDePartidasDaApi.put(String.valueOf(partidaApi.getIdPartida()),partida);
+                                            }
 
-                                            for (Partida partida : partidasDaRodadaOnRealm){
+                                            final RealmResults<Partida> partidasDaRodadaOnRealm = realmTransaction.where(Partida.class).equalTo("rodada", rodada).findAll();
+                                            if (partidasDaRodadaOnRealm != null && partidasDaRodadaOnRealm.size() > 0){
 
-                                                if (chaveDePartidasDaApi.get(String.valueOf(partida.getIdPartida())) == null){
+                                                for (Partida partida : partidasDaRodadaOnRealm){
 
-                                                    if (!(partida.getIdPartida() < 0 && partida.getIdPartida() == (-rodada))){
-                                                        realm.executeTransaction(realmTransaction -> partida.deleteFromRealm() );
+                                                    if (chaveDePartidasDaApi.get(String.valueOf(partida.getIdPartida())) == null){
+
+                                                        if (!(partida.getIdPartida() < 0 && partida.getIdPartida() == (-rodada))){
+                                                            partida.deleteFromRealm();
+                                                        }
+
+                                                    } else {
+
+                                                        mergePartidas(partida, chaveDePartidasDaApi.get(String.valueOf(partida.getIdPartida())));
+                                                        chaveDePartidasDaApi.remove(String.valueOf(partida.getIdPartida()));
                                                     }
-
-                                                } else {
-
-                                                    realm.executeTransaction(realmTransaction -> mergePartidas(partida, chaveDePartidasDaApi.get(String.valueOf(partida.getIdPartida()))));
-                                                    chaveDePartidasDaApi.remove(String.valueOf(partida.getIdPartida()));
                                                 }
-                                            }
 
-                                            if (chaveDePartidasDaApi.size() > 0){
+                                                if (chaveDePartidasDaApi.size() > 0){
 
-                                                for (Map.Entry<String, Partida> entry : chaveDePartidasDaApi.entrySet()){
+                                                    for (Map.Entry<String, Partida> entry : chaveDePartidasDaApi.entrySet()){
 
-                                                    realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(entry.getValue()));
+                                                        realmTransaction.copyToRealmOrUpdate(entry.getValue());
+                                                    }
                                                 }
+                                            } else if (partidasDaRodada.size() > 0){
+
+                                                realmTransaction.copyToRealmOrUpdate(partidasDaRodada);
                                             }
-                                        } else if (partidasDaRodada.size() > 0){
+                                        });
 
-                                            realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(partidasDaRodada));
-                                        }
-
-                                        AsyncTask.execute(() -> verificarRodadasAnteriores(rodada-1) );
+                                        new Thread(() -> AsyncTask.execute(() -> verificarRodadasAnteriores(partidas.getRodada()-1) ) ).start();
 
                                     } catch (Exception e){
 

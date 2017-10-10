@@ -82,7 +82,9 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             }
         }
 
-        holder.setData( listaTimesDaLiga.get( position ), backgroundColor, position, listaTimesDaLiga.get( 0 ).getPontuacaoRodada(), listaTimesDaLiga.get( 0 ).getPontuacao());
+        double pontuacaoParciaisPrimeiroTime = 0;
+        if (listaTimesDaLiga.get( 0 ).getPontuacao() != null) pontuacaoParciaisPrimeiroTime = listaTimesDaLiga.get( 0 ).getPontuacao();
+        holder.setData( listaTimesDaLiga.get( position ), backgroundColor, position, listaTimesDaLiga.get( 0 ).getPontuacaoRodada(), pontuacaoParciaisPrimeiroTime);
 
         holder.itemView.setOnClickListener((View v) -> {
 
