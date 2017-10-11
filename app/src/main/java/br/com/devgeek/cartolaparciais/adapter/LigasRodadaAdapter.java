@@ -157,7 +157,7 @@ public class LigasRodadaAdapter extends RecyclerView.Adapter<LigasRodadaAdapter.
             posicaoDoTime.setSpan(new RelativeSizeSpan(0.85f), 0, posicaoDoTime.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             posicao.setText(posicaoDoTime);
 
-            if (time.getVariacaoCartoletas() == null || time.getVariacaoCartoletas() == 0){
+            if (time.getAtletas() != null && (time.getVariacaoCartoletas() == null || time.getVariacaoCartoletas() == 0)){
 
                 jogadoresPontuados = 0;
                 for (AtletasPontuados atleta : parseAndSortAtletasPontuados(gson, time.getAtletas())){

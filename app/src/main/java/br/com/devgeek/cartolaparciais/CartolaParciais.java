@@ -17,7 +17,7 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOn
  */
 public class CartolaParciais extends Application {
 
-    private final static int ONE_MINUTE = 60000;
+    private final static int ONE_MINUTE = 90000;
     protected static Long lastTimeAtualizarLigasWasExecuted = null;
     protected static Long lastTimeAtualizarMercadoWasExecuted = null;
     protected static Long lastTimeAtualizarParciaisWasExecuted = null;
@@ -109,7 +109,7 @@ public class CartolaParciais extends Application {
 
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-                .schemaVersion(15)               // Must be bumped when the schema changes
+                .schemaVersion(16)               // Must be bumped when the schema changes
                 .migration(realmMigration())    // Migration to run instead of throwing an exception
                 //.deleteRealmIfMigrationNeeded()
                 .initialData(realm -> { /*realm.createObject(TimeFavorito.class); */ })
@@ -266,6 +266,14 @@ public class CartolaParciais extends Application {
 
             if (oldVersion == 14){
                 schema.get("TimeFavorito")
+                      .addField("atletasIds_rodada", Integer.class);
+
+                oldVersion++;
+            }
+
+            if (oldVersion == 15){
+                schema.get("TimeLiga")
+                      .addField("atletasIds", String.class)
                       .addField("atletasIds_rodada", Integer.class);
 
                 oldVersion++;

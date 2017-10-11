@@ -37,6 +37,9 @@ public class TimeLiga extends RealmObject {
     private Double pontuacaoCampeonato;
     private Double patrimonio;
 
+    private String atletasIds;
+    private Integer atletasIds_rodada;
+
 
     public TimeLiga(){
     }
@@ -234,5 +237,17 @@ public class TimeLiga extends RealmObject {
     }
     public void setPatrimonio(Double patrimonio){
         this.patrimonio = patrimonio;
+    }
+    public String getAtletasIds(){
+        return atletasIds;
+    }
+    public void setAtletasIds(String atletasIds){
+        this.atletasIds = atletasIds;
+    }
+    public Integer getAtletasIds_rodada(){
+        return atletasIds_rodada;
+    }
+    public void setAtletasIds_rodada(Integer atletasIds_rodada){
+        this.atletasIds_rodada = atletasIds_rodada;
     }
 }

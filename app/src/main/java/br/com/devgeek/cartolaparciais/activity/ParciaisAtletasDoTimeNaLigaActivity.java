@@ -93,14 +93,18 @@ public class ParciaisAtletasDoTimeNaLigaActivity extends AppCompatActivity {
 
             TimeLiga timeDaLiga = realm.copyFromRealm(realm.where(TimeLiga.class).equalTo("ligaId", ligaId).equalTo("timeId", timeId).findFirst());
 
-            if (timeDaLiga != null){
+            if (timeDaLiga != null && timeDaLiga.getAtletas() != null){
 
                 atletasPontuados = parseAndSortAtletasPontuados(new Gson(), timeDaLiga.getAtletas());
+
+            } else {
+                finishActivityWithAnimation();
             }
         } catch (Exception e){
 
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            finish();
 
         } finally {
             if (realm != null) realm.close();
