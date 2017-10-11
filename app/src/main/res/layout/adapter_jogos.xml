@@ -152,7 +152,7 @@
                     android:layout_toLeftOf="@+id/placar_casa"
                     android:layout_toStartOf="@+id/placar_casa"
                     android:scaleType="fitCenter"
-                    tools:src="@drawable/sao_paulo_60x60" />
+                    tools:src="@drawable/clube" />
 
                 <TextView
                     android:id="@+id/placar_casa"
@@ -213,7 +213,7 @@
                     android:layout_toEndOf="@+id/placar_visitante"
                     android:layout_toRightOf="@+id/placar_visitante"
                     android:scaleType="fitCenter"
-                    tools:src="@drawable/sao_paulo_60x60" />
+                    tools:src="@drawable/clube" />
 
                 <TextView
                     android:id="@+id/placar_visitante"

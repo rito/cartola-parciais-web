@@ -33,13 +33,15 @@ public class PartidasAdapter extends RecyclerView.Adapter<PartidasAdapter.ViewHo
     private static final String TAG = "PartidasAdapter";
 
     private Context context;
+    private boolean userGloboIsLogged;
     private RealmResults<Partida> partidas;
     private SimpleDateFormat apiFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private SimpleDateFormat layoutFormat = new SimpleDateFormat("dd/MM/yyyy' as 'HH'h'mm");
     //private SimpleDateFormat layoutFormat = new SimpleDateFormat("EEE' - 'dd/MM/yyyy' as 'HH'h'mm");
 
 
-    public PartidasAdapter(Context context, RealmResults<Partida> partidas){
+    public PartidasAdapter(Context context, RealmResults<Partida> partidas, boolean userGloboIsLogged){
+        this.userGloboIsLogged = userGloboIsLogged;
         this.context = context;
         update(partidas);
     }
@@ -152,7 +154,7 @@ public class PartidasAdapter extends RecyclerView.Adapter<PartidasAdapter.ViewHo
                 }
 
                 sigla_casa.setText(getClubeAbreviada(partida.getIdTimeCasa()));
-                clube_casa.setImageResource(getClubeEscudo(partida.getIdTimeCasa()));
+                if (userGloboIsLogged) clube_casa.setImageResource(getClubeEscudo(partida.getIdTimeCasa()));
 
                 if (partida.getPlacarTimeVisitante() == null){
                     placar_visitante.setText("");
@@ -161,7 +163,7 @@ public class PartidasAdapter extends RecyclerView.Adapter<PartidasAdapter.ViewHo
                 }
 
                 sigla_visitante.setText(getClubeAbreviada(partida.getIdTimeVisitante()));
-                clube_visitante.setImageResource(getClubeEscudo(partida.getIdTimeVisitante()));
+                if (userGloboIsLogged) clube_visitante.setImageResource(getClubeEscudo(partida.getIdTimeVisitante()));
 
                 int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, resources.getDisplayMetrics());
                 params.height = height;

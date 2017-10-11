@@ -116,6 +116,7 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
             if (userGloboIsLogged && atleta.getFoto() != null){
 
                 Picasso.with( context ).load( atleta.getFoto().replace("_FORMATO","_140x140") ).noFade().into( fotoDoAtleta );
+                escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId()));
 
             } else {
 
@@ -129,8 +130,6 @@ public class ParciaisJogadoresAdapter extends RecyclerView.Adapter<ParciaisJogad
             SpannableStringBuilder posicaoNome = new SpannableStringBuilder(PosicoesJogadoresUtil.getPosicaoNome(atleta.getPosicaoId()));
             posicaoNome.setSpan(new RelativeSizeSpan(0.95f), 0, posicaoNome.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             atletaPosicao.setText(posicaoNome);
-
-            escudoDoAtleta.setImageResource(ClubesUtil.getClubeEscudo(atleta.getClubeId()));
 
             pontuacao.setText("-.--");
             pontuacao.setTextColor(ContextCompat.getColor(context, android.R.color.tab_indicator_text));

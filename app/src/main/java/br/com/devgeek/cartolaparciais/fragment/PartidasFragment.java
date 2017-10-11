@@ -23,6 +23,7 @@ import io.realm.Sort;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.atualizarMercadoAndLigasAndPartidas;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 /**
  * Created by geovannefduarte on 18/09/17.
@@ -72,7 +73,7 @@ public class PartidasFragment extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager(mLayoutManager);
 
-        adapter = new PartidasAdapter( getActivity() , partidas );
+        adapter = new PartidasAdapter( getActivity() , partidas, userGloboIsLogged() );
         recyclerView.setAdapter( adapter );
 
         return view;

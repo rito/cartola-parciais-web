@@ -49,6 +49,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <ImageButton
+                    android:id="@+id/back_button"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="-12dp"
+                    android:background="@color/globo_azul"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_back_material" />
+
                 <TextView
                     android:id="@+id/globopontocom"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
@@ -64,7 +76,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:maxEms="10"
                     android:maxLines="1"
-                    android:paddingLeft="4dp"
+                    android:paddingLeft="?attr/actionBarSize"
                     android:scrollHorizontally="true"
                     android:text="globo.com"
                     android:textColor="@color/white" />
