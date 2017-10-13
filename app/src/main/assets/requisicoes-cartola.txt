@@ -1,3 +1,8 @@
+https://itunes.apple.com/br/app/cartolando-parciais/id1198710737?mt=8
+https://itunes.apple.com/br/app/parciais-2017-cartolando/id1126157918?mt=8
+https://play.google.com/store/apps/details?id=br.com.parciais.parciais&hl=en
+
+
 
 * Para Login utilizei essa url https://login.globo.com/login/438" em um webview e uso javascript para pegar o retorno depois de logado: (fica nos cookies após logar a chave é GLBID)
  func webViewDidFinishLoad(webView: UIWebView) {

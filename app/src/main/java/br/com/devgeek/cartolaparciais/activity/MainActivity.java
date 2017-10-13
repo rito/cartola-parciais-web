@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MainActivityViewPagerAdapter mPagerAdapter;
     private BottomNavigationView bottomNavigationView;
+    private MenuItem adicionarTimes;
     private ViewPager mViewPager;
 
     @Override
@@ -61,18 +62,22 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.tab_parciais:
                     setViewPager(0);
                     setToolbarTitle("Parciais");
+                    adicionarTimes.setVisible(true);
                     break;
                 case R.id.tab_ligas:
                     setViewPager(1);
                     setToolbarTitle("Ligas");
+                    adicionarTimes.setVisible(false);
                     break;
                 case R.id.tab_jogadores:
                     setViewPager(2);
                     setToolbarTitle("Jogadores");
+                    adicionarTimes.setVisible(false);
                     break;
                 case R.id.tab_jogos:
                     setViewPager(3);
                     setToolbarTitle("Jogos");
+                    adicionarTimes.setVisible(false);
                     break;
             }
             return true;
@@ -137,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        MenuItem adicionarTimes = menu.findItem(R.id.action_adicionartimes);
+        adicionarTimes = menu.findItem(R.id.action_adicionartimes);
 
         return true;
     }

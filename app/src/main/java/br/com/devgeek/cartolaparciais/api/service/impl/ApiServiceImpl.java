@@ -366,11 +366,12 @@ public class ApiServiceImpl {
             if (mapDeTimesFavoritos.size() > 0){
 
                 TimeFavorito timeFavorito = mapDeTimesFavoritos.entrySet().iterator().next().getValue();
-                Log.w(TAG, "atualizarParciaisDeCadaTimeFavorito() -> "+timeFavorito.getSlug());
 
 //                if (timeFavorito.getAtletasIds() != null && (
 //                   (mercadoStatus.getStatusDoMercado() == MercadoStatus.ABERTO && mercadoStatus.getRodadaAtual() == timeFavorito.getAtletasIds_rodada()+1) ||
 //                   (mercadoStatus.getStatusDoMercado() == MercadoStatus.FECHADO && mercadoStatus.getRodadaAtual() == timeFavorito.getAtletasIds_rodada()))){
+//
+//                    Log.w(TAG, "atualizarParciaisDeCadaTimeFavorito(using atletasIds) -> "+timeFavorito.getSlug());
 //
 //                    if (atletasPontuadosEncontrados != null){
 //
@@ -412,6 +413,7 @@ public class ApiServiceImpl {
 //                    }
 //                } else {
 
+                    Log.w(TAG, "atualizarParciaisDeCadaTimeFavorito() -> "+timeFavorito.getSlug());
                     Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
 
                     buscarTimeId.subscribeOn(Schedulers.newThread())
