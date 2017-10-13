@@ -11,8 +11,8 @@ android {
         applicationId "br.com.devgeek.cartolaparciais"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 17
-        versionName "17.10.11.2"
+        versionCode 18
+        versionName "17.10.13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

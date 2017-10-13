@@ -63,8 +63,9 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOn
 public class ApiServiceImpl {
 
     private static final String TAG = "ApiServiceImpl";
-    // Erro 503 - Mercado em manutencao
+    // Erro 503 - Mercado em manutenção
 
+    private Gson gson;
     private Retrofit retrofit;
     private ApiService apiService;
 
@@ -77,6 +78,7 @@ public class ApiServiceImpl {
                 .build();
 
         apiService = retrofit.create(ApiService.class);
+        gson = new Gson();
     }
 
     public void atualizarMercado(Context context){
@@ -365,14 +367,14 @@ public class ApiServiceImpl {
 
             if (mapDeTimesFavoritos.size() > 0){
 
+                boolean fazerBuscaNaApi = true;
                 TimeFavorito timeFavorito = mapDeTimesFavoritos.entrySet().iterator().next().getValue();
 
 //                if (timeFavorito.getAtletasIds() != null && (
 //                   (mercadoStatus.getStatusDoMercado() == MercadoStatus.ABERTO && mercadoStatus.getRodadaAtual() == timeFavorito.getAtletasIds_rodada()+1) ||
 //                   (mercadoStatus.getStatusDoMercado() == MercadoStatus.FECHADO && mercadoStatus.getRodadaAtual() == timeFavorito.getAtletasIds_rodada()))){
 //
-//                    Log.w(TAG, "atualizarParciaisDeCadaTimeFavorito(using atletasIds) -> "+timeFavorito.getSlug());
-//
+//                    fazerBuscaNaApi = false;
 //                    if (atletasPontuadosEncontrados != null){
 //
 //                        Realm realm = null;
@@ -381,7 +383,7 @@ public class ApiServiceImpl {
 //
 //                            realm = Realm.getDefaultInstance();
 //                            double pontuacao = 0.0, variacaoCartoletas = 0.0;
-//                            List<AtletasPontuados> atletas = new ArrayList<>();
+//                            List<AtletasPontuados> atletas = parseAndSortAtletasPontuados(gson, timeFavorito.getAtletas());
 //
 //                            List<String> atletasIds = Arrays.asList(timeFavorito.getAtletasIds().split("=#="));
 //
@@ -394,7 +396,7 @@ public class ApiServiceImpl {
 //                                }
 //                            }
 //
-//                            timeFavorito.setAtletas(new Gson().toJson(atletas));
+//                            timeFavorito.setAtletas(gson.toJson(atletas));
 //                            timeFavorito.setPontuacao(pontuacao);
 //                            timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
 //
@@ -403,15 +405,19 @@ public class ApiServiceImpl {
 //                            mapDeTimesFavoritos.remove(String.valueOf(timeFavorito.getTimeId()));
 //                            atualizarParciaisDeCadaTimeFavorito(atletasPontuadosEncontrados, mapDeTimesFavoritos, mercadoStatus);
 //
-//                        } catch (Exception e){
+//                        } catch (Exception e) {
 //
-//                            logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.atletasPontuadosEncontrados != null -> "+e.getMessage(), e);
+//                            logErrorOnConsole(TAG, "atualizarParciaisDeCadaTimeFavorito.atletasPontuadosEncontrados != null -> " + e.getMessage(), e);
 //
 //                        } finally {
 //                            if (realm != null) realm.close();
 //                        }
+//                    } else if (timeFavorito.getVariacaoCartoletas() == null || timeFavorito.getVariacaoCartoletas() == 0){
+//                        fazerBuscaNaApi = true;
 //                    }
-//                } else {
+//                }
+
+                if (fazerBuscaNaApi){
 
                     Log.w(TAG, "atualizarParciaisDeCadaTimeFavorito() -> "+timeFavorito.getSlug());
                     Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeFavorito.getTimeId());
@@ -468,7 +474,7 @@ public class ApiServiceImpl {
 
                                                     timeFavorito.setAtletasIds_rodada(timeSlug.getRodada_atual());
                                                     timeFavorito.setAtletasIds(idsDosAtletas);
-                                                    timeFavorito.setAtletas(new Gson().toJson(atletas));
+                                                    timeFavorito.setAtletas(gson.toJson(atletas));
                                                     timeFavorito.setPontuacao(pontuacao);
                                                     timeFavorito.setVariacaoCartoletas(variacaoCartoletas);
 
@@ -503,7 +509,7 @@ public class ApiServiceImpl {
                                         }
                                     }
                             );
-//                }
+                }
             }
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao atualizarParciaisDeCadaTimeFavorito() -> "+e.getMessage(), e);
@@ -621,7 +627,7 @@ public class ApiServiceImpl {
 
                                                 timeDaLiga.setAtletasIds_rodada(timeSlug.getRodada_atual());
                                                 timeDaLiga.setAtletasIds(idsDosAtletas);
-                                                timeDaLiga.setAtletas(new Gson().toJson(atletas));
+                                                timeDaLiga.setAtletas(gson.toJson(atletas));
                                                 timeDaLiga.setPontuacao(pontuacao);
                                                 timeDaLiga.setVariacaoCartoletas(variacaoCartoletas);
 
