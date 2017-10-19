@@ -11,8 +11,8 @@ android {
         applicationId "br.com.devgeek.cartolaparciais"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 18
-        versionName "17.10.13"
+        versionCode 19
+        versionName "17.10.18"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -49,6 +49,7 @@ dependencies {
 
 
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.android.gms:play-services-ads:11.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'

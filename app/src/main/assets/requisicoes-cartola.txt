@@ -1,3 +1,7 @@
+https://apps.admob.com/v2/home
+https://developers.google.com/admob/android/quick-start
+
+
 https://itunes.apple.com/br/app/cartolando-parciais/id1198710737?mt=8
 https://itunes.apple.com/br/app/parciais-2017-cartolando/id1126157918?mt=8
 https://play.google.com/store/apps/details?id=br.com.parciais.parciais&hl=en

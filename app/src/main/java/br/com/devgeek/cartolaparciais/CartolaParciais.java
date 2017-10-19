@@ -2,6 +2,8 @@ package br.com.devgeek.cartolaparciais;
 
 import android.app.Application;
 
+import com.google.android.gms.ads.MobileAds;
+
 import io.realm.DynamicRealmObject;
 import io.realm.FieldAttribute;
 import io.realm.Realm;
@@ -22,6 +24,7 @@ public class CartolaParciais extends Application {
     protected static Long lastTimeAtualizarMercadoWasExecuted = null;
     protected static Long lastTimeAtualizarParciaisWasExecuted = null;
     protected static Long lastTimeAtualizarPartidasWasExecuted = null;
+    public static final String AD_MOB_ID = "ca-app-pub-5622428808236420~2220845290";
 
     public static boolean isTimeToAtualizarMercado(){
 
@@ -116,6 +119,8 @@ public class CartolaParciais extends Application {
                 .build();
         //Realm.deleteRealm(realmConfig);         // Delete Realm between app restarts.
         Realm.setDefaultConfiguration(realmConfig);
+
+        MobileAds.initialize(this, AD_MOB_ID);
     }
 
     private final RealmMigration realmMigration(){

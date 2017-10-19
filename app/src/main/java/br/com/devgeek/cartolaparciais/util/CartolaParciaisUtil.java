@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,16 +97,26 @@ public class CartolaParciaisUtil {
 
     public static List<AtletasPontuados> parseAndSortAtletasPontuados(Gson gson, String json){
 
-        List<AtletasPontuados> atletasPontuados = gson.fromJson(json, new TypeToken<List<AtletasPontuados>>(){}.getType());
-        Collections.sort(atletasPontuados, (AtletasPontuados t1, AtletasPontuados t2) -> {
+        List<AtletasPontuados> atletasPontuados;
 
-            if (t1.getPosicaoId() != null && t2.getPosicaoId() != null){
-                if (t1.getPosicaoId() < t2.getPosicaoId()) return -1;
-                if (t1.getPosicaoId() > t2.getPosicaoId()) return 1;
-            }
+        if (json == null) {
 
-            return t1.getApelido().compareTo(t2.getApelido());
-        });
+            atletasPontuados = new ArrayList<>();
+
+        } else {
+
+            atletasPontuados = gson.fromJson(json, new TypeToken<List<AtletasPontuados>>(){}.getType());
+
+            Collections.sort(atletasPontuados, (AtletasPontuados t1, AtletasPontuados t2) -> {
+
+                if (t1.getPosicaoId() != null && t2.getPosicaoId() != null){
+                    if (t1.getPosicaoId() < t2.getPosicaoId()) return -1;
+                    if (t1.getPosicaoId() > t2.getPosicaoId()) return 1;
+                }
+
+                return t1.getApelido().compareTo(t2.getApelido());
+            });
+        }
 
         return atletasPontuados;
     }

@@ -12,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.ParciaisTimesFavoritosAdapter;
 import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
@@ -23,6 +26,7 @@ import io.realm.Sort;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.atualizarMercadoAndLigasAndPartidas;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
 
 /**
  * Created by geovannefduarte on 09/09/17.
@@ -71,6 +75,27 @@ public class ParciaisTimesFragment extends Fragment {
 
         adapter = new ParciaisTimesFavoritosAdapter( getActivity() , listaTimesFavoritos );
         recyclerView.setAdapter( adapter );
+
+
+        // Configurar AdMob
+//        AdView adView = new AdView(getActivity());
+//        adView.setAdSize(AdSize.BANNER);
+//        adView.setAdUnitId(AD_MOB_ID);
+        try {
+
+            AdView adView = (AdView) view.findViewById(R.id.adView);
+            TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
+            if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && timeFavoritoEspecial.getTimeId() != 6957528)){
+                adView.setVisibility(View.VISIBLE);
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adView.loadAd(adRequest);
+            } else {
+                adView.setVisibility(View.GONE);
+                adView.setVisibility(View.INVISIBLE);
+            }
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "Falha ao mostrar adMob() -> "+e.getMessage(), e);
+        }
 
 
         return view;
