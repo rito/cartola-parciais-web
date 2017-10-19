@@ -91,7 +91,6 @@ public class ParciaisTimesFragment extends Fragment {
                 adView.loadAd(adRequest);
             } else {
                 adView.setVisibility(View.GONE);
-                adView.setVisibility(View.INVISIBLE);
             }
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao mostrar adMob() -> "+e.getMessage(), e);
