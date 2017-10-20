@@ -43,7 +43,9 @@ public class CartolaParciaisUtil {
 
     public static boolean showAds(Realm realm){
         TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
-        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && timeFavoritoEspecial.getTimeId() != 6957528)){
+        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 6957528 &&
+                                                                              timeFavoritoEspecial.getTimeId() != 1491274 &&
+                                                                              timeFavoritoEspecial.getTimeId() != 1515887))){
             return true;
         }
         return false;

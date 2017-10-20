@@ -114,7 +114,7 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
 
                         Toast.makeText(context, time.getNomeDoTime()+" adicionado a lista de favoritos", Toast.LENGTH_SHORT).show();
 
-                        apiService.atualizarParciais(context, false);
+                        apiService.atualizarParciais(context, false, null);
 
                     } catch (Exception e){
 
@@ -141,7 +141,7 @@ public class BuscarTimesAdapter extends RecyclerView.Adapter<BuscarTimesAdapter.
 
                         Toast.makeText(context, time.getNomeDoTime()+" removido da lista de favoritos", Toast.LENGTH_SHORT).show();
 
-                        apiService.atualizarParciais(context, false);
+                        apiService.atualizarParciais(context, false, null);
 
                     } catch (Exception e){
 

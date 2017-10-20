@@ -116,7 +116,7 @@ public class LigasRodadaFragment extends Fragment {
 
     private void atualizarDados(boolean checkTime){
 
-        apiService.atualizarParciais(   getContext(), checkTime);
+        apiService.atualizarParciais(   getContext(), checkTime, ligaId);
         new Handler().postDelayed(() -> refreshListaTimesDaLiga.setRefreshing(false), 750);
     }
 

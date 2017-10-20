@@ -258,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         ApiServiceImpl apiServiceImpl = new ApiServiceImpl();
                         apiServiceImpl.atualizarLigas(getApplicationContext(), false);
-                        apiServiceImpl.atualizarParciais(getApplicationContext(), false);
+                        apiServiceImpl.atualizarParciais(getApplicationContext(), false, null);
 
                         new Handler().postDelayed(() -> finishActivityWithAnimation(), 1250);
 

@@ -105,16 +105,24 @@ public class ApiServiceImpl {
         }
     }
 
-    public void atualizarParciais(Context context, boolean checkTime){
+    public void atualizarParciais(Context context, boolean checkTime, Long ligaId){
 
         if (isNetworkAvailable(context)){
 
             if (checkTime){
                 if (isTimeToUpdateParciais()){
-                    buscarAtletasPontuados(true, false);
+                    if (ligaId == null){
+                        buscarAtletasPontuados(true, false, null);
+                    } else {
+                        buscarAtletasPontuados(false, true, ligaId);
+                    }
                 }
             } else {
-                buscarAtletasPontuados(true, false);
+                if (ligaId == null){
+                    buscarAtletasPontuados(true, false, null);
+                } else {
+                    buscarAtletasPontuados(false, true, ligaId);
+                }
             }
         }
     }
@@ -172,7 +180,7 @@ public class ApiServiceImpl {
                                             // dd..;;
                                         }
 
-                                        buscarAtletasPontuados(true, false);
+                                        buscarAtletasPontuados(true, false, null);
                                     });
 
                                 } else {
@@ -206,7 +214,7 @@ public class ApiServiceImpl {
         }
     }
 
-    private void buscarAtletasPontuados(boolean atualizarParciaisTimesFavoritos, boolean atualizarParciaisTimesDaLigas){
+    private void buscarAtletasPontuados(boolean atualizarParciaisTimesFavoritos, boolean atualizarParciaisTimesDaLigas, Long ligaId){
 
         try {
 
@@ -297,12 +305,12 @@ public class ApiServiceImpl {
                                     });
 
                                     if (atualizarParciaisTimesFavoritos) atualizarParciaisTimesFavoritos(apiAtletasPontuados);
-                                    if (atualizarParciaisTimesDaLigas) atualizarParciaisTimesDaLigas(apiAtletasPontuados);
+                                    if (atualizarParciaisTimesDaLigas) atualizarParciaisTimesDaLigas(apiAtletasPontuados, ligaId);
 
                                 } else {
 
                                     if (atualizarParciaisTimesFavoritos) atualizarParciaisTimesFavoritos(null);
-                                    if (atualizarParciaisTimesDaLigas) atualizarParciaisTimesDaLigas(null);
+                                    if (atualizarParciaisTimesDaLigas) atualizarParciaisTimesDaLigas(null, ligaId);
                                 }
                             },
                             error -> {
@@ -323,7 +331,7 @@ public class ApiServiceImpl {
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao buscarAtletasPontuados() -> "+e.getMessage(), e);
             if (atualizarParciaisTimesFavoritos) atualizarParciaisTimesFavoritos(null);
-            if (atualizarParciaisTimesDaLigas) atualizarParciaisTimesDaLigas(null);
+            if (atualizarParciaisTimesDaLigas) atualizarParciaisTimesDaLigas(null, ligaId);
         }
     }
 
@@ -516,7 +524,7 @@ public class ApiServiceImpl {
         }
     }
 
-    private void atualizarParciaisTimesDaLigas(ApiAtletasPontuados atletasPontuadosEncontrados){
+    private void atualizarParciaisTimesDaLigas(ApiAtletasPontuados atletasPontuadosEncontrados, Long ligaId){
 
         Realm realm = null;
         MercadoStatus mercadoStatus = null;
@@ -526,9 +534,14 @@ public class ApiServiceImpl {
 
             realm = Realm.getDefaultInstance();
 
+            List<Liga> ligas;
             Sort[] ligasSortOrder = { Sort.DESCENDING, Sort.ASCENDING, Sort.ASCENDING };
             String[] ligasSortColumns = { "tipoLiga", "nomeDaLiga", "descricaoDaLiga" };
-            List<Liga> ligas = realm.copyFromRealm(realm.where(Liga.class).findAllSorted(ligasSortColumns, ligasSortOrder));
+            if (ligaId == null){
+                ligas = realm.copyFromRealm(realm.where(Liga.class).findAllSorted(ligasSortColumns, ligasSortOrder));
+            } else {
+                ligas = realm.copyFromRealm(realm.where(Liga.class).equalTo("ligaId", ligaId).findAllSorted(ligasSortColumns, ligasSortOrder));
+            }
 
             for (Liga liga : ligas){
 
@@ -907,7 +920,6 @@ public class ApiServiceImpl {
 
         Realm realm = null;
         List<Liga> ligas = null;
-        Map<String, Liga> mapDeLigas = null;
 
         try {
 
@@ -924,7 +936,7 @@ public class ApiServiceImpl {
 
         if (ligas != null && ligas.size() > 0){
 
-            mapDeLigas = new HashMap<>();
+            Map<String, Liga> mapDeLigas = new HashMap<>();
             for (Liga liga : ligas){
 
                 mapDeLigas.put(liga.getSlug(), liga);
@@ -1043,7 +1055,7 @@ public class ApiServiceImpl {
             } else {
 
                 Log.w(TAG, "buscarTimesDaLiga(liga) -> fim");
-                buscarAtletasPontuados(false, true);
+                buscarAtletasPontuados(false, true, null);
             }
         } catch (Exception e){
             logErrorOnConsole(TAG, "Falha ao buscarTimesDaLiga() -> "+e.getMessage(), e);
