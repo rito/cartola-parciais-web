@@ -3,6 +3,7 @@ package br.com.devgeek.cartolaparciais.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -41,24 +42,29 @@ public class CartolaParciaisUtil {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public static boolean showAds(Realm realm){
+    public static boolean showAds(Context context, Realm realm){
+
+        if (Boolean.valueOf(Settings.System.getString(context.getContentResolver(), "firebase.test.lab")))
+            return true;
+
         TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
         if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 6957528 &&
                                                                               timeFavoritoEspecial.getTimeId() != 1491274 &&
                                                                               timeFavoritoEspecial.getTimeId() != 1515887))){
             return true;
         }
+
         return false;
     }
 
-    public static void setupAds(String tag, Realm realm, AdView adView){
+    public static void setupAds(String tag, Context context, Realm realm, AdView adView){
         // Configurar AdMob
 //        AdView adView = new AdView(getActivity());
 //        adView.setAdSize(AdSize.BANNER);
 //        adView.setAdUnitId(AD_MOB_ID);
         try {
 
-            if (showAds(realm)){
+            if (showAds(context, realm)){
                 adView.setVisibility(View.VISIBLE);
                 AdRequest adRequest = new AdRequest.Builder().build();
                 adView.loadAd(adRequest);

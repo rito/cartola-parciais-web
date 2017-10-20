@@ -97,7 +97,7 @@ public class LigasRodadaFragment extends Fragment {
         recyclerView.setAdapter( adapter );
 
 
-        setupAds(TAG, realm, (AdView) view.findViewById(R.id.adView));
+        setupAds(TAG, getContext(), realm, (AdView) view.findViewById(R.id.adView));
         return view;
     }
 

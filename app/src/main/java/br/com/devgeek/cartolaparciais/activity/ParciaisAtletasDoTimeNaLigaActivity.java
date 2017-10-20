@@ -89,7 +89,7 @@ public class ParciaisAtletasDoTimeNaLigaActivity extends AppCompatActivity {
 
 
 
-        setupAds(TAG, realm, (AdView) findViewById(R.id.adView));
+        setupAds(TAG, getApplicationContext(), realm, (AdView) findViewById(R.id.adView));
     }
 
     private void buscarAtletas(Long ligaId, Long timeId){

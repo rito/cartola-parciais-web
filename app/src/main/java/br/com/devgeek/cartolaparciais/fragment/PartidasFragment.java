@@ -81,7 +81,7 @@ public class PartidasFragment extends Fragment {
 
 
 
-        setupAds(TAG, realm, (AdView) view.findViewById(R.id.adView));
+        setupAds(TAG, getContext(), realm, (AdView) view.findViewById(R.id.adView));
         return view;
     }
 
