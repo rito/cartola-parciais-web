@@ -62,22 +62,22 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.tab_parciais:
                     setViewPager(0);
                     setToolbarTitle("Parciais");
-                    adicionarTimes.setVisible(true);
+                    if (adicionarTimes != null) adicionarTimes.setVisible(true);
                     break;
                 case R.id.tab_ligas:
                     setViewPager(1);
                     setToolbarTitle("Ligas");
-                    adicionarTimes.setVisible(false);
+                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
                 case R.id.tab_jogadores:
                     setViewPager(2);
                     setToolbarTitle("Jogadores");
-                    adicionarTimes.setVisible(false);
+                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
                 case R.id.tab_jogos:
                     setViewPager(3);
                     setToolbarTitle("Jogos");
-                    adicionarTimes.setVisible(false);
+                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
             }
             return true;
