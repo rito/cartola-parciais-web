@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +26,7 @@ import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable
 import io.realm.Realm;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.parseAndSortAtletasPontuados;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.setupAds;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
@@ -32,6 +34,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
     private static String TAG = "ParciaisAtletasDoTime";
     private ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = null;
 
+    private Realm realm;
     private ParciaisAtletasDoTimeFavoritoAdapter adapter;
     private List<AtletasPontuados> atletasPontuados = new ArrayList<>();
 
@@ -41,6 +44,7 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parciais_atletas_do_time);
 
+        realm = Realm.getDefaultInstance();
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) dadosParciaisAtletasDoTime = bundle.getParcelable("dadosParciaisAtletasDoTime");
 
@@ -82,29 +86,29 @@ public class ParciaisAtletasDoTimeActivity extends AppCompatActivity {
 
         adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados, userGloboIsLogged() );
         recyclerView.setAdapter( adapter );
+
+
+
+        setupAds(TAG, realm, (AdView) findViewById(R.id.adView));
     }
 
     private void buscarAtletas(Long timeId){
 
-        Realm realm = null;
-
         try {
-
-            realm = Realm.getDefaultInstance();
 
             TimeFavorito timeFavorito = realm.copyFromRealm(realm.where(TimeFavorito.class).equalTo("timeId", timeId).findFirst());
 
-            if (timeFavorito != null){
+            if (timeFavorito != null && timeFavorito.getAtletas() != null){
 
                 atletasPontuados = parseAndSortAtletasPontuados(new Gson(), timeFavorito.getAtletas());
+
+            } else {
+                finishActivityWithAnimation();
             }
         } catch (Exception e){
 
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-
-        } finally {
-            if (realm != null) realm.close();
         }
     }
 

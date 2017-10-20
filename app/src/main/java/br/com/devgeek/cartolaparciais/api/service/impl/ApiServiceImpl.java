@@ -534,6 +534,7 @@ public class ApiServiceImpl {
 
                 if (liga.getLigaId() > 0 && liga.getTipoLiga().equals("Minhas ligas")){
 
+                    Log.w(TAG, "atualizarTimesDaLiga() -> "+liga.getSlug());
                     if (mapDeTimesDaLiga == null) mapDeTimesDaLiga = new HashMap<>();
 
                     Sort[] timesSortOrder = { Sort.DESCENDING, Sort.DESCENDING, Sort.ASCENDING };
@@ -571,7 +572,7 @@ public class ApiServiceImpl {
             if (mapDeTimesDaLiga.size() > 0){
 
                 TimeLiga timeDaLiga = mapDeTimesDaLiga.entrySet().iterator().next().getValue();
-                Log.w(TAG, "atualizarParciaisDeCadaTimeDaLiga() -> "+timeDaLiga.getSlug());
+                //Log.w(TAG, "atualizarParciaisDeCadaTimeDaLiga() -> "+timeDaLiga.getSlug());
 
                 Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeDaLiga.getTimeId());
 
@@ -976,10 +977,10 @@ public class ApiServiceImpl {
                                                         boolean timeDoUsuario = false;
                                                         if (timeFavorito != null && timeFavorito.getTimeId().equals(time.getTimeId())) timeDoUsuario = true;
 
-                                                        TimeLiga timeDaLiga = new TimeLiga(times.getLiga().getLigaId(), time, null, timeDoUsuario);
+                                                        TimeLiga timeDaLiga = new TimeLiga(liga.getLigaId(), time, null, timeDoUsuario);
 
                                                         timesDaLiga.add(timeDaLiga);
-                                                        chaveDeTimesDaApi.put(String.valueOf(times.getLiga().getLigaId()+time.getTimeId()), timeDaLiga);
+                                                        chaveDeTimesDaApi.put(String.valueOf(liga.getLigaId())+String.valueOf(time.getTimeId()), timeDaLiga);
                                                     }
 
                                                     final RealmResults<TimeLiga> timesDaLigaOnRealm = realmTransaction.where(TimeLiga.class).equalTo("ligaId", liga.getLigaId()).findAll();

@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdView;
+
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.LigasMesAdapter;
 import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
@@ -23,6 +25,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.setupAds;
 
 /**
  * Created by geovannefduarte on 24/09/17.
@@ -94,6 +97,8 @@ public class LigasMesFragment extends Fragment {
         recyclerView.setAdapter( adapter );
 
 
+
+        setupAds(TAG, realm, (AdView) view.findViewById(R.id.adView));
         return view;
     }
 

@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.ads.AdView;
+
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.activity.LoginActivity;
 import br.com.devgeek.cartolaparciais.adapter.LigasAdapter;
@@ -26,6 +28,7 @@ import io.realm.Sort;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.atualizarMercadoAndLigasAndPartidas;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.setupAds;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 /**
@@ -101,6 +104,8 @@ public class ParciaisLigasFragment extends Fragment {
         setupLigasFragment();
 
 
+
+        setupAds(TAG, realm, (AdView) view.findViewById(R.id.adView));
         return view;
     }
 

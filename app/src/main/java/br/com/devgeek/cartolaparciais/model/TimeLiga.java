@@ -47,7 +47,7 @@ public class TimeLiga extends RealmObject {
 
     public TimeLiga(Long ligaId, ApiAuthLigaSlug_Time time, Double pontuacaoRodada, boolean timeDoUsuario){
 
-        this.id = String.valueOf(ligaId+time.getTimeId());
+        this.id = String.valueOf(ligaId)+String.valueOf(time.getTimeId());
         this.ligaId = ligaId;
         this.timeId = time.getTimeId();
         this.nomeDoTime = time.getNomeDoTime();

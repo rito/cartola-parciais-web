@@ -4,7 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.view.View;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -14,6 +17,7 @@ import java.util.List;
 
 import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
 import br.com.devgeek.cartolaparciais.model.AtletasPontuados;
+import br.com.devgeek.cartolaparciais.model.TimeFavorito;
 import br.com.devgeek.cartolaparciais.model.UsuarioGlobo;
 import io.realm.Realm;
 
@@ -35,6 +39,34 @@ public class CartolaParciaisUtil {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static boolean showAds(Realm realm){
+        TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
+        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && timeFavoritoEspecial.getTimeId() != 6957528)){
+            return true;
+        }
+        return false;
+    }
+
+    public static void setupAds(String tag, Realm realm, AdView adView){
+        // Configurar AdMob
+//        AdView adView = new AdView(getActivity());
+//        adView.setAdSize(AdSize.BANNER);
+//        adView.setAdUnitId(AD_MOB_ID);
+        try {
+
+            if (showAds(realm)){
+                adView.setVisibility(View.VISIBLE);
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adView.loadAd(adRequest);
+            } else {
+                adView.setVisibility(View.GONE);
+            }
+        } catch (Exception e){
+            logErrorOnConsole(tag, "Falha ao mostrar adMob() -> "+e.getMessage(), e);
+        }
+
     }
 
     public static void logErrorOnConsole(String tag, String error, Object exception){

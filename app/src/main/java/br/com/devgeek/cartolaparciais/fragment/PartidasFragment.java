@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdView;
+
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.PartidasAdapter;
 import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
@@ -23,6 +25,7 @@ import io.realm.Sort;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.atualizarMercadoAndLigasAndPartidas;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.setupAds;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 /**
@@ -76,6 +79,9 @@ public class PartidasFragment extends Fragment {
         adapter = new PartidasAdapter( getActivity() , partidas, userGloboIsLogged() );
         recyclerView.setAdapter( adapter );
 
+
+
+        setupAds(TAG, realm, (AdView) view.findViewById(R.id.adView));
         return view;
     }
 

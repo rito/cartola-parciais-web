@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +26,7 @@ import br.com.devgeek.cartolaparciais.parcelable.ParciaisAtletasDoTimeParcelable
 import io.realm.Realm;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.parseAndSortAtletasPontuados;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.setupAds;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.userGloboIsLogged;
 
 public class ParciaisAtletasDoTimeNaLigaActivity extends AppCompatActivity {
@@ -32,14 +34,17 @@ public class ParciaisAtletasDoTimeNaLigaActivity extends AppCompatActivity {
     private static final String TAG = "ParciaisAtletasDoTimeNa";
     private ParciaisAtletasDoTimeParcelable dadosParciaisAtletasDoTime = null;
 
+    private Realm realm;
     private ParciaisAtletasDoTimeFavoritoAdapter adapter;
     private List<AtletasPontuados> atletasPontuados = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parciais_atletas_do_time_na_liga);
 
+        realm = Realm.getDefaultInstance();
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) dadosParciaisAtletasDoTime = bundle.getParcelable("dadosParciaisAtletasDoTime");
 
@@ -81,15 +86,15 @@ public class ParciaisAtletasDoTimeNaLigaActivity extends AppCompatActivity {
 
         adapter = new ParciaisAtletasDoTimeFavoritoAdapter( this, atletasPontuados, userGloboIsLogged() );
         recyclerView.setAdapter( adapter );
+
+
+
+        setupAds(TAG, realm, (AdView) findViewById(R.id.adView));
     }
 
     private void buscarAtletas(Long ligaId, Long timeId){
 
-        Realm realm = null;
-
         try {
-
-            realm = Realm.getDefaultInstance();
 
             TimeLiga timeDaLiga = realm.copyFromRealm(realm.where(TimeLiga.class).equalTo("ligaId", ligaId).equalTo("timeId", timeId).findFirst());
 
