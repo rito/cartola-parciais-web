@@ -545,7 +545,7 @@ public class ApiServiceImpl {
 
                         for (TimeLiga timeDaLiga : timesDaLigas){
 
-                            mapDeTimesDaLiga.put(String.valueOf(timeDaLiga.getTimeId()), timeDaLiga);
+                            mapDeTimesDaLiga.put(String.valueOf(timeDaLiga.getId()), timeDaLiga);
                         }
                     }
                 }
@@ -572,7 +572,7 @@ public class ApiServiceImpl {
             if (mapDeTimesDaLiga.size() > 0){
 
                 TimeLiga timeDaLiga = mapDeTimesDaLiga.entrySet().iterator().next().getValue();
-                //Log.w(TAG, "atualizarParciaisDeCadaTimeDaLiga() -> "+timeDaLiga.getSlug());
+                Log.w(TAG, "atualizarParciaisDeCadaTimeDaLiga() -> "+timeDaLiga.getSlug());
 
                 Observable<ApiTimeSlug> buscarTimeId = apiService.buscarTimeId(timeDaLiga.getTimeId());
 
@@ -634,7 +634,7 @@ public class ApiServiceImpl {
 
                                                 realm.executeTransaction(realmTransaction -> realmTransaction.copyToRealmOrUpdate(timeDaLiga) );
 
-                                                mapDeTimesDaLiga.remove(String.valueOf(timeDaLiga.getTimeId()));
+                                                mapDeTimesDaLiga.remove(String.valueOf(timeDaLiga.getId()));
                                                 atualizarParciaisDeCadaTimeDaLiga(atletasPontuadosEncontrados, mapDeTimesDaLiga, mercadoStatus);
 
                                             } catch (Exception e){
