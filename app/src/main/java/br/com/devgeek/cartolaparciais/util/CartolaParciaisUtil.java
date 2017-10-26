@@ -48,8 +48,8 @@ public class CartolaParciaisUtil {
             return true;
 
         TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
-        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 6957528 &&
-                                                                              timeFavoritoEspecial.getTimeId() != 1491274 &&
+        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 69575280 &&
+                                                                              timeFavoritoEspecial.getTimeId() != 14912740 &&
                                                                               timeFavoritoEspecial.getTimeId() != 1515887))){
             return true;
         }
@@ -66,7 +66,9 @@ public class CartolaParciaisUtil {
 
             if (showAds(context, realm)){
                 adView.setVisibility(View.VISIBLE);
-                AdRequest adRequest = new AdRequest.Builder().build();
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .build();
                 adView.loadAd(adRequest);
             } else {
                 adView.setVisibility(View.GONE);

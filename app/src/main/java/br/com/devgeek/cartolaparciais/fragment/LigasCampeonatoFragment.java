@@ -72,7 +72,7 @@ public class LigasCampeonatoFragment extends Fragment {
         readBundle(getArguments());
         apiService = new ApiServiceImpl();
         realm = Realm.getDefaultInstance();
-        View view  = inflater.inflate(R.layout.fragment_ligastimes, container, false);
+        View view  = inflater.inflate(R.layout.fragment_ligastimes_campeonato, container, false);
 
 
         Sort[] sortOrder = { Sort.DESCENDING, Sort.ASCENDING };
