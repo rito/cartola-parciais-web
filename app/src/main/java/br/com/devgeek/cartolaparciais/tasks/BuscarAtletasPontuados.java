@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -84,12 +83,10 @@ public class BuscarAtletasPontuados extends AsyncTask<String, String, String> {
                 parciaisTime.setVariacaoCartoletas(variacaoCartoletas);
             }
 
-            Collections.sort(listaTimes, new Comparator<ParciaisTimes>(){ // ordem inversa
-                public int compare(ParciaisTimes t1, ParciaisTimes t2){
-                    if (t1.getPontuacao() < t2.getPontuacao()) return 1;
-                    if (t1.getPontuacao() > t2.getPontuacao()) return -1;
-                    return 0;
-                }
+            Collections.sort(listaTimes, (t1, t2) -> {
+                if (t1.getPontuacao() < t2.getPontuacao()) return  1;
+                if (t1.getPontuacao() > t2.getPontuacao()) return -1;
+                return 0;
             });
 
             for (int i=0; i<listaTimes.size(); i++){ listaTimes.get(i).setPosicao(i+1); }

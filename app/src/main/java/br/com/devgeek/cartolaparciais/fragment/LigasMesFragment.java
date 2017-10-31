@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.ads.AdView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.LigasMesAdapter;
 import br.com.devgeek.cartolaparciais.api.service.impl.ApiServiceImpl;
@@ -22,7 +26,6 @@ import br.com.devgeek.cartolaparciais.model.TimeLiga;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.isNetworkAvailable;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.setupAds;
@@ -44,7 +47,7 @@ public class LigasMesFragment extends Fragment {
     private RealmChangeListener listaTimesDaLigaListener = new RealmChangeListener(){
         @Override
         public void onChange(Object object){
-            adapter.update(listaTimesDaLiga);
+            adapter.update(orderAdapterList(listaTimesDaLiga));
             adapter.notifyDataSetChanged();
         }
     };
@@ -75,9 +78,7 @@ public class LigasMesFragment extends Fragment {
         View view  = inflater.inflate(R.layout.fragment_ligastimes_mes, container, false);
 
 
-        Sort[] sortOrder = { Sort.DESCENDING, Sort.ASCENDING };
-        String[] sortColumns = { "pontuacaoMes", "nomeDoTime" };
-        listaTimesDaLiga = realm.where(TimeLiga.class).equalTo("ligaId", ligaId).findAllSortedAsync(sortColumns, sortOrder);
+        listaTimesDaLiga = realm.where(TimeLiga.class).equalTo("ligaId", ligaId).findAllAsync();
 
 
         refreshListaTimesDaLiga = (SwipeRefreshLayout) view.findViewById(R.id.refreshListaTimesDaLiga);
@@ -93,7 +94,7 @@ public class LigasMesFragment extends Fragment {
         DividerItemDecoration divider = new DividerItemDecoration( getActivity() , mLayoutManager.getOrientation() );
         recyclerView.addItemDecoration( divider );
 
-        adapter = new LigasMesAdapter( getActivity() , listaTimesDaLiga );
+        adapter = new LigasMesAdapter( getActivity() , orderAdapterList(listaTimesDaLiga) );
         recyclerView.setAdapter( adapter );
 
 
@@ -128,5 +129,36 @@ public class LigasMesFragment extends Fragment {
             refreshListaTimesDaLiga.setRefreshing(false);
             Snackbar.make( getActivity().getWindow().getDecorView().findViewById( android.R.id.content ), "Sem conexão com a internet", Snackbar.LENGTH_SHORT ).setAction( "Action", null ).show();
         }
+    }
+
+    private List<TimeLiga> orderAdapterList(RealmResults<TimeLiga> listaTimesDaLiga){
+
+        List<TimeLiga> timesDaLiga = new ArrayList<>();
+
+        if (listaTimesDaLiga != null && listaTimesDaLiga.size() > 0){
+
+            timesDaLiga = realm.copyFromRealm(listaTimesDaLiga);
+
+            for (TimeLiga time : timesDaLiga){
+                if (time.getAtletas() != null && (time.getVariacaoCartoletas() == null || time.getVariacaoCartoletas() == 0)){
+                    time.setPontuacaoMes(time.getPontuacaoMes()+time.getPontuacao());
+                }
+            }
+
+            Collections.sort(timesDaLiga, (t1, t2) -> {
+
+                if (t1.getPontuacaoMes() < t2.getPontuacaoMes()) return  1;
+                if (t1.getPontuacaoMes() > t2.getPontuacaoMes()) return -1;
+
+                if (t1.getVariacaoCartoletas() < t2.getVariacaoCartoletas()) return  1;
+                if (t1.getVariacaoCartoletas() > t2.getVariacaoCartoletas()) return -1;
+
+                return t1.getNomeDoTime().compareTo(t2.getNomeDoTime());
+            });
+
+            adapter.update(timesDaLiga);
+        }
+
+        return timesDaLiga;
     }
 }

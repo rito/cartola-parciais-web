@@ -27,7 +27,7 @@
 
     <color name="ligasTabs_background">#2d2b2d</color>
     <color name="ligasTabs_itemActive">#ffffff</color>
-    <color name="ligasTabs_item">#6c6c6c</color>
+    <color name="ligasTabs_item">#b6b6b6</color>
 
     <color name="bottomNavigation_background">#ededed</color>
     <color name="bottomNavigation_itemActive">#2d2b2d</color>
