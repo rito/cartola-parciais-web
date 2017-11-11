@@ -5,10 +5,22 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Switch;
+
+import com.onesignal.OneSignal;
+
+import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
@@ -19,16 +31,25 @@ import br.com.devgeek.cartolaparciais.fragment.PartidasFragment;
 import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.helper.ZoomOutPageTransformer;
 
-import static br.com.devgeek.cartolaparciais.R.id.action_adicionartimes;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.checkBuildVersionAndSetStateListAnimator;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.reduceLabelSize;
 
 public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "MainActivity";
 
+    private static Map<String, Boolean> tags = new HashMap<>();
     private MainActivityViewPagerAdapter mPagerAdapter;
     private BottomNavigationView bottomNavigationView;
     private MenuItem adicionarTimes;
+    private MenuItem notificacoes;
     private ViewPager mViewPager;
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        getOneSignalTags();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -143,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         adicionarTimes = menu.findItem(R.id.action_adicionartimes);
+        notificacoes = menu.findItem(R.id.action_notifications);
 
         return true;
     }
@@ -154,15 +176,104 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == action_adicionartimes){
+        if (id == R.id.action_adicionartimes){
 
             Intent intent = new Intent(getApplicationContext(), BuscarTimesLigasActivity.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right_to_left,R.anim.slide_in_left_to_right);
+            overridePendingTransition(R.anim.slide_in_right_to_left, R.anim.slide_in_left_to_right);
+
+            return true;
+
+        } else if (id == R.id.action_notifications){
+
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View promptsView = inflater.inflate(R.layout.popup_notifications, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setView(promptsView);
+            alertDialogBuilder.setCancelable(false);
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            final Button dialogOk = (Button) promptsView.findViewById(R.id.ok);
+            reduceLabelSize(dialogOk, 0.8f);
+            checkBuildVersionAndSetStateListAnimator(dialogOk, null);
+            dialogOk.setOnClickListener(view -> {
+                alertDialog.dismiss();
+                getOneSignalTags();
+            });
+
+            Switch gol = (Switch) promptsView.findViewById(R.id.gol);
+            reduceLabelSize(gol, 0.9f); gol.setChecked(tags.get("gol"));
+            gol.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("gol", "gol"); } else { OneSignal.deleteTag("gol"); } });
+
+            Switch assistencia = (Switch) promptsView.findViewById(R.id.assistencia);
+            reduceLabelSize(assistencia, 0.9f); assistencia.setChecked(tags.get("assistencia"));
+            assistencia.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("assistencia", "assistencia"); } else { OneSignal.deleteTag("assistencia"); } });
+
+            Switch penalty = (Switch) promptsView.findViewById(R.id.penalty);
+            reduceLabelSize(penalty, 0.9f); penalty.setChecked(tags.get("penalty"));
+            penalty.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("penalty", "penalty"); } else { OneSignal.deleteTag("penalty"); } });
+
+            Switch inicio = (Switch) promptsView.findViewById(R.id.inicio);
+            reduceLabelSize(inicio, 0.9f); inicio.setChecked(tags.get("inicio"));
+            inicio.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("inicio", "inicio"); } else { OneSignal.deleteTag("inicio"); } });
+
+            Switch termino = (Switch) promptsView.findViewById(R.id.termino);
+            reduceLabelSize(termino, 0.9f); termino.setChecked(tags.get("termino"));
+            termino.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("termino", "termino"); } else { OneSignal.deleteTag("termino"); } });
+
+            Switch substituicao = (Switch) promptsView.findViewById(R.id.substituicao);
+            reduceLabelSize(substituicao, 0.9f); substituicao.setChecked(tags.get("substituicao"));
+            substituicao.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("substituicao", "substituicao"); } else { OneSignal.deleteTag("substituicao"); } });
+
+            Switch cartao_a = (Switch) promptsView.findViewById(R.id.cartao_a);
+            reduceLabelSize(cartao_a, 0.9f); cartao_a.setChecked(tags.get("cartao_a"));
+            cartao_a.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("cartao_a", "cartao_a"); } else { OneSignal.deleteTag("cartao_a"); } });
+
+            Switch cartao_v = (Switch) promptsView.findViewById(R.id.cartao_v);
+            reduceLabelSize(cartao_v, 0.9f); cartao_v.setChecked(tags.get("cartao_v"));
+            cartao_v.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("cartao_v", "cartao_v"); } else { OneSignal.deleteTag("cartao_v"); } });
+
+            alertDialog.show();
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private static void getOneSignalTags(){
+
+        tags = new HashMap<>();
+        tags.put("gol",         false);
+        tags.put("assistencia", false);
+        tags.put("penalty",     false);
+        tags.put("inicio",      false);
+        tags.put("termino",     false);
+        tags.put("substituicao",false);
+        tags.put("cartao_a",    false);
+        tags.put("cartao_v",    false);
+
+        OneSignal.getTags(tagsAvailable -> {
+
+            if (tagsAvailable.length() > 0){
+
+                try {
+                    for(int i = 0; i<tagsAvailable.names().length(); i++){
+                             if (tagsAvailable.names().getString(i).equals("gol"))          tags.put("gol",         true);
+                        else if (tagsAvailable.names().getString(i).equals("assistencia"))  tags.put("assistencia", true);
+                        else if (tagsAvailable.names().getString(i).equals("penalty"))      tags.put("penalty",     true);
+                        else if (tagsAvailable.names().getString(i).equals("inicio"))       tags.put("inicio",      true);
+                        else if (tagsAvailable.names().getString(i).equals("termino"))      tags.put("termino",     true);
+                        else if (tagsAvailable.names().getString(i).equals("substituicao")) tags.put("substituicao",true);
+                        else if (tagsAvailable.names().getString(i).equals("cartao_a"))     tags.put("cartao_a",    true);
+                        else if (tagsAvailable.names().getString(i).equals("cartao_v"))     tags.put("cartao_v",    true);
+                    }
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

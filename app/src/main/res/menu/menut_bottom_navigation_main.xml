@@ -5,7 +5,7 @@
     <item
         android:id="@+id/tab_parciais"
         android:enabled="true"
-        android:icon="@drawable/mercado"
+        android:icon="@drawable/parciais"
         android:title="Parciais"
         app:showAsAction="ifRoom" />
     <item

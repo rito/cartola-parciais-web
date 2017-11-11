@@ -1,11 +1,18 @@
 package br.com.devgeek.cartolaparciais.util;
 
+import android.animation.StateListAnimator;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.provider.Settings;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -45,7 +52,7 @@ public class CartolaParciaisUtil {
     public static boolean showAds(Context context, Realm realm){
 
         if (Boolean.valueOf(Settings.System.getString(context.getContentResolver(), "firebase.test.lab")))
-            return true;
+            return false;
 
         TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
         if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 69575280 &&
@@ -169,5 +176,26 @@ public class CartolaParciaisUtil {
 
     public static String padLeft(String s, int n){
         return String.format("%1$" + n + "s", s);
+    }
+
+    public static void checkBuildVersionAndSetStateListAnimator(View view, StateListAnimator stateListAnimator){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            view.setStateListAnimator(stateListAnimator);
+        }
+    }
+
+    public static void reduceLabelSize(Button button, float proportion){
+
+        SpannableStringBuilder text = new SpannableStringBuilder(button.getText());
+        text.setSpan(new RelativeSizeSpan(proportion), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        button.setText(text);
+    }
+
+    public static void reduceLabelSize(TextView view, float proportion){
+
+        SpannableStringBuilder text = new SpannableStringBuilder(view.getText());
+        text.setSpan(new RelativeSizeSpan(proportion), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        view.setText(text);
     }
 }

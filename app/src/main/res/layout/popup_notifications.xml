@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/titulo"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Receber notificações"
+            android:textColor="@color/textDark"
+            android:paddingBottom="15dp"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/gol"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/titulo"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Gols" />
+
+        <Switch
+            android:id="@+id/assistencia"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/gol"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Assistências" />
+
+
+        <Switch
+            android:id="@+id/penalty"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/assistencia"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Pênaltis" />
+
+        <Switch
+            android:id="@+id/inicio"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/penalty"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Início dos jogos" />
+
+        <Switch
+            android:id="@+id/termino"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/inicio"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Término dos jogos" />
+
+        <Switch
+            android:id="@+id/substituicao"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/termino"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Substituições" />
+
+        <Switch
+            android:id="@+id/cartao_a"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/substituicao"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Cartões amarelos" />
+
+        <Switch
+            android:id="@+id/cartao_v"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/cartao_a"
+            android:textColor="@color/textDark"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="8dp"
+            android:text="Cartões vermelhos" />
+
+        <Button
+            android:id="@+id/ok"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cartao_v"
+            android:layout_marginLeft="64dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="64dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_gray_button"
+            android:textAllCaps="false"
+            android:text="Voltar" />
+
+    </RelativeLayout>
+</ScrollView>

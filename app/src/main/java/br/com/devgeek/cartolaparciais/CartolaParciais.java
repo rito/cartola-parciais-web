@@ -3,6 +3,7 @@ package br.com.devgeek.cartolaparciais;
 import android.app.Application;
 
 import com.google.android.gms.ads.MobileAds;
+import com.onesignal.OneSignal;
 
 import io.realm.DynamicRealmObject;
 import io.realm.FieldAttribute;
@@ -121,6 +122,11 @@ public class CartolaParciais extends Application {
         Realm.setDefaultConfiguration(realmConfig);
 
         MobileAds.initialize(this, AD_MOB_ID);
+
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init();
     }
 
     private final RealmMigration realmMigration(){

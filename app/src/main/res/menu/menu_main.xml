@@ -7,4 +7,25 @@
         android:orderInCategory="100"
         android:title="@string/buscar_times"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_menu"
+        android:title="Configurações"
+        android:orderInCategory="101"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_settings">
+
+        <menu>
+
+            <item android:id="@+id/action_notifications"
+                app:showAsAction="never"
+                android:title="Notificações" />
+
+            <!--<item android:id="@+id/action_logout"-->
+                <!--app:showAsAction="never"-->
+                <!--android:title="Sair" />-->
+
+        </menu>
+
+    </item>
 </menu>
