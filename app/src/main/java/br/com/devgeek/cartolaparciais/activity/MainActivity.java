@@ -32,6 +32,7 @@ import br.com.devgeek.cartolaparciais.helper.BottomNavigationViewHelper;
 import br.com.devgeek.cartolaparciais.helper.ZoomOutPageTransformer;
 
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.checkBuildVersionAndSetStateListAnimator;
+import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.logErrorOnConsole;
 import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.reduceLabelSize;
 
 public class MainActivity extends AppCompatActivity {
@@ -245,35 +246,40 @@ public class MainActivity extends AppCompatActivity {
 
     private static void getOneSignalTags(){
 
-        tags = new HashMap<>();
-        tags.put("gol",         false);
-        tags.put("assistencia", false);
-        tags.put("penalty",     false);
-        tags.put("inicio",      false);
-        tags.put("termino",     false);
-        tags.put("substituicao",false);
-        tags.put("cartao_a",    false);
-        tags.put("cartao_v",    false);
+        try {
 
-        OneSignal.getTags(tagsAvailable -> {
+            tags = new HashMap<>();
+            tags.put("gol",         false);
+            tags.put("assistencia", false);
+            tags.put("penalty",     false);
+            tags.put("inicio",      false);
+            tags.put("termino",     false);
+            tags.put("substituicao",false);
+            tags.put("cartao_a",    false);
+            tags.put("cartao_v",    false);
 
-            if (tagsAvailable.length() > 0){
+            OneSignal.getTags(tagsAvailable -> {
 
-                try {
-                    for(int i = 0; i<tagsAvailable.names().length(); i++){
-                             if (tagsAvailable.names().getString(i).equals("gol"))          tags.put("gol",         true);
-                        else if (tagsAvailable.names().getString(i).equals("assistencia"))  tags.put("assistencia", true);
-                        else if (tagsAvailable.names().getString(i).equals("penalty"))      tags.put("penalty",     true);
-                        else if (tagsAvailable.names().getString(i).equals("inicio"))       tags.put("inicio",      true);
-                        else if (tagsAvailable.names().getString(i).equals("termino"))      tags.put("termino",     true);
-                        else if (tagsAvailable.names().getString(i).equals("substituicao")) tags.put("substituicao",true);
-                        else if (tagsAvailable.names().getString(i).equals("cartao_a"))     tags.put("cartao_a",    true);
-                        else if (tagsAvailable.names().getString(i).equals("cartao_v"))     tags.put("cartao_v",    true);
+                if (tagsAvailable != null && tagsAvailable.length() > 0){
+
+                    try {
+                        for(int i = 0; i<tagsAvailable.names().length(); i++){
+                            if (tagsAvailable.names().getString(i).equals("gol"))          tags.put("gol",         true);
+                            else if (tagsAvailable.names().getString(i).equals("assistencia"))  tags.put("assistencia", true);
+                            else if (tagsAvailable.names().getString(i).equals("penalty"))      tags.put("penalty",     true);
+                            else if (tagsAvailable.names().getString(i).equals("inicio"))       tags.put("inicio",      true);
+                            else if (tagsAvailable.names().getString(i).equals("termino"))      tags.put("termino",     true);
+                            else if (tagsAvailable.names().getString(i).equals("substituicao")) tags.put("substituicao",true);
+                            else if (tagsAvailable.names().getString(i).equals("cartao_a"))     tags.put("cartao_a",    true);
+                            else if (tagsAvailable.names().getString(i).equals("cartao_v"))     tags.put("cartao_v",    true);
+                        }
+                    } catch (JSONException e){
+                        logErrorOnConsole(TAG, "OneSignal.getTags() -> "+e.getMessage(), e);
                     }
-                } catch (JSONException e){
-                    e.printStackTrace();
                 }
-            }
-        });
+            });
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "getOneSignalTags() -> "+e.getMessage(), e);
+        }
     }
 }

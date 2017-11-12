@@ -55,7 +55,8 @@ public class CartolaParciaisUtil {
             return false;
 
         TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
-        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 69575280 &&
+        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 11937168 && // bicudoo F.C - Luiz
+                                                                              timeFavoritoEspecial.getTimeId() != 69575280 &&
                                                                               timeFavoritoEspecial.getTimeId() != 14912740 &&
                                                                               timeFavoritoEspecial.getTimeId() != 1515887))){
             return true;
