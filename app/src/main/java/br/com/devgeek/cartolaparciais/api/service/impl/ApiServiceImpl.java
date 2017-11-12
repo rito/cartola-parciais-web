@@ -1179,28 +1179,28 @@ public class ApiServiceImpl {
 
         if (rodada > 0){
 
-            Realm realm = null;
+//            Realm realm = null;
 
             try {
 
-                realm = Realm.getDefaultInstance();
-                final RealmResults<Partida> partidas = realm.where(Partida.class).equalTo("rodada", rodada).findAll();
+//                realm = Realm.getDefaultInstance();
+//                final RealmResults<Partida> partidas = realm.where(Partida.class).equalTo("rodada", rodada).findAll();
 
-                if (partidas == null || partidas.size() == 0){
+//                if (partidas == null || partidas.size() == 0){
 
                     buscarPartidas(rodada);
 
-                } else {
-
-                    verificarRodadasAnteriores(rodada - 1);
-                }
+//                } else {
+//
+//                    verificarRodadasAnteriores(rodada - 1);
+//                }
 
             } catch (Exception e){
 
                 logErrorOnConsole(TAG, "verificarRodadasAnteriores() -> "+e.getMessage(), e);
 
-            } finally {
-                if (realm != null) realm.close();
+//            } finally {
+//                if (realm != null) realm.close();
             }
         }
     }

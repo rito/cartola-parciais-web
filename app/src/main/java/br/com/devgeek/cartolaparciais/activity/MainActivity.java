@@ -3,10 +3,12 @@ package br.com.devgeek.cartolaparciais.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +26,7 @@ import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
+import br.com.devgeek.cartolaparciais.fragment.EscalacaoFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisJogadoresFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisLigasFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisTimesFragment;
@@ -37,13 +40,16 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.reduceLabe
 
 public class MainActivity extends AppCompatActivity {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     private static String TAG = "MainActivity";
 
     private static Map<String, Boolean> tags = new HashMap<>();
     private MainActivityViewPagerAdapter mPagerAdapter;
     private BottomNavigationView bottomNavigationView;
     private MenuItem adicionarTimes;
-    private MenuItem notificacoes;
     private ViewPager mViewPager;
 
     @Override
@@ -91,13 +97,18 @@ public class MainActivity extends AppCompatActivity {
                     setToolbarTitle("Ligas");
                     if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
-                case R.id.tab_jogadores:
+                case R.id.tab_escalacao:
                     setViewPager(2);
+                    setToolbarTitle("Escalação");
+                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
+                    break;
+                case R.id.tab_jogadores:
+                    setViewPager(3);
                     setToolbarTitle("Jogadores");
                     if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
                 case R.id.tab_jogos:
-                    setViewPager(3);
+                    setViewPager(4);
                     setToolbarTitle("Jogos");
                     if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
@@ -112,13 +123,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager){
         mPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
-        mPagerAdapter.addFragment(new ParciaisTimesFragment(), "Parciais");
-        mPagerAdapter.addFragment(new ParciaisLigasFragment(), "Ligas");
+        mPagerAdapter.addFragment(new ParciaisTimesFragment(),     "Parciais");
+        mPagerAdapter.addFragment(new ParciaisLigasFragment(),     "Ligas");
+        mPagerAdapter.addFragment(new EscalacaoFragment(),         "Escalação");
         mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
-        mPagerAdapter.addFragment(new PartidasFragment(), "Jogos");
+        mPagerAdapter.addFragment(new PartidasFragment(),          "Jogos");
         viewPager.setAdapter(mPagerAdapter);
 
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
@@ -133,9 +145,12 @@ public class MainActivity extends AppCompatActivity {
                         bottomNavigationView.setSelectedItemId(R.id.tab_ligas);
                         break;
                     case 2:
-                        bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
+                        bottomNavigationView.setSelectedItemId(R.id.tab_escalacao);
                         break;
                     case 3:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
+                        break;
+                    case 4:
                         bottomNavigationView.setSelectedItemId(R.id.tab_jogos);
                         break;
                 }
@@ -165,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         adicionarTimes = menu.findItem(R.id.action_adicionartimes);
-        notificacoes = menu.findItem(R.id.action_notifications);
 
         return true;
     }
@@ -206,35 +220,99 @@ public class MainActivity extends AppCompatActivity {
 
             Switch gol = (Switch) promptsView.findViewById(R.id.gol);
             reduceLabelSize(gol, 0.9f); gol.setChecked(tags.get("gol"));
-            gol.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("gol", "gol"); } else { OneSignal.deleteTag("gol"); } });
+            gol.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("gol", "gol");
+                    } else {
+                        OneSignal.deleteTag("gol");
+                    }
+                }
+            });
 
             Switch assistencia = (Switch) promptsView.findViewById(R.id.assistencia);
             reduceLabelSize(assistencia, 0.9f); assistencia.setChecked(tags.get("assistencia"));
-            assistencia.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("assistencia", "assistencia"); } else { OneSignal.deleteTag("assistencia"); } });
+            assistencia.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("assistencia", "assistencia");
+                    } else {
+                        OneSignal.deleteTag("assistencia");
+                    }
+                }
+            });
 
             Switch penalty = (Switch) promptsView.findViewById(R.id.penalty);
             reduceLabelSize(penalty, 0.9f); penalty.setChecked(tags.get("penalty"));
-            penalty.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("penalty", "penalty"); } else { OneSignal.deleteTag("penalty"); } });
+            penalty.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("penalty", "penalty");
+                    } else {
+                        OneSignal.deleteTag("penalty");
+                    }
+                }
+            });
 
             Switch inicio = (Switch) promptsView.findViewById(R.id.inicio);
             reduceLabelSize(inicio, 0.9f); inicio.setChecked(tags.get("inicio"));
-            inicio.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("inicio", "inicio"); } else { OneSignal.deleteTag("inicio"); } });
+            inicio.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("inicio", "inicio");
+                    } else {
+                        OneSignal.deleteTag("inicio");
+                    }
+                }
+            });
 
             Switch termino = (Switch) promptsView.findViewById(R.id.termino);
             reduceLabelSize(termino, 0.9f); termino.setChecked(tags.get("termino"));
-            termino.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("termino", "termino"); } else { OneSignal.deleteTag("termino"); } });
+            termino.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("termino", "termino");
+                    } else {
+                        OneSignal.deleteTag("termino");
+                    }
+                }
+            });
 
             Switch substituicao = (Switch) promptsView.findViewById(R.id.substituicao);
             reduceLabelSize(substituicao, 0.9f); substituicao.setChecked(tags.get("substituicao"));
-            substituicao.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("substituicao", "substituicao"); } else { OneSignal.deleteTag("substituicao"); } });
+            substituicao.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("substituicao", "substituicao");
+                    } else {
+                        OneSignal.deleteTag("substituicao");
+                    }
+                }
+            });
 
             Switch cartao_a = (Switch) promptsView.findViewById(R.id.cartao_a);
             reduceLabelSize(cartao_a, 0.9f); cartao_a.setChecked(tags.get("cartao_a"));
-            cartao_a.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("cartao_a", "cartao_a"); } else { OneSignal.deleteTag("cartao_a"); } });
+            cartao_a.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("cartao_a", "cartao_a");
+                    } else {
+                        OneSignal.deleteTag("cartao_a");
+                    }
+                }
+            });
 
             Switch cartao_v = (Switch) promptsView.findViewById(R.id.cartao_v);
             reduceLabelSize(cartao_v, 0.9f); cartao_v.setChecked(tags.get("cartao_v"));
-            cartao_v.setOnCheckedChangeListener((buttonView, isChecked) -> { if (isChecked){ OneSignal.sendTag("cartao_v", "cartao_v"); } else { OneSignal.deleteTag("cartao_v"); } });
+            cartao_v.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (Boolean.valueOf(Settings.System.getString(getApplicationContext().getContentResolver(), "firebase.test.lab")) == false){
+                    if (isChecked){
+                        OneSignal.sendTag("cartao_v", "cartao_v");
+                    } else {
+                        OneSignal.deleteTag("cartao_v");
+                    }
+                }
+            });
 
             alertDialog.show();
 
@@ -264,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         for(int i = 0; i<tagsAvailable.names().length(); i++){
-                            if (tagsAvailable.names().getString(i).equals("gol"))          tags.put("gol",         true);
+                                 if (tagsAvailable.names().getString(i).equals("gol"))          tags.put("gol",         true);
                             else if (tagsAvailable.names().getString(i).equals("assistencia"))  tags.put("assistencia", true);
                             else if (tagsAvailable.names().getString(i).equals("penalty"))      tags.put("penalty",     true);
                             else if (tagsAvailable.names().getString(i).equals("inicio"))       tags.put("inicio",      true);

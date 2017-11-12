@@ -15,6 +15,12 @@
         android:title="Ligas"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/tab_escalacao"
+        android:enabled="true"
+        android:icon="@drawable/mercado"
+        android:title="Escalação"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/tab_jogadores"
         android:enabled="true"
         android:icon="@drawable/jogadores"

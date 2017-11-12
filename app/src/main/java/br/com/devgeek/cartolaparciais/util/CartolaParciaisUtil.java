@@ -55,9 +55,10 @@ public class CartolaParciaisUtil {
             return false;
 
         TimeFavorito timeFavoritoEspecial = realm.where(TimeFavorito.class).equalTo("timeFavorito", true).equalTo("timeDoUsuario", true).findFirst();
-        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 11937168 && // bicudoo F.C - Luiz
-                                                                              timeFavoritoEspecial.getTimeId() != 69575280 &&
-                                                                              timeFavoritoEspecial.getTimeId() != 14912740 &&
+        if (timeFavoritoEspecial == null || (timeFavoritoEspecial != null && (timeFavoritoEspecial.getTimeId() != 11937168 && // bicudoo F.C -> Luiz
+                                                                              timeFavoritoEspecial.getTimeId() != 3085877  && // FC NANZA -> RENAN MOREIRA
+                                                                              timeFavoritoEspecial.getTimeId() != 3406927  && // Merengues ™ -> Jonas
+                                                                              timeFavoritoEspecial.getTimeId() != 2024368  && // 100N0ção.atc ™ -> Edson leal
                                                                               timeFavoritoEspecial.getTimeId() != 1515887))){
             return true;
         }
