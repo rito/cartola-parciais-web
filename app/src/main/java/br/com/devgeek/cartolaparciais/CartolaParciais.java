@@ -125,7 +125,7 @@ public class CartolaParciais extends Application {
 
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
+                .unsubscribeWhenNotificationsAreDisabled(false)
                 .init();
     }
 

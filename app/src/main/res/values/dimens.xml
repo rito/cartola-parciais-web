@@ -27,9 +27,9 @@
     <dimen name="rodape_button_corners_radius">28dp</dimen>
 
 
-    <dimen name="campinho_padding_top">32dp</dimen>
-    <dimen name="campinho_padding_right">32dp</dimen>
-    <dimen name="campinho_padding_bottom">32dp</dimen>
-    <dimen name="campinho_padding_left">32dp</dimen>
+    <dimen name="campinho_padding_top">24dp</dimen>
+    <dimen name="campinho_padding_right">24dp</dimen>
+    <dimen name="campinho_padding_bottom">24dp</dimen>
+    <dimen name="campinho_padding_left">24dp</dimen>
 
 </resources>
