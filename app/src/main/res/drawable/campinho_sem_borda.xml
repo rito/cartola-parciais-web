@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:viewportWidth="300"
-    android:viewportHeight="400" android:width="300dp" android:height="400dp">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:viewportWidth="300" android:viewportHeight="400"
+    android:width="300dp" android:height="400dp">
     <group>
         <group android:translateY="0.013" android:translateX="0.777">
             <path android:fillColor="#28B557" android:name="f"

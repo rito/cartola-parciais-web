@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,40 +26,109 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="36dp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:layout_weight="1">
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_seven"
+            <RelativeLayout
+                android:id="@+id/atacanteEsquerdaContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="7" />
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1">
 
-            <Button
-                android:id="@+id/btn_eight"
+                <RelativeLayout
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1"
+                        android:background="@color/white">
+
+                        <ImageView
+                            android:id="@+id/atacanteEsquerda"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginLeft="-28dp"
+                            android:layout_marginTop="-8dp"
+                            android:scaleType="centerCrop"
+                            android:scrollY="-32dp"
+                            android:scrollX="-14dp"
+                            tools:src="@drawable/atleta" />
+
+
+                        <TextView
+                            android:id="@+id/atacanteEsquerdaPontuacao"
+                            style="@android:style/TextAppearance.DeviceDefault.Small"
+                            android:layout_width="64dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:gravity="top|center"
+                            android:text="9999.00"
+                            android:paddingLeft="4dp"
+                            android:background="@color/white"
+                            android:textColor="@color/textDark"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/atacanteEsquerdaEscudo"
+                        android:layout_width="32dp"
+                        android:layout_height="34dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/atacanteEsquerdaVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/atacanteCentro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="8" />
+                android:layout_weight="0">
 
-            <Button
-                android:id="@+id/btn_nine"
+                <Button
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerInParent="true"
+                    android:background="@color/white"
+                    android:text="8" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/atacanteDireita"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="9" />
+                android:layout_marginRight="16dp"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerInParent="true"
+                    android:background="@color/white"
+                    android:text="8" />
+
+            </RelativeLayout>
         </LinearLayout>
 
 
