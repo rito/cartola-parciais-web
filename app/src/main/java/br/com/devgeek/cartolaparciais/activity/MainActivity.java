@@ -26,7 +26,6 @@ import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
-import br.com.devgeek.cartolaparciais.fragment.EscalacaoFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisJogadoresFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisLigasFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisTimesFragment;
@@ -97,21 +96,31 @@ public class MainActivity extends AppCompatActivity {
                     setToolbarTitle("Ligas");
                     if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
-                case R.id.tab_escalacao:
-                    setViewPager(2);
-                    setToolbarTitle("Escalação");
-                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
-                    break;
                 case R.id.tab_jogadores:
-                    setViewPager(3);
+                    setViewPager(2);
                     setToolbarTitle("Jogadores");
                     if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
                 case R.id.tab_jogos:
-                    setViewPager(4);
+                    setViewPager(3);
                     setToolbarTitle("Jogos");
                     if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
+//                case R.id.tab_escalacao:
+//                    setViewPager(2);
+//                    setToolbarTitle("Escalação");
+//                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
+//                    break;
+//                case R.id.tab_jogadores:
+//                    setViewPager(3);
+//                    setToolbarTitle("Jogadores");
+//                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
+//                    break;
+//                case R.id.tab_jogos:
+//                    setViewPager(4);
+//                    setToolbarTitle("Jogos");
+//                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
+//                    break;
             }
             return true;
         });
@@ -125,12 +134,13 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment(new ParciaisTimesFragment(),     "Parciais");
         mPagerAdapter.addFragment(new ParciaisLigasFragment(),     "Ligas");
-        mPagerAdapter.addFragment(new EscalacaoFragment(),         "Escalação");
+        //mPagerAdapter.addFragment(new EscalacaoFragment(),         "Escalação");
         mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
         mPagerAdapter.addFragment(new PartidasFragment(),          "Jogos");
         viewPager.setAdapter(mPagerAdapter);
 
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(3);
+        //viewPager.setOffscreenPageLimit(4);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
@@ -145,14 +155,20 @@ public class MainActivity extends AppCompatActivity {
                         bottomNavigationView.setSelectedItemId(R.id.tab_ligas);
                         break;
                     case 2:
-                        bottomNavigationView.setSelectedItemId(R.id.tab_escalacao);
-                        break;
-                    case 3:
                         bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
                         break;
-                    case 4:
+                    case 3:
                         bottomNavigationView.setSelectedItemId(R.id.tab_jogos);
                         break;
+//                    case 2:
+//                        bottomNavigationView.setSelectedItemId(R.id.tab_escalacao);
+//                        break;
+//                    case 3:
+//                        bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
+//                        break;
+//                    case 4:
+//                        bottomNavigationView.setSelectedItemId(R.id.tab_jogos);
+//                        break;
                 }
             }
             @Override

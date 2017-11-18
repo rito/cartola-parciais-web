@@ -59,6 +59,7 @@ public class CartolaParciaisUtil {
                                                                               timeFavoritoEspecial.getTimeId() != 3085877  && // FC NANZA -> RENAN MOREIRA
                                                                               timeFavoritoEspecial.getTimeId() != 3406927  && // Merengues ™ -> Jonas
                                                                               timeFavoritoEspecial.getTimeId() != 2024368  && // 100N0ção.atc ™ -> Edson leal
+                                                                              timeFavoritoEspecial.getTimeId() != 839060   && // C.F. Fenerbahtchê -> Micael Prevedello
                                                                               timeFavoritoEspecial.getTimeId() != 1515887))){
             return true;
         }
