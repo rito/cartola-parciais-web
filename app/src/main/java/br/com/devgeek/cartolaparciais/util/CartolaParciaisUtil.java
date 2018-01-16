@@ -12,12 +12,14 @@ import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -200,5 +202,10 @@ public class CartolaParciaisUtil {
         SpannableStringBuilder text = new SpannableStringBuilder(view.getText());
         text.setSpan(new RelativeSizeSpan(proportion), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         view.setText(text);
+    }
+
+    public static void loadAtletaImageWithPicasso(Context context, String foto, ImageView target){
+
+        Picasso.with( context ).load( foto.replace("_FORMATO","_140x140") ).noFade().into( target );
     }
 }

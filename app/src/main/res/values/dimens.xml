@@ -28,8 +28,10 @@
 
 
     <dimen name="campinho_padding_top">24dp</dimen>
-    <dimen name="campinho_padding_right">24dp</dimen>
-    <dimen name="campinho_padding_bottom">24dp</dimen>
-    <dimen name="campinho_padding_left">24dp</dimen>
+    <dimen name="campinho_padding_right">20dp</dimen>
+    <dimen name="campinho_padding_bottom">19dp</dimen>
+    <dimen name="campinho_padding_left">20dp</dimen>
+    <dimen name="tecnico_margin_bottom">12dp</dimen>
+    <dimen name="tecnico_margin_left">4dp</dimen>
 
 </resources>

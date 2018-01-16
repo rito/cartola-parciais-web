@@ -16,17 +16,17 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingTop="@dimen/campinho_padding_top"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/campinho_padding_bottom"
         android:paddingLeft="@dimen/campinho_padding_left"
         android:paddingRight="@dimen/campinho_padding_right"
-        android:paddingBottom="@dimen/campinho_padding_bottom"
-        android:gravity="bottom"
-        android:orientation="vertical">
+        android:paddingTop="@dimen/campinho_padding_top">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="24dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -39,52 +39,55 @@
                 android:layout_weight="1">
 
                 <RelativeLayout
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_centerInParent="true"
                     android:layout_weight="1">
 
                     <RelativeLayout
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_centerInParent="true"
-                        android:layout_weight="1"
-                        android:background="@color/white">
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
 
                         <ImageView
                             android:id="@+id/atacanteEsquerda"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginLeft="-28dp"
-                            android:layout_marginTop="-8dp"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
                             android:scaleType="centerCrop"
-                            android:scrollY="-32dp"
-                            android:scrollX="-14dp"
-                            tools:src="@drawable/atleta" />
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
 
-
-                        <TextView
-                            android:id="@+id/atacanteEsquerdaPontuacao"
-                            style="@android:style/TextAppearance.DeviceDefault.Small"
-                            android:layout_width="64dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentTop="true"
-                            android:gravity="top|center"
-                            android:text="9999.00"
-                            android:paddingLeft="4dp"
-                            android:background="@color/white"
-                            android:textColor="@color/textDark"
-                            android:textStyle="bold" />
                     </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/atacanteEsquerdaPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/atacanteEsquerdaEscudo"
-                        android:layout_width="32dp"
-                        android:layout_height="34dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
                         android:scaleType="fitCenter"
                         app:srcCompat="@drawable/clube" />
 
@@ -92,85 +95,541 @@
                         android:id="@+id/atacanteEsquerdaVender"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:scaleType="centerCrop"
-                        tools:src="@drawable/vender_jogador" />
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
 
                 </RelativeLayout>
 
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/atacanteCentro"
+                android:id="@+id/atacanteCentroContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0">
 
-                <Button
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_centerInParent="true"
-                    android:background="@color/white"
-                    android:text="8" />
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/atacanteCentro"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/atacanteCentroPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/atacanteCentroEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/atacanteCentroVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/atacanteDireita"
+                android:id="@+id/atacanteDireitaContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
                 android:layout_weight="1">
 
-                <Button
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_centerInParent="true"
-                    android:background="@color/white"
-                    android:text="8" />
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/atacanteDireita"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/atacanteDireitaPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/atacanteDireitaEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/atacanteDireitaVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
 
             </RelativeLayout>
+
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_four"
+            <RelativeLayout
+                android:id="@+id/pontaEsquerdoContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
                 android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="4" />
+                android:gravity="top|left">
 
-            <Button
-                android:id="@+id/btn_five"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="5" />
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
 
-            <Button
-                android:id="@+id/btn_six"
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/pontaEsquerdo"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/pontaEsquerdoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/pontaEsquerdoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/pontaEsquerdoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/meiaEsquerdoContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/meiaEsquerdo"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/meiaEsquerdoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/meiaEsquerdoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/meiaEsquerdoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/volanteContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_weight="0">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/volante"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/volantePontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/volanteEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/volanteVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/meiaDireitoContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/meiaDireito"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/meiaDireitoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/meiaDireitoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/meiaDireitoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/pontaDireitoContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
                 android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="6" />
+                android:gravity="top|right">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/pontaDireito"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/pontaDireitoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/pontaDireitoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/pontaDireitoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -179,75 +638,544 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_one"
+            <RelativeLayout
+                android:id="@+id/lateralEsquerdoContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
                 android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="1" />
+                android:gravity="top|left">
 
-            <Button
-                android:id="@+id/btn_two"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="2" />
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
 
-            <Button
-                android:id="@+id/btn_three"
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/lateralEsquerdo"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/lateralEsquerdoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/lateralEsquerdoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/lateralEsquerdoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/zagueiroEsquerdoContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/zagueiroEsquerdo"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/zagueiroEsquerdoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/zagueiroEsquerdoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/zagueiroEsquerdoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/zaqueiroCentroContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="0">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/zaqueiroCentro"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/zaqueiroCentroPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/zaqueiroCentroEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/zaqueiroCentroVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/zagueiroDireitoContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/zagueiroDireito"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/zagueiroDireitoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/zagueiroDireitoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/zagueiroDireitoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/lateralDireitoContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
                 android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="3" />
+                android:gravity="top|right">
+
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/lateralDireito"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/lateralDireitoPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/lateralDireitoEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/lateralDireitoVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="0">
+            android:layout_weight="0"
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_none_left"
+            <RelativeLayout
+                android:id="@+id/goleiroEspacoEsquerdoContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:enabled="false"
-                android:minHeight="64dp"
-                android:text="" />
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/btn_zero"
+            <RelativeLayout
+                android:id="@+id/goleiroContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:text="0" />
+                android:layout_weight="0">
 
-            <Button
-                android:id="@+id/btn_none_right"
+                <RelativeLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="52dp"
+                        android:layout_height="54dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true">
+
+                        <ImageView
+                            android:id="@+id/goleiro"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginLeft="-16dp"
+                            android:layout_marginTop="0dp"
+                            android:scaleType="centerCrop"
+                            android:scrollX="-4dp"
+                            android:scrollY="-12dp"
+                            app:srcCompat="@drawable/atleta" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/goleiroPontuacao"
+                        style="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:layout_width="46dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/escalacao_pontuacao_jogador"
+                        android:gravity="top|center"
+                        android:paddingBottom="0dp"
+                        android:paddingRight="9dp"
+                        android:paddingTop="5dp"
+                        android:text="20.50"
+                        android:textColor="@color/textDark"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/goleiroEscudo"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginRight="2dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/clube" />
+
+                    <ImageView
+                        android:id="@+id/goleiroVender"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/goleiroEspacoDireitoContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:minHeight="64dp"
-                android:enabled="false"
-                android:text="" />
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1" />
+
         </LinearLayout>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/tecnicoContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="@dimen/tecnico_margin_bottom"
+        android:layout_marginLeft="@dimen/tecnico_margin_left">
+
+        <RelativeLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_centerInParent="true">
+
+            <RelativeLayout
+                android:layout_width="52dp"
+                android:layout_height="54dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/tecnico"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_marginLeft="-16dp"
+                    android:layout_marginTop="0dp"
+                    android:scaleType="centerCrop"
+                    android:scrollX="-4dp"
+                    android:scrollY="-12dp"
+                    app:srcCompat="@drawable/atleta" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tecnicoPontuacao"
+                style="@android:style/TextAppearance.DeviceDefault.Small"
+                android:layout_width="46dp"
+                android:layout_height="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="6dp"
+                android:background="@drawable/escalacao_pontuacao_jogador"
+                android:gravity="top|center"
+                android:paddingBottom="0dp"
+                android:paddingRight="9dp"
+                android:paddingTop="5dp"
+                android:text="20.50"
+                android:textColor="@color/textDark"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/tecnicoEscudo"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="2dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/clube" />
+
+            <ImageView
+                android:id="@+id/tecnicoVender"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/escalacao_vender_jogador" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 </RelativeLayout>

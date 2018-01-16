@@ -26,6 +26,7 @@ import java.util.Map;
 
 import br.com.devgeek.cartolaparciais.R;
 import br.com.devgeek.cartolaparciais.adapter.MainActivityViewPagerAdapter;
+import br.com.devgeek.cartolaparciais.fragment.EscalacaoFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisJogadoresFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisLigasFragment;
 import br.com.devgeek.cartolaparciais.fragment.ParciaisTimesFragment;
@@ -39,17 +40,56 @@ import static br.com.devgeek.cartolaparciais.util.CartolaParciaisUtil.reduceLabe
 
 public class MainActivity extends AppCompatActivity {
 
+    private static String TAG = "MainActivity";
+    private static Map<String, Boolean> tags = new HashMap<>();
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    private static String TAG = "MainActivity";
-
-    private static Map<String, Boolean> tags = new HashMap<>();
     private MainActivityViewPagerAdapter mPagerAdapter;
     private BottomNavigationView bottomNavigationView;
     private MenuItem adicionarTimes;
     private ViewPager mViewPager;
+
+    private static void getOneSignalTags(){
+
+        try {
+
+            tags = new HashMap<>();
+            tags.put("gol",         false);
+            tags.put("assistencia", false);
+            tags.put("penalty",     false);
+            tags.put("inicio",      false);
+            tags.put("termino",     false);
+            tags.put("substituicao",false);
+            tags.put("cartao_a",    false);
+            tags.put("cartao_v",    false);
+
+            OneSignal.getTags(tagsAvailable -> {
+
+                if (tagsAvailable != null && tagsAvailable.length() > 0){
+
+                    try {
+                        for(int i = 0; i<tagsAvailable.names().length(); i++){
+                                 if (tagsAvailable.names().getString(i).equals("gol"))          tags.put("gol",         true);
+                            else if (tagsAvailable.names().getString(i).equals("assistencia"))  tags.put("assistencia", true);
+                            else if (tagsAvailable.names().getString(i).equals("penalty"))      tags.put("penalty",     true);
+                            else if (tagsAvailable.names().getString(i).equals("inicio"))       tags.put("inicio",      true);
+                            else if (tagsAvailable.names().getString(i).equals("termino"))      tags.put("termino",     true);
+                            else if (tagsAvailable.names().getString(i).equals("substituicao")) tags.put("substituicao",true);
+                            else if (tagsAvailable.names().getString(i).equals("cartao_a"))     tags.put("cartao_a",    true);
+                            else if (tagsAvailable.names().getString(i).equals("cartao_v"))     tags.put("cartao_v",    true);
+                        }
+                    } catch (JSONException e){
+                        logErrorOnConsole(TAG, "OneSignal.getTags() -> "+e.getMessage(), e);
+                    }
+                }
+            });
+        } catch (Exception e){
+            logErrorOnConsole(TAG, "getOneSignalTags() -> "+e.getMessage(), e);
+        }
+    }
 
     @Override
     public void onResume(){
@@ -96,31 +136,31 @@ public class MainActivity extends AppCompatActivity {
                     setToolbarTitle("Ligas");
                     if (adicionarTimes != null) adicionarTimes.setVisible(false);
                     break;
-                case R.id.tab_jogadores:
-                    setViewPager(2);
-                    setToolbarTitle("Jogadores");
-                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
-                    break;
-                case R.id.tab_jogos:
-                    setViewPager(3);
-                    setToolbarTitle("Jogos");
-                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
-                    break;
-//                case R.id.tab_escalacao:
-//                    setViewPager(2);
-//                    setToolbarTitle("Escalação");
-//                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
-//                    break;
 //                case R.id.tab_jogadores:
-//                    setViewPager(3);
+//                    setViewPager(2);
 //                    setToolbarTitle("Jogadores");
 //                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
 //                    break;
 //                case R.id.tab_jogos:
-//                    setViewPager(4);
+//                    setViewPager(3);
 //                    setToolbarTitle("Jogos");
 //                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
 //                    break;
+                case R.id.tab_escalacao:
+                    setViewPager(2);
+                    setToolbarTitle("Escalação");
+                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
+                    break;
+                case R.id.tab_jogadores:
+                    setViewPager(3);
+                    setToolbarTitle("Jogadores");
+                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
+                    break;
+                case R.id.tab_jogos:
+                    setViewPager(4);
+                    setToolbarTitle("Jogos");
+                    if (adicionarTimes != null) adicionarTimes.setVisible(false);
+                    break;
             }
             return true;
         });
@@ -134,13 +174,13 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter = new MainActivityViewPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment(new ParciaisTimesFragment(),     "Parciais");
         mPagerAdapter.addFragment(new ParciaisLigasFragment(),     "Ligas");
-        //mPagerAdapter.addFragment(new EscalacaoFragment(),         "Escalação");
+        mPagerAdapter.addFragment(new EscalacaoFragment(),         "Escalação");
         mPagerAdapter.addFragment(new ParciaisJogadoresFragment(), "Jogadores");
         mPagerAdapter.addFragment(new PartidasFragment(),          "Jogos");
         viewPager.setAdapter(mPagerAdapter);
 
-        viewPager.setOffscreenPageLimit(3);
-        //viewPager.setOffscreenPageLimit(4);
+        //viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
@@ -154,21 +194,21 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         bottomNavigationView.setSelectedItemId(R.id.tab_ligas);
                         break;
-                    case 2:
-                        bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
-                        break;
-                    case 3:
-                        bottomNavigationView.setSelectedItemId(R.id.tab_jogos);
-                        break;
 //                    case 2:
-//                        bottomNavigationView.setSelectedItemId(R.id.tab_escalacao);
-//                        break;
-//                    case 3:
 //                        bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
 //                        break;
-//                    case 4:
+//                    case 3:
 //                        bottomNavigationView.setSelectedItemId(R.id.tab_jogos);
 //                        break;
+                    case 2:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_escalacao);
+                        break;
+                    case 3:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_jogadores);
+                        break;
+                    case 4:
+                        bottomNavigationView.setSelectedItemId(R.id.tab_jogos);
+                        break;
                 }
             }
             @Override
@@ -336,44 +376,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private static void getOneSignalTags(){
-
-        try {
-
-            tags = new HashMap<>();
-            tags.put("gol",         false);
-            tags.put("assistencia", false);
-            tags.put("penalty",     false);
-            tags.put("inicio",      false);
-            tags.put("termino",     false);
-            tags.put("substituicao",false);
-            tags.put("cartao_a",    false);
-            tags.put("cartao_v",    false);
-
-            OneSignal.getTags(tagsAvailable -> {
-
-                if (tagsAvailable != null && tagsAvailable.length() > 0){
-
-                    try {
-                        for(int i = 0; i<tagsAvailable.names().length(); i++){
-                                 if (tagsAvailable.names().getString(i).equals("gol"))          tags.put("gol",         true);
-                            else if (tagsAvailable.names().getString(i).equals("assistencia"))  tags.put("assistencia", true);
-                            else if (tagsAvailable.names().getString(i).equals("penalty"))      tags.put("penalty",     true);
-                            else if (tagsAvailable.names().getString(i).equals("inicio"))       tags.put("inicio",      true);
-                            else if (tagsAvailable.names().getString(i).equals("termino"))      tags.put("termino",     true);
-                            else if (tagsAvailable.names().getString(i).equals("substituicao")) tags.put("substituicao",true);
-                            else if (tagsAvailable.names().getString(i).equals("cartao_a"))     tags.put("cartao_a",    true);
-                            else if (tagsAvailable.names().getString(i).equals("cartao_v"))     tags.put("cartao_v",    true);
-                        }
-                    } catch (JSONException e){
-                        logErrorOnConsole(TAG, "OneSignal.getTags() -> "+e.getMessage(), e);
-                    }
-                }
-            });
-        } catch (Exception e){
-            logErrorOnConsole(TAG, "getOneSignalTags() -> "+e.getMessage(), e);
-        }
     }
 }
